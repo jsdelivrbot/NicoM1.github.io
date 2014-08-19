@@ -1,0 +1,118 @@
+@import url('normalize.css');
+@import url(http://fonts.googleapis.com/css?family=Oswald:700);
+@import url(http://fonts.googleapis.com/css?family=Lato:400,900);
+* {
+  box-sizing: border-box; }
+
+body {
+  background-color: #262829; }
+
+.container {
+  width: 100%;
+  margin: 0 auto; }
+  .container:before, .container:after {
+    content: " ";
+    display: table; }
+  .container:after {
+    clear: both; }
+
+header {
+  text-align: center;
+  font-family: "Oswald" sans-serif;
+  -webkit-transition: 1s;
+  font-weight: 700;
+  font-size: 72px;
+  background-color: #111111;
+  margin: 0 auto; }
+  @media only screen and (max-width: 700px) {
+    header {
+      font-size: 32px; } }
+  header h1 {
+    color: #fefefe;
+    margin: 0 auto; }
+
+footer {
+  text-align: center;
+  font-family: "Lato" sans-serif;
+  clear: both;
+  color: #fff;
+  border-style: solid;
+  border-width: 20px;
+  border-top-color: #1a1c1c;
+  border-bottom-color: #262829;
+  border-left-color: #262829;
+  border-right-color: #262829; }
+
+.separator {
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+  font-family: "Lato";
+  font-size: 32px;
+  font-weight: 900;
+  text-shadow: 1px 1px 0px #8efc83;
+  color: #477b42;
+  background-color: #72d572;
+  border-style: solid;
+  border-width: 20px;
+  border-top-color: #72d572;
+  border-bottom-color: #7ff47f;
+  border-left-color: #72d572;
+  border-right-color: #72d572; }
+
+section.work article {
+  -webkit-transition: 1s;
+  float: left;
+  height: 230px; }
+  @media only screen and (min-width: 1300px) {
+    section.work article {
+      height: 470px; } }
+  section.work article p {
+    -webkit-transition: 1s;
+    font-family: 'Lato', sans-serif;
+    font-weight: 900;
+    display: inline-block;
+    color: #fff;
+    box-shadow: 1px 1px 10px rgba(66, 0, 64, 0.42);
+    margin: 0 0;
+    padding: 5px 30px 0px 10px;
+    background-color: rgba(66, 0, 64, 0.42);
+    height: 100%; }
+    @media only screen and (max-width: 600px) {
+      section.work article p {
+        padding: 5px 0 0 10px;
+        width: 130px; } }
+    @media only screen and (min-width: 1300px) {
+      section.work article p {
+        padding-right: 100px; } }
+  section.work article.framework {
+    background-image: url('../images/IceEntityShowOff.png');
+    background-size: cover;
+    background-position: center;
+    width: 65%;
+    min-width: 330px; }
+    @media only screen and (max-width: 600px) {
+      section.work article.framework {
+        width: 100%; } }
+  section.work article.game {
+    background-image: url('../images/Game.png');
+    background-size: cover;
+    background-position: center;
+    width: 35%;
+    min-width: 170px; }
+    @media only screen and (max-width: 600px) {
+      section.work article.game {
+        width: 100%; } }
+    section.work article.game p {
+      background-color: rgba(5, 153, 198, 0.57);
+      box-shadow: 1px 1px 10px rgba(5, 153, 198, 0.57); }
+  section.work article.web {
+    background-image: url('../images/Slickrock.png');
+    background-size: cover;
+    background-position: center;
+    width: 100%; }
+    section.work article.web p {
+      background-color: rgba(21, 198, 5, 0.57);
+      box-shadow: 1px 1px 10px rgba(5, 153, 198, 0.42); }
+
+/*# sourceMappingURL=styles.css.map */
