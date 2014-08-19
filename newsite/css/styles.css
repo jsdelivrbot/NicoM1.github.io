@@ -1,4 +1,4 @@
-@import url('normalize.css');
+@import url("normalize.css");
 @import url(http://fonts.googleapis.com/css?family=Oswald:700);
 @import url(http://fonts.googleapis.com/css?family=Lato:400,900);
 * {
@@ -10,32 +10,39 @@ body {
 .container {
   width: 100%;
   margin: 0 auto; }
-  .container:before, .container:after {
-    content: " ";
-    display: table; }
-  .container:after {
-    clear: both; }
 
 header {
+  transition: 1s;
+  margin: 0 0;
+  background-color: #111111;
   text-align: center;
   font-family: "Oswald" sans-serif;
-  -webkit-transition: 1s;
   font-weight: 700;
-  font-size: 72px;
-  background-color: #111111;
-  margin: 0 auto; }
+  font-size: 72px; }
   @media only screen and (max-width: 700px) {
     header {
       font-size: 32px; } }
   header h1 {
     color: #fefefe;
-    margin: 0 auto; }
+    margin: 0; }
+    header h1 span {
+      margin-right: 15px; }
+      @media only screen and (min-width: 700px) {
+        header h1 span {
+          float: right; } }
+      header h1 span a {
+        text-decoration: none;
+        color: #fefefe; }
+        header h1 span a:visited {
+          color: #fefefe; }
+        header h1 span a:hover {
+          text-shadow: 3px 3px #9f9f9f; }
 
 footer {
   text-align: center;
   font-family: "Lato" sans-serif;
   clear: both;
-  color: #fff;
+  color: #fefefe;
   border-style: solid;
   border-width: 20px;
   border-top-color: #1a1c1c;
@@ -60,59 +67,55 @@ footer {
   border-left-color: #72d572;
   border-right-color: #72d572; }
 
-section.work article {
-  -webkit-transition: 1s;
+section.work a {
+  transition: 1s;
   float: left;
-  height: 230px; }
+  height: 230px;
+  background-size: cover;
+  background-position: center; }
   @media only screen and (min-width: 1300px) {
-    section.work article {
-      height: 470px; } }
-  section.work article p {
-    -webkit-transition: 1s;
+    section.work a {
+      height: 345px; } }
+  section.work a p {
+    transition: 1s;
+    display: inline-block;
     font-family: 'Lato', sans-serif;
     font-weight: 900;
-    display: inline-block;
-    color: #fff;
-    box-shadow: 1px 1px 10px rgba(66, 0, 64, 0.42);
-    margin: 0 0;
+    color: #fefefe;
+    margin: 0;
     padding: 5px 30px 0px 10px;
-    background-color: rgba(66, 0, 64, 0.42);
     height: 100%; }
     @media only screen and (max-width: 600px) {
-      section.work article p {
+      section.work a p {
         padding: 5px 0 0 10px;
         width: 130px; } }
     @media only screen and (min-width: 1300px) {
-      section.work article p {
+      section.work a p {
         padding-right: 100px; } }
-  section.work article.framework {
-    background-image: url('../images/IceEntityShowOff.png');
-    background-size: cover;
-    background-position: center;
+  section.work a.framework {
+    background-image: url("../images/IceEntityShowOff.png");
     width: 65%;
     min-width: 330px; }
     @media only screen and (max-width: 600px) {
-      section.work article.framework {
+      section.work a.framework {
         width: 100%; } }
-  section.work article.game {
-    background-image: url('../images/Game.png');
-    background-size: cover;
-    background-position: center;
-    width: 35%;
-    min-width: 170px; }
+    section.work a.framework p {
+      background-color: rgba(66, 0, 64, 0.42);
+      box-shadow: 1px 1px 10px rgba(66, 0, 64, 0.42); }
+  section.work a.game {
+    background-image: url("../images/Game.png");
+    width: 35%; }
     @media only screen and (max-width: 600px) {
-      section.work article.game {
+      section.work a.game {
         width: 100%; } }
-    section.work article.game p {
-      background-color: rgba(5, 153, 198, 0.57);
-      box-shadow: 1px 1px 10px rgba(5, 153, 198, 0.57); }
-  section.work article.web {
-    background-image: url('../images/Slickrock.png');
-    background-size: cover;
-    background-position: center;
+    section.work a.game p {
+      background-color: rgba(5, 154, 199, 0.57);
+      box-shadow: 1px 1px 10px rgba(5, 154, 199, 0.57); }
+  section.work a.web {
+    background-image: url("../images/Slickrock.png");
     width: 100%; }
-    section.work article.web p {
-      background-color: rgba(21, 198, 5, 0.57);
-      box-shadow: 1px 1px 10px rgba(5, 153, 198, 0.42); }
-
-/*# sourceMappingURL=styles.css.map */
+    section.work a.web p {
+      background-color: rgba(21, 199, 5, 0.57);
+      box-shadow: 1px 1px 10px rgba(21, 199, 5, 0.57); }
+  section.work a:hover {
+    background-position: bottom; }

@@ -6,6 +6,17 @@
 $bg-col: #262829;
 $sep-col: #72d572;
 
+$purple: hsla(302, 100%, 13%, 0.42);
+$blue: hsla(194, 95%, 40%, 0.57);
+$green: hsla(115, 95%, 40%, 0.57);
+
+$breakpoint-one: 700px;
+$breakpoint-two: 600px;
+$breakpoint-three: 1300px;
+
+$block-height: 230px;
+$text-col: #fefefe;
+
 * {
 	box-sizing: border-box;
 }
@@ -17,35 +28,46 @@ body {
 .container {
 	width: 100%;
 	margin: 0 auto;
-	&:before,
-	&:after {
-		content: " ";
-		display: table;
-	}
-
-	&:after {
-		clear: both;
-	}
 }
 
 header {
-	text-align: center;
-	font-family: "Oswald" sans-serif;
-	-webkit-transition: 1s;
-	font-weight: 700;
-	font-size: 72px;
+	transition: 1s;
 	
-	@media only screen and (max-width: 700px) {
-		font-size: 32px;
-	}
+	margin: 0 0;
 	
 	background-color: #111111;
 	
-	margin: 0 auto;
+	text-align: center;
+	font-family: "Oswald" sans-serif;
+	font-weight: 700;
+	font-size: 72px;
+	
+	@media only screen and (max-width: $breakpoint-one) {
+		font-size: 32px;
+	}
 	
 	h1 {
-		color: #fefefe;
-		margin: 0 auto;
+		color: $text-col;
+		margin: 0;
+		
+		span {
+			@media only screen and (min-width: $breakpoint-one){
+				float: right;
+			}
+			margin-right: 15px;
+			a {
+			text-decoration: none;
+
+			color: $text-col;
+
+			&:visited {
+				color: $text-col;
+			}
+			&:hover {
+				text-shadow: 3px 3px #9f9f9f;
+			}
+		}
+	}
 	}
 }
 
@@ -53,7 +75,7 @@ footer {
 	text-align: center;
 	font-family: "Lato" sans-serif;
 	clear: both;
-	color: #fff;
+	color: $text-col;
 	
 	border-style: solid;
 	border-width: 20px;
@@ -87,81 +109,86 @@ footer {
 
 section {
 	&.work {
-		article {
-			
-			-webkit-transition: 1s;
+		a {		
+			transition: 1s;
 			
 			float: left;
 
-			height: 230px;
+			height: $block-height;
 			
-			@media only screen and (min-width: 1300px){
-				height: 470px;
+			@media only screen and (min-width: $breakpoint-three){
+				height: $block-height*1.5;
 			}
 
 			p {
-				-webkit-transition: 1s;
-				
-				font-family: 'Lato', sans-serif;
-				font-weight: 900;
+				transition: 1s;
 				
 				display: inline-block;
-				color: #fff;
-				box-shadow: 1px 1px 10px hsla(302, 100%, 13%, 0.42);
-				margin: 0 0;
+				font-family: 'Lato', sans-serif;
+				font-weight: 900;
+				color: $text-col;
+				
+				margin: 0;
 				padding: 5px 30px 0px 10px; 
-				background-color: hsla(302, 100%, 13%, 0.42);
 				height: 100%;
 				
-				@media only screen and (max-width: 600px) {
+				@media only screen and (max-width: $breakpoint-two) {
 					padding: 5px 0 0 10px;
 					width: 130px;
 				}
 				
-				@media only screen and (min-width: 1300px){
+				@media only screen and (min-width: $breakpoint-three){
 					padding-right: 100px;
 				}
 			}
 
+			background-size: cover;
+			background-position: center;
+			
 			&.framework {
 				background-image: url('../images/IceEntityShowOff.png');
-				background-size: cover;
-				background-position: center;
+
 				width: 65%;
 				min-width: 330px;
 				
-				@media only screen and (max-width: 600px) {
+				@media only screen and (max-width: $breakpoint-two) {
 					width: 100%;
+				}
+				
+				p {
+					background-color: $purple;
+					box-shadow: 1px 1px 10px $purple;
 				}
 			}
 
 			&.game {
 				background-image: url('../images/Game.png');
-				background-size: cover;
-				background-position: center;
+
 				width: 35%;
-				min-width: 170px;
 				
-				@media only screen and (max-width: 600px) {
+				@media only screen and (max-width: $breakpoint-two) {
 					width: 100%;
 				}
 				
 				p {
-					background-color: hsla(194, 95%, 40%, 0.57);
-					box-shadow: 1px 1px 10px hsla(194, 95%, 40%, 0.57);
+					background-color: $blue;
+					box-shadow: 1px 1px 10px $blue;
 				}
 			}
 
 			&.web {
 				background-image: url('../images/Slickrock.png');
-				background-size: cover;
-				background-position: center;
+
 				width: 100%;
 				
 				p {
-					background-color: hsla(115, 95%, 40%, 0.57);
-					box-shadow: 1px 1px 10px hsla(194, 95%, 40%, 0.42);
+					background-color: $green;
+					box-shadow: 1px 1px 10px $green;
 				}
+			}
+			
+			&:hover {
+				background-position: bottom;
 			}
 		}
 	}
