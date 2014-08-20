@@ -111,9 +111,12 @@ footer {
 }
 
 .separator {
+	transition: 1s;
+	
 	width: 100%;
 	display: inline-block;
 	text-align: center;
+	line-height: .5em;
 	
 	font-family: "Lato";
 	font-size: 32px;

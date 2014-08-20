@@ -71,9 +71,12 @@ footer {
   border-right-color: #262829; }
 
 .separator {
+  -webkit-transition: 1s;
+  transition: 1s;
   width: 100%;
   display: inline-block;
   text-align: center;
+  line-height: .5em;
   font-family: "Lato";
   font-size: 32px;
   font-weight: 900;
