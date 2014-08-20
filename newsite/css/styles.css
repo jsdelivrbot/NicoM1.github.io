@@ -122,11 +122,13 @@ section.work a {
         padding-right: 100px; } }
   section.work a.framework {
     background-image: url("../images/IceEntityShowOff.png");
-    width: 65%;
-    min-width: 330px; }
+    width: 65%; }
     @media only screen and (max-width: 600px) {
       section.work a.framework {
         width: 100%; } }
+    @media only screen and (min-width: 600px) {
+      section.work a.framework {
+        min-width: 330px; } }
     section.work a.framework p {
       background-color: rgba(66, 0, 64, 0.42);
       -webkit-box-shadow: 1px 1px 10px rgba(66, 0, 64, 0.42);

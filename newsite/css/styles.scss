@@ -180,10 +180,12 @@ section {
 				background-image: url('../images/IceEntityShowOff.png');
 
 				width: 65%;
-				min-width: 330px;
 				
 				@media only screen and (max-width: $breakpoint-two) {
 					width: 100%;
+				}
+				@media only screen and (min-width: $breakpoint-two){
+					min-width: 330px;
 				}
 				
 				p {
