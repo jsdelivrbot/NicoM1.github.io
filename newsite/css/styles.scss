@@ -13,9 +13,12 @@ $green: hsla(115, 95%, 40%, 0.57);
 $breakpoint-one: 700px;
 $breakpoint-two: 600px;
 $breakpoint-three: 1300px;
+$breakpoint-four: 900px;
 
 $block-height: 230px;
 $text-col: #fefefe;
+$link-col: #3d863d;
+$link-shadow: #3c6520;
 
 * {
 	box-sizing: border-box;
@@ -44,30 +47,52 @@ header {
 	
 	@media only screen and (max-width: $breakpoint-one) {
 		font-size: 32px;
+		margin-bottom: 0px;
 	}
 	
 	h1 {
+		white-space: nowrap;
+		
+		transition: 0.5s;
+		
 		color: $text-col;
-		margin: 0;
+		margin: 0 0;
+		
+		@media only screen and (max-width: $breakpoint-one){
+			line-height: 72px;
+		}
 		
 		span {
-			@media only screen and (min-width: $breakpoint-one){
+			transition: 1s;
+			
+			white-space: nowrap;
+			font-size: 72px;
+			
+			@media only screen and (min-width: $breakpoint-four){
 				float: right;
+				margin-right: 70px;
 			}
+			@media only screen and (max-width: $breakpoint-four){
+				font-size: 48px;
+				margin-top: 0px;
+				margin-bottom: 0px;
+			}
+			
 			margin-right: 15px;
+			
 			a {
-			text-decoration: none;
+				text-decoration: none;
 
-			color: $text-col;
+				color: $sep-col;
 
-			&:visited {
-				color: $text-col;
-			}
-			&:hover {
-				text-shadow: 3px 3px #9f9f9f;
+				&:visited {
+					color: $sep-col;
+				}
+				&:hover {
+					text-shadow: 3px 3px $link-shadow;
+				}
 			}
 		}
-	}
 	}
 }
 
