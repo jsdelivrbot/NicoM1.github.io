@@ -91,6 +91,9 @@ header {
 				&:hover {
 					text-shadow: 3px 3px $link-shadow;
 				}
+				&:active {
+					color: darken($sep-col, 20%);
+				}
 			}
 		}
 	}

@@ -57,6 +57,8 @@ header {
           color: #72d572; }
         header h1 span a:hover {
           text-shadow: 3px 3px #3c6520; }
+        header h1 span a:active {
+          color: #34ad34; }
 
 footer {
   text-align: center;
