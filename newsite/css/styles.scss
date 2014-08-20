@@ -46,8 +46,8 @@ header {
 	font-size: 72px;
 	
 	@media only screen and (max-width: $breakpoint-one) {
-		font-size: 32px;
-		margin-bottom: 0px;
+		font-size: 28px;
+		padding: 10px 10px;
 	}
 	
 	h1 {
@@ -73,7 +73,7 @@ header {
 				margin-right: 70px;
 			}
 			@media only screen and (max-width: $breakpoint-four){
-				font-size: 48px;
+				font-size: 40px;
 				margin-top: 0px;
 				margin-bottom: 0px;
 			}

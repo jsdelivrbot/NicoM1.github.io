@@ -24,8 +24,8 @@ header {
   font-size: 72px; }
   @media only screen and (max-width: 700px) {
     header {
-      font-size: 32px;
-      margin-bottom: 0px; } }
+      font-size: 28px;
+      padding: 10px 10px; } }
   header h1 {
     white-space: nowrap;
     -webkit-transition: 0.5s;
@@ -47,7 +47,7 @@ header {
           margin-right: 70px; } }
       @media only screen and (max-width: 900px) {
         header h1 span {
-          font-size: 48px;
+          font-size: 40px;
           margin-top: 0px;
           margin-bottom: 0px; } }
       header h1 span a {
