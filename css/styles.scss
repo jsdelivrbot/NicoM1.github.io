@@ -36,16 +36,18 @@ body {
 a {
 	transition: 0.2s;
 	text-decoration: none;
-	color: $text-col;
-	&:visited {
+	header {
 		color: $text-col;
-	}
-	&:hover {
-		color: $text-col;
-		text-shadow: 3px 3px darken($text-col, 20%);;
-	}
-	&:active {
-		color: darken($sep-col, 20%);
+		&:visited {
+			color: $text-col;
+		}
+		&:hover {
+			color: $text-col;
+			text-shadow: 3px 3px darken($text-col, 20%);;
+		}
+		&:active {
+			color: darken($sep-col, 20%);
+		}
 	}
 }
 
