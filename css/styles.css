@@ -37,7 +37,7 @@ header {
       color: #fefefe;
       text-shadow: 3px 3px #cbcbcb; }
     header a:active {
-      color: #34ad34; }
+      color: #cbcbcb; }
   header h1 {
     white-space: nowrap;
     -webkit-transition: 0.5s;

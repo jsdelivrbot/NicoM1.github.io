@@ -62,7 +62,7 @@ header {
 			text-shadow: 3px 3px darken($text-col, 20%);;
 		}
 		&:active {
-			color: darken($sep-col, 20%);
+			color: darken($text-col, 20%);
 		}
 	}
 	
