@@ -16,10 +16,12 @@ body {
 a {
   -webkit-transition: 0.2s;
   transition: 0.2s;
-  text-decoration: none; }
+  text-decoration: none;
+  color: #fefefe; }
   a:visited {
     color: #fefefe; }
   a:hover {
+    color: #fefefe;
     text-shadow: 3px 3px #cbcbcb; }
   a:active {
     color: #34ad34; }

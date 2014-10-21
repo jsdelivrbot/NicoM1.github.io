@@ -36,10 +36,12 @@ body {
 a {
 	transition: 0.2s;
 	text-decoration: none;
+	color: $text-col;
 	&:visited {
 		color: $text-col;
 	}
 	&:hover {
+		color: $text-col;
 		text-shadow: 3px 3px darken($text-col, 20%);;
 	}
 	&:active {
