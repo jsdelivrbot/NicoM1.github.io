@@ -13,20 +13,6 @@ body {
   width: 100%;
   margin: 0 auto; }
 
-a {
-  -webkit-transition: 0.2s;
-  transition: 0.2s;
-  text-decoration: none; }
-  a header {
-    color: #fefefe; }
-    a header:visited {
-      color: #fefefe; }
-    a header:hover {
-      color: #fefefe;
-      text-shadow: 3px 3px #cbcbcb; }
-    a header:active {
-      color: #34ad34; }
-
 header {
   -webkit-transition: 1s;
   transition: 1s;
@@ -40,6 +26,18 @@ header {
     header {
       font-size: 28px;
       padding: 10px 10px; } }
+  header a {
+    -webkit-transition: 0.2s;
+    transition: 0.2s;
+    text-decoration: none;
+    color: #fefefe; }
+    header a:visited {
+      color: #fefefe; }
+    header a:hover {
+      color: #fefefe;
+      text-shadow: 3px 3px #cbcbcb; }
+    header a:active {
+      color: #34ad34; }
   header h1 {
     white-space: nowrap;
     -webkit-transition: 0.5s;
