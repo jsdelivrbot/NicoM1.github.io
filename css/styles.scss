@@ -33,6 +33,20 @@ body {
 	margin: 0 auto;
 }
 
+a {
+	transition: 0.2s;
+	text-decoration: none;
+	&:visited {
+		color: $text-col;
+	}
+	&:hover {
+		text-shadow: 3px 3px darken($text-col, 20%);;
+	}
+	&:active {
+		color: darken($sep-col, 20%);
+	}
+}
+
 header {
 	transition: 1s;
 	
@@ -195,9 +209,24 @@ section {
 					box-shadow: 1px 1px 10px $purple;
 				}
 			}
+			
+			&.uof {
+				background-image: url('../images/Game.png');
+
+				width: 35%;
+				
+				@media only screen and (max-width: $breakpoint-two) {
+					width: 100%;
+				}
+				
+				p {
+					background-color: $blue;
+					box-shadow: 1px 1px 10px $blue;
+				}
+			}
 
 			&.game {
-				background-image: url('../images/Game.png');
+				background-image: url('../images/done.gif');
 
 				width: 35%;
 				
@@ -219,6 +248,24 @@ section {
 				p {
 					background-color: $green;
 					box-shadow: 1px 1px 10px $green;
+				}
+			}
+			
+			&.bz {
+				background-image: url('../images/done.gif');
+
+				width: 65%;
+				
+				@media only screen and (max-width: $breakpoint-two) {
+					width: 100%;
+				}
+				@media only screen and (min-width: $breakpoint-two){
+					min-width: 330px;
+				}
+				
+				p {
+					background-color: $purple;
+					box-shadow: 1px 1px 10px $purple;
 				}
 			}
 			

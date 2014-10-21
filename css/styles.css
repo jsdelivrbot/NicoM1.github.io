@@ -13,6 +13,17 @@ body {
   width: 100%;
   margin: 0 auto; }
 
+a {
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+  text-decoration: none; }
+  a:visited {
+    color: #fefefe; }
+  a:hover {
+    text-shadow: 3px 3px #cbcbcb; }
+  a:active {
+    color: #34ad34; }
+
 header {
   -webkit-transition: 1s;
   transition: 1s;
@@ -133,8 +144,18 @@ section.work a {
       background-color: rgba(66, 0, 64, 0.42);
       -webkit-box-shadow: 1px 1px 10px rgba(66, 0, 64, 0.42);
       box-shadow: 1px 1px 10px rgba(66, 0, 64, 0.42); }
-  section.work a.game {
+  section.work a.uof {
     background-image: url("../images/Game.png");
+    width: 35%; }
+    @media only screen and (max-width: 600px) {
+      section.work a.uof {
+        width: 100%; } }
+    section.work a.uof p {
+      background-color: rgba(5, 154, 199, 0.57);
+      -webkit-box-shadow: 1px 1px 10px rgba(5, 154, 199, 0.57);
+      box-shadow: 1px 1px 10px rgba(5, 154, 199, 0.57); }
+  section.work a.game {
+    background-image: url("../images/done.gif");
     width: 35%; }
     @media only screen and (max-width: 600px) {
       section.work a.game {
@@ -150,5 +171,18 @@ section.work a {
       background-color: rgba(21, 199, 5, 0.57);
       -webkit-box-shadow: 1px 1px 10px rgba(21, 199, 5, 0.57);
       box-shadow: 1px 1px 10px rgba(21, 199, 5, 0.57); }
+  section.work a.bz {
+    background-image: url("../images/done.gif");
+    width: 65%; }
+    @media only screen and (max-width: 600px) {
+      section.work a.bz {
+        width: 100%; } }
+    @media only screen and (min-width: 600px) {
+      section.work a.bz {
+        min-width: 330px; } }
+    section.work a.bz p {
+      background-color: rgba(66, 0, 64, 0.42);
+      -webkit-box-shadow: 1px 1px 10px rgba(66, 0, 64, 0.42);
+      box-shadow: 1px 1px 10px rgba(66, 0, 64, 0.42); }
   section.work a:hover {
     background-position: bottom; }
