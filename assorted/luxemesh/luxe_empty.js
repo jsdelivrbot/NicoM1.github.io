@@ -490,6 +490,18 @@ Main.prototype = $extend(luxe.Game.prototype,{
 	,onmousemove: function(event) {
 		this.mousePos = event.pos;
 	}
+	,onmousedown: function(event) {
+		if(event.button == luxe.MouseButton.right) {
+			var i = this.checkVert(this.mousePos.x,this.mousePos.y,10);
+			if(i != -1) {
+				this.geo.remove(this.verts[i]);
+				HxOverrides.remove(this.verts,this.verts[i]);
+				this.drawn[i].set_visible(false);
+				this.drawn[i] = null;
+				HxOverrides.remove(this.drawn,this.drawn[i]);
+			}
+		}
+	}
 	,update: function(dt) {
 		var pressed = Luxe.input.mousedown(1);
 		var radius = 10;
@@ -528,6 +540,16 @@ Main.prototype = $extend(luxe.Game.prototype,{
 		var v1 = new phoenix.geometry.Vertex(new phoenix.Vector(x,y),phoenix.Color.random());
 		this.verts.push(v1);
 		this.geo.add(v1);
+	}
+	,checkVert: function(x,y,radius) {
+		var _g1 = 0;
+		var _g = this.verts.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var v = this.verts[i];
+			if(Math.abs(v.pos.x - x) < radius && Math.abs(v.pos.y - y) < radius) return i;
+		}
+		return -1;
 	}
 	,__class__: Main
 });
