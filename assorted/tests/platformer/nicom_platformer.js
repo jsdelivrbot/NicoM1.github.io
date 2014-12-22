@@ -1345,7 +1345,7 @@ var Player = function() {
 	this._jumpMargin = 0.1;
 	this._jumpHeight = 11.0;
 	this._airFric = 30;
-	this._groudFric = 80;
+	this._groudFric = 20;
 	this._airAccel = 15.0;
 	this._groundAccel = 45.0;
 	this._vMax = new phoenix.Vector(6.5,10.0);
@@ -1469,7 +1469,7 @@ Player.prototype = $extend(luxe.Sprite.prototype,{
 		}
 		if((cLeft || cRight) && this.vY > 0) {
 			if(cLeft) this.set_flipx(true); else this.set_flipx(false);
-			this._anim.set_animation("wallslide");
+			if(this._anim.get_animation() != "wallslide") this._anim.set_animation("wallslide");
 			this.vY = this._approachValue(this.vY,this._vMax.y,this._gravSlide);
 		} else this.vY = this._approachValue(this.vY,this._vMax.y,this._gravNorm);
 		if(!this._sticking) {
@@ -1488,7 +1488,9 @@ Player.prototype = $extend(luxe.Sprite.prototype,{
 			}
 			if(doFric) {
 				this.vX = this._approachValue(this.vX,0,tempFric);
-				if(onGround) this._anim.set_animation("idle");
+				if(onGround) {
+					if(this.vX != 0) this._anim.set_animation("slide"); else if(this._anim.get_animation() != "idle") this._anim.set_animation("idle");
+				}
 			} else if(onGround && this._anim.get_animation() != "run") this._anim.set_animation("run");
 		}
 		if(!onGround && iJump) {
@@ -1589,7 +1591,7 @@ Player.prototype = $extend(luxe.Sprite.prototype,{
 		if(start < end) return Math.min(start + shift * Luxe.core.delta_time,end); else return Math.max(start - shift * Luxe.core.delta_time,end);
 	}
 	,_uTrace: function(v) {
-		if(Math.random() < 0.1) haxe.Log.trace(v,{ fileName : "Player.hx", lineNumber : 464, className : "Player", methodName : "_uTrace"});
+		if(Math.random() < 0.1) haxe.Log.trace(v,{ fileName : "Player.hx", lineNumber : 471, className : "Player", methodName : "_uTrace"});
 	}
 	,init: function() {
 		this._listen("touchdown",$bind(this,this.ontouchdown),true);
