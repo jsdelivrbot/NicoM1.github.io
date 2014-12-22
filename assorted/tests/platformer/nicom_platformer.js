@@ -459,18 +459,13 @@ Main.prototype = $extend(luxe.Game.prototype,{
 	}
 	,ready: function() {
 		this._setUpCamera();
-		Luxe.renderer.clear_color = new phoenix.Color(0.6,0.6,0.6);
+		Luxe.renderer.clear_color = new phoenix.Color(0.36862745098039218,0.36078431372549019,0.30980392156862746);
 		Luxe.renderer.set_vsync(true);
 		this._load();
 		this._editor = new level.LevelEditor();
 	}
 	,_setUpCamera: function() {
-		var scaleX = Luxe.get_screen().w / this._defaultX;
-		var scaleY = Luxe.get_screen().h / this._defaultY;
-		Luxe.camera.set_size(new phoenix.Vector(Luxe.get_screen().w / scaleX,Luxe.get_screen().h / scaleY));
-		Luxe.camera.set_size_mode(luxe.SizeMode.fit);
-		Luxe.draw.line({ p0 : new phoenix.Vector(0,0), p1 : new phoenix.Vector(0,Luxe.get_screen().h)});
-		Luxe.draw.line({ p0 : new phoenix.Vector(Luxe.camera.get_size().x,0), p1 : new phoenix.Vector(Luxe.camera.get_size().x,Luxe.get_screen().h)});
+		Luxe.camera.set_zoom(2.0);
 	}
 	,_load: function() {
 		var json = Luxe.loadJSON("assets/files/parcel.json");
@@ -480,7 +475,7 @@ Main.prototype = $extend(luxe.Game.prototype,{
 		parcel.load();
 	}
 	,_assetsLoaded: function(_) {
-		haxe.Log.trace("loaded",{ fileName : "Main.hx", lineNumber : 69, className : "Main", methodName : "_assetsLoaded"});
+		haxe.Log.trace("loaded",{ fileName : "Main.hx", lineNumber : 70, className : "Main", methodName : "_assetsLoaded"});
 		new Player();
 	}
 	,onkeyup: function(e) {
@@ -1359,12 +1354,14 @@ var Player = function() {
 	this.vY = 0.0;
 	this.vX = 0.0;
 	this.m = 75.0;
+	this.colHeight = 40;
+	this.colWidth = 13;
 	var texture = Luxe.loadTexture("assets/art/character/run_strip.png");
 	texture.set_filter(phoenix.FilterType.nearest);
 	luxe.Sprite.call(this,{ name : "player", texture : texture, size : new phoenix.Vector(37,40)});
 	this._createAnim();
-	this.get_pos().set_y(Luxe.camera.get_size().y - this.size.y / 2);
-	this._collisionShape = luxe.collision.shapes.Polygon.rectangle(this.get_pos().x,this.get_pos().y,13,40);
+	this.get_pos().set_x(Luxe.get_screen().w / 2 - this.colWidth / 2);
+	this._collisionShape = luxe.collision.shapes.Polygon.rectangle(this.get_pos().x,this.get_pos().y,this.colWidth,this.colHeight);
 	this._setUpShapes();
 	this._drawer = new luxe.collision.ShapeDrawerLuxe();
 	var _g = 0;
@@ -1374,6 +1371,9 @@ var Player = function() {
 		++_g;
 		this._drawer.drawShape(o);
 	}
+	this._leftEdge = Luxe.camera.screen_point_to_world(new phoenix.Vector()).x | 0;
+	this._rightEdge = Luxe.camera.screen_point_to_world(new phoenix.Vector(Luxe.get_screen().w)).x | 0;
+	this._floorEdge = Luxe.camera.screen_point_to_world(new phoenix.Vector(0,Luxe.get_screen().h)).y | 0;
 };
 Player.__name__ = true;
 Player.__super__ = luxe.Sprite;
@@ -1387,10 +1387,6 @@ Player.prototype = $extend(luxe.Sprite.prototype,{
 	}
 	,_setUpShapes: function() {
 		this._otherShapes = [];
-		this._otherShapes.push(luxe.collision.shapes.Polygon.square(200,this.get_pos().y,this.size.x));
-		this._otherShapes.push(luxe.collision.shapes.Polygon.square(200 + this.size.x,this.get_pos().y - this.size.y,this.size.x));
-		this._otherShapes.push(luxe.collision.shapes.Polygon.rectangle(200 + this.size.x * 2,this.get_pos().y - this.size.y * 4,this.size.x,this.size.y * 5));
-		this._otherShapes.push(luxe.collision.shapes.Polygon.rectangle(200 + this.size.x * 10,this.get_pos().y - this.size.y * 4,this.size.x * 5,this.size.y));
 	}
 	,update: function(dt) {
 		if(dt > 0.1) dt = 0.1;
@@ -1472,6 +1468,7 @@ Player.prototype = $extend(luxe.Sprite.prototype,{
 			});
 		}
 		if((cLeft || cRight) && this.vY > 0) {
+			if(cLeft) this.set_flipx(true); else this.set_flipx(false);
 			this._anim.set_animation("wallslide");
 			this.vY = this._approachValue(this.vY,this._vMax.y,this._gravSlide);
 		} else this.vY = this._approachValue(this.vY,this._vMax.y,this._gravNorm);
@@ -1561,16 +1558,16 @@ Player.prototype = $extend(luxe.Sprite.prototype,{
 		}
 	}
 	,_collideScreen: function() {
-		if(this.get_pos().y + this.size.y / 2 > Luxe.camera.get_size().y) {
+		if(this.get_pos().y + this.colHeight / 2 > this._floorEdge) {
 			this.vY = 0;
-			this.get_pos().set_y(Luxe.camera.get_size().y - this.size.y / 2);
+			this.get_pos().set_y(this._floorEdge - this.colHeight / 2);
 		}
-		if(this.get_pos().x + this.size.x / 2 > Luxe.camera.get_size().x) {
+		if(this.get_pos().x + this.colWidth / 2 > this._rightEdge) {
 			this.vX = 0;
-			this.get_pos().set_x(Luxe.camera.get_size().x - this.size.x / 2);
-		} else if(this.get_pos().x - this.size.x / 2 < 0) {
+			this.get_pos().set_x(this._rightEdge - this.colWidth / 2);
+		} else if(this.get_pos().x - this.colWidth / 2 < this._leftEdge) {
 			this.vX = 0;
-			this.get_pos().set_x(this.size.x / 2);
+			this.get_pos().set_x(this._leftEdge + this.colWidth / 2);
 		}
 	}
 	,_sign: function(v) {
@@ -1578,12 +1575,12 @@ Player.prototype = $extend(luxe.Sprite.prototype,{
 		if(v < 0) return -1; else return 1;
 	}
 	,_onGround: function() {
-		if(this.get_pos().y + this.size.y / 2 >= Luxe.camera.get_size().y) return true;
+		if(this.get_pos().y + this.size.y / 2 >= this._floorEdge) return true;
 		return this._checkCollision(0,1);
 	}
 	,_checkCollision: function(offsetX,offsetY) {
-		if(this.get_pos().x + offsetX - this.size.x / 2 < 0) return true;
-		if(this.get_pos().x + offsetX + this.size.x / 2 > Luxe.camera.get_size().x) return true;
+		if(this.get_pos().x + offsetX - this.colWidth / 2 < this._leftEdge) return true;
+		if(this.get_pos().x + offsetX + this.colWidth / 2 > this._rightEdge) return true;
 		this._collisionShape.set_x(this.get_pos().x + offsetX);
 		this._collisionShape.set_y(this.get_pos().y + offsetY);
 		return luxe.collision.Collision.testShapes(this._collisionShape,this._otherShapes).length > 0;
@@ -1592,7 +1589,7 @@ Player.prototype = $extend(luxe.Sprite.prototype,{
 		if(start < end) return Math.min(start + shift * Luxe.core.delta_time,end); else return Math.max(start - shift * Luxe.core.delta_time,end);
 	}
 	,_uTrace: function(v) {
-		if(Math.random() < 0.1) haxe.Log.trace(v,{ fileName : "Player.hx", lineNumber : 450, className : "Player", methodName : "_uTrace"});
+		if(Math.random() < 0.1) haxe.Log.trace(v,{ fileName : "Player.hx", lineNumber : 464, className : "Player", methodName : "_uTrace"});
 	}
 	,init: function() {
 		this._listen("touchdown",$bind(this,this.ontouchdown),true);
@@ -2681,12 +2678,10 @@ js.html._CanvasElement.CanvasUtil.getContextWebGL = function(canvas,attribs) {
 };
 var level = {};
 level.LevelEditor = function() {
-	this._rect = new level.LevelRect(0,0,100,100);
 };
 level.LevelEditor.__name__ = true;
 level.LevelEditor.prototype = {
 	update: function() {
-		this._rect.update();
 	}
 	,__class__: level.LevelEditor
 };
