@@ -1785,8 +1785,8 @@ level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
 		if(Luxe.input.mousedown(1)) {
 			if(this._mouseInside() || this._moving || this._resizing) {
 				this._geom.color.set_g(0);
-				var delta = this._lastMouse.subtract(Luxe.mouse);
-				var mousePos = phoenix.Vector.Subtract(Luxe.mouse,this.get_position());
+				var delta = this._lastMouse.subtract(Luxe.camera.screen_point_to_world(Luxe.mouse));
+				var mousePos = phoenix.Vector.Subtract(Luxe.camera.screen_point_to_world(Luxe.mouse),this.get_position());
 				if(!this._resizing && (mousePos.x < this.w - 10 || mousePos.y < this.h - 10)) {
 					this._moving = true;
 					this.changePos(-delta.x,-delta.y);
@@ -1800,7 +1800,7 @@ level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
 			this._moving = false;
 			this._resizing = false;
 		}
-		this._lastMouse.copy_from(Luxe.mouse);
+		this._lastMouse.copy_from(Luxe.camera.screen_point_to_world(Luxe.mouse));
 	}
 	,_resetVisual: function() {
 		this._geom.transform.local.pos.set_x(this.get_x());
@@ -1815,7 +1815,7 @@ level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
 		this._geom.vertices[6].pos.set_y(this.h);
 	}
 	,_mouseInside: function() {
-		var $is = luxe.collision.Collision.pointInPoly(Luxe.mouse,this);
+		var $is = luxe.collision.Collision.pointInPoly(Luxe.camera.screen_point_to_world(Luxe.mouse),this);
 		return $is;
 	}
 	,toggleDebug: function() {
@@ -17622,6 +17622,7 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 		var iLeft = Luxe.input.keydown(snow.input.Keycodes.key_a) || this._touchMoveLeft || this._gamepadLeft;
 		var iRight = Luxe.input.keydown(snow.input.Keycodes.key_d) || this._touchMoveRight || this._gamepadRight;
 		var iJump = Luxe.input.keypressed(snow.input.Keycodes.space) || this._touchJump || this._gamepadJump;
+		var iJumpReleased = Luxe.input.keyreleased(snow.input.Keycodes.space);
 		var cLeft = this._checkCollision(-1,0);
 		var cRight = this._checkCollision(1,0);
 		if(onGround) {
@@ -17689,6 +17690,9 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 				this._jumpMarginTimer = 0;
 				this._anim.set_animation("jump");
 			}
+		}
+		if(!onGround && iJumpReleased) {
+			if(this.vY < 0) this.vY *= 0.5;
 		}
 		if(!onGround && !cLeft && !cRight && this.vY > 0) this._anim.set_animation("fall");
 		this._jumpMarginTimer -= dt;
