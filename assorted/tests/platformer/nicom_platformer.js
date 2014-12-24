@@ -1758,6 +1758,8 @@ level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
 	}
 	,deselect: function() {
 		this.selected = false;
+		this._moving = false;
+		this._resizing = false;
 	}
 	,toggleSelected: function() {
 		this.selected = !this.selected;
@@ -1789,6 +1791,10 @@ level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
 		this._resetVisual();
 	}
 	,update: function() {
+		if(Luxe.input.mousereleased(1)) {
+			this._moving = false;
+			this._resizing = false;
+		}
 		this._makeChanges();
 	}
 	,_makeChanges: function() {
@@ -1798,10 +1804,10 @@ level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
 			if(Luxe.input.mousedown(1)) {
 				var delta = this._lastMouse.subtract(Luxe.camera.screen_point_to_world(Luxe.mouse));
 				var mousePos = phoenix.Vector.Subtract(Luxe.camera.screen_point_to_world(Luxe.mouse),this.get_position());
-				if(!this._resizing && (mousePos.x < this.w - 10 || mousePos.y < this.h - 10 || this.selected)) {
+				if(!this._resizing && (mousePos.x < this.w - 10 || mousePos.y < this.h - 10 || level.Level._selectedCount > 1)) {
 					this._moving = true;
 					this.changePos(-delta.x,-delta.y);
-				} else if(!this._moving && !this.selected) {
+				} else if(!this._moving && level.Level._selectedCount == 1) {
 					this._resizing = true;
 					this.changeSize(-delta.x,-delta.y);
 				}
@@ -1835,7 +1841,6 @@ level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
 	,__class__: level.Collider
 });
 level.Level = function() {
-	this._selectedCount = 0;
 	this._editMode = true;
 	level.Level.colliders = new Array();
 	this.visuals = new Array();
@@ -1847,7 +1852,7 @@ level.Level.prototype = {
 		if(this._editMode) {
 			var safe = false;
 			if(Luxe.input.mousepressed(3)) this._addColider(Luxe.mouse.x,Luxe.mouse.y,32,32);
-			if(Luxe.input.keydown(snow.input.Keycodes.key_q) || this._selectedCount == 0) {
+			if(Luxe.input.keydown(snow.input.Keycodes.key_q) || level.Level._selectedCount == 0) {
 				if(Luxe.input.mousepressed(1)) {
 					var _g = 0;
 					var _g1 = level.Level.colliders;
@@ -1857,7 +1862,7 @@ level.Level.prototype = {
 						if(c.mouseInside()) {
 							c.toggleSelected();
 							safe = true;
-							if(c.selected) this._selectedCount++; else this._selectedCount--;
+							if(c.selected) level.Level._selectedCount++; else level.Level._selectedCount--;
 						}
 					}
 				}
@@ -1877,7 +1882,7 @@ level.Level.prototype = {
 					while(_g3 < _g12.length) {
 						var c2 = _g12[_g3];
 						++_g3;
-						if(c2.selected) this._selectedCount--;
+						if(c2.selected) level.Level._selectedCount--;
 						c2.deselect();
 					}
 				}
@@ -22959,6 +22964,7 @@ haxe.crypto.Base64.BYTES = haxe.io.Bytes.ofString(haxe.crypto.Base64.CHARS);
 haxe.ds.ObjectMap.count = 0;
 input.XBoxButtonMap.GAMEPAD_A = 0;
 input.XBoxButtonMap.GAMEPAD_DEADZONE = 0.3;
+level.Level._selectedCount = 0;
 luxe.Core.core_tag_update = "real dt";
 luxe.Core.core_tag_renderdt = "render dt";
 luxe.Core.game_tag_update = "game.update";
