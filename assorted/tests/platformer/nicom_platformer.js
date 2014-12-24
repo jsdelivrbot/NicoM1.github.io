@@ -17692,7 +17692,7 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 			}
 		}
 		if(!onGround && iJumpReleased) {
-			if(this.vY < 0) this.vY *= 0.5;
+			if(this.vY < 0) this.vY *= 0.35;
 		}
 		if(!onGround && !cLeft && !cRight && this.vY > 0) this._anim.set_animation("fall");
 		this._jumpMarginTimer -= dt;
