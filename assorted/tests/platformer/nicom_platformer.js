@@ -1738,6 +1738,7 @@ luxe.collision.shapes.Polygon.prototype = $extend(luxe.collision.shapes.Shape.pr
 });
 var level = {};
 level.Collider = function(x_,y_,w_,h_) {
+	this.selected = false;
 	this._resizing = false;
 	this._moving = false;
 	var rect = luxe.collision.shapes.Polygon.rectangle(x_,y_,w_,h_,false);
@@ -1752,7 +1753,16 @@ level.Collider = function(x_,y_,w_,h_) {
 level.Collider.__name__ = true;
 level.Collider.__super__ = luxe.collision.shapes.Polygon;
 level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
-	changePos: function(x_,y_,offset_) {
+	select: function() {
+		this.selected = true;
+	}
+	,deselect: function() {
+		this.selected = false;
+	}
+	,toggleSelected: function() {
+		this.selected = !this.selected;
+	}
+	,changePos: function(x_,y_,offset_) {
 		if(offset_ == null) offset_ = true;
 		if(offset_) {
 			x_ += this.get_x();
@@ -1782,15 +1792,16 @@ level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
 		this._makeChanges();
 	}
 	,_makeChanges: function() {
-		if(Luxe.input.mousedown(1)) {
-			if(this._mouseInside() || this._moving || this._resizing) {
-				this._geom.color.set_g(0);
+		if(this.selected) this._moving = false;
+		if(this._moving || this._resizing || this.selected) {
+			this._geom.color.set_g(0);
+			if(Luxe.input.mousedown(1)) {
 				var delta = this._lastMouse.subtract(Luxe.camera.screen_point_to_world(Luxe.mouse));
 				var mousePos = phoenix.Vector.Subtract(Luxe.camera.screen_point_to_world(Luxe.mouse),this.get_position());
-				if(!this._resizing && (mousePos.x < this.w - 10 || mousePos.y < this.h - 10)) {
+				if(!this._resizing && (mousePos.x < this.w - 10 || mousePos.y < this.h - 10 || this.selected)) {
 					this._moving = true;
 					this.changePos(-delta.x,-delta.y);
-				} else if(!this._moving) {
+				} else if(!this._moving && !this.selected) {
 					this._resizing = true;
 					this.changeSize(-delta.x,-delta.y);
 				}
@@ -1814,7 +1825,7 @@ level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
 		this._geom.vertices[5].pos.set_y(this.h);
 		this._geom.vertices[6].pos.set_y(this.h);
 	}
-	,_mouseInside: function() {
+	,mouseInside: function() {
 		var $is = luxe.collision.Collision.pointInPoly(Luxe.camera.screen_point_to_world(Luxe.mouse),this);
 		return $is;
 	}
@@ -1824,6 +1835,7 @@ level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
 	,__class__: level.Collider
 });
 level.Level = function() {
+	this._selectedCount = 0;
 	this._editMode = true;
 	level.Level.colliders = new Array();
 	this.visuals = new Array();
@@ -1833,13 +1845,49 @@ level.Level.__name__ = true;
 level.Level.prototype = {
 	update: function() {
 		if(this._editMode) {
+			var safe = false;
 			if(Luxe.input.mousepressed(3)) this._addColider(Luxe.mouse.x,Luxe.mouse.y,32,32);
-			var _g = 0;
-			var _g1 = level.Level.colliders;
-			while(_g < _g1.length) {
-				var c = _g1[_g];
-				++_g;
-				c.update();
+			if(Luxe.input.keydown(snow.input.Keycodes.key_q) || this._selectedCount == 0) {
+				if(Luxe.input.mousepressed(1)) {
+					var _g = 0;
+					var _g1 = level.Level.colliders;
+					while(_g < _g1.length) {
+						var c = _g1[_g];
+						++_g;
+						if(c.mouseInside()) {
+							c.toggleSelected();
+							safe = true;
+							if(c.selected) this._selectedCount++; else this._selectedCount--;
+						}
+					}
+				}
+			}
+			if(Luxe.input.mousepressed(1) && !safe) {
+				var deselect = true;
+				var _g2 = 0;
+				var _g11 = level.Level.colliders;
+				while(_g2 < _g11.length) {
+					var c1 = _g11[_g2];
+					++_g2;
+					if(c1.selected && c1.mouseInside()) deselect = false;
+				}
+				if(deselect) {
+					var _g3 = 0;
+					var _g12 = level.Level.colliders;
+					while(_g3 < _g12.length) {
+						var c2 = _g12[_g3];
+						++_g3;
+						if(c2.selected) this._selectedCount--;
+						c2.deselect();
+					}
+				}
+			}
+			var _g4 = 0;
+			var _g13 = level.Level.colliders;
+			while(_g4 < _g13.length) {
+				var c3 = _g13[_g4];
+				++_g4;
+				c3.update();
 			}
 		}
 	}
@@ -1862,7 +1910,7 @@ level.Level.prototype = {
 		}
 	}
 	,saveJSON: function(path) {
-		haxe.Log.trace("save only available on desktop",{ fileName : "Level.hx", lineNumber : 61, className : "level.Level", methodName : "saveJSON"});
+		haxe.Log.trace("save only available on desktop",{ fileName : "Level.hx", lineNumber : 98, className : "level.Level", methodName : "saveJSON"});
 	}
 	,_makeJSON: function() {
 		var json = { visuals : new Array(), colliders : new Array()};
