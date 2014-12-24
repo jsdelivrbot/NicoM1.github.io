@@ -1881,7 +1881,9 @@ level.Level.prototype = {
 		level.Level.colliders.push(collider);
 	}
 	,_addVisual: function(x,y,w,h,art) {
-		var visual = new luxe.Sprite({ texture : Luxe.loadTexture(art), pos : new phoenix.Vector(x + w / 2,y + h / 2), size : new phoenix.Vector(w,h), depth : -1});
+		var texture = Luxe.loadTexture(art);
+		texture.set_filter(phoenix.FilterType.nearest);
+		var visual = new luxe.Sprite({ texture : texture, pos : new phoenix.Vector(x + w / 2,y + h / 2), size : new phoenix.Vector(w,h), depth : -1});
 		this.visuals.push(visual);
 	}
 	,toggleEdit: function() {
