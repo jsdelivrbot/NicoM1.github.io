@@ -1866,6 +1866,7 @@ level.Level.prototype = {
 				this._enableVisualMode();
 				return;
 			}
+			if(Luxe.input.keypressed(snow.input.Keycodes.key_l)) this._loadJSONWeb();
 			var safe = false;
 			if(Luxe.input.mousepressed(3)) {
 				var pos = Luxe.camera.screen_point_to_world(Luxe.mouse);
@@ -1984,12 +1985,53 @@ level.Level.prototype = {
 			this._addColider(c.x,c.y,c.w,c.h);
 		}
 	}
+	,_loadJSONWeb: function() {
+		this._reset();
+		var jsonS = window.prompt("Insert Level-Code", "paste level-code here.");
+		var json = JSON.parse(jsonS);
+		haxe.Log.trace("json",{ fileName : "Level.hx", lineNumber : 191, className : "level.Level", methodName : "_loadJSONWeb", customParams : [json]});
+		var map = json;
+		var _g = 0;
+		var _g1 = map.visuals;
+		while(_g < _g1.length) {
+			var v = _g1[_g];
+			++_g;
+			this._addVisual(v.x,v.y,v.w,v.h,v.art);
+		}
+		var _g2 = 0;
+		var _g11 = map.colliders;
+		while(_g2 < _g11.length) {
+			var c = _g11[_g2];
+			++_g2;
+			this._addColider(c.x,c.y,c.w,c.h);
+		}
+	}
+	,_reset: function() {
+		var _g = 0;
+		var _g1 = level.Level.colliders;
+		while(_g < _g1.length) {
+			var c = _g1[_g];
+			++_g;
+			c.destroy();
+		}
+		var _g2 = 0;
+		var _g11 = this.visuals;
+		while(_g2 < _g11.length) {
+			var v = _g11[_g2];
+			++_g2;
+			v.destroy();
+		}
+		level.Level.colliders = [];
+		this.visuals = [];
+	}
 	,_loadBrushes: function() {
 		var json = Luxe.loadJSON("assets/files/brushes.json");
 		this._artChunks = json.json.brushes;
 	}
 	,saveJSON: function(path) {
-		haxe.Log.trace("save only available on desktop",{ fileName : "Level.hx", lineNumber : 195, className : "level.Level", methodName : "saveJSON"});
+		haxe.Log.trace("attempting save",{ fileName : "Level.hx", lineNumber : 221, className : "level.Level", methodName : "saveJSON"});
+		var json = JSON.stringify(this._makeJSON(),null,"\t");
+		window.prompt("Copy to clipboard: Ctrl+C, Enter", json);
 	}
 	,_makeJSON: function() {
 		var json = { visuals : new Array(), colliders : new Array()};
