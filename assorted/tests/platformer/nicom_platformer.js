@@ -1842,11 +1842,11 @@ level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
 });
 level.Level = function() {
 	this._selectedArt = 0;
-	this._artChunks = [{ art : "assets/art/stamp.png", w : 214, h : 252},{ art : "assets/art/mockup.png", w : 960, h : 640}];
 	this._visualMode = false;
 	this._editMode = true;
 	level.Level.colliders = new Array();
 	this.visuals = new Array();
+	this._loadBrushes();
 	this._brush = new luxe.Sprite({ texture : Luxe.loadTexture(this._artChunks[this._selectedArt].art), size : new phoenix.Vector(this._artChunks[this._selectedArt].w,this._artChunks[this._selectedArt].h)});
 	this._brush.color.a = 0.5;
 	this._brush.set_visible(false);
@@ -1968,8 +1968,12 @@ level.Level.prototype = {
 			this._addColider(c.x,c.y,c.w,c.h);
 		}
 	}
+	,_loadBrushes: function() {
+		var json = Luxe.loadJSON("assets/files/brushes.json");
+		this._artChunks = json.json.brushes;
+	}
 	,saveJSON: function(path) {
-		haxe.Log.trace("save only available on desktop",{ fileName : "Level.hx", lineNumber : 174, className : "level.Level", methodName : "saveJSON"});
+		haxe.Log.trace("save only available on desktop",{ fileName : "Level.hx", lineNumber : 178, className : "level.Level", methodName : "saveJSON"});
 	}
 	,_makeJSON: function() {
 		var json = { visuals : new Array(), colliders : new Array()};
@@ -2892,12 +2896,12 @@ level.Visual.prototype = $extend(luxe.Sprite.prototype,{
 		}
 		if(this._pressed) {
 			this.get_pos().subtract(dist);
-			if(Luxe.input.keypressed(snow.input.Keycodes.equals)) {
+			if(Luxe.input.keypressed(snow.input.Keycodes.period)) {
 				var _g = this;
 				var _g1 = _g.depth;
 				_g.set_depth(_g1 + 1);
 				_g1;
-			} else if(Luxe.input.keypressed(snow.input.Keycodes.minus)) {
+			} else if(Luxe.input.keypressed(snow.input.Keycodes.comma)) {
 				var _g2 = this;
 				var _g11 = _g2.depth;
 				_g2.set_depth(_g11 - 1);
@@ -24136,3 +24140,5 @@ snow.utils.format.tools.InflateImpl.DIST_BASE_VAL_TBL = [1,2,3,4,5,7,9,13,17,25,
 snow.utils.format.tools.InflateImpl.CODE_LENGTHS_POS = [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
 LuxeApp.main();
 })();
+
+//# sourceMappingURL=bin\web\nicom_platformer.js.map
