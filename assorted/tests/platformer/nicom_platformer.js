@@ -17771,6 +17771,7 @@ var player = {};
 player.MovementComponent = function() {
 	this._gamepadRight = false;
 	this._gamepadLeft = false;
+	this._gamepadJumpRelease = false;
 	this._gamepadJump = false;
 	this._touchJump = false;
 	this._touchMoveRight = false;
@@ -17813,6 +17814,7 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 		this.get_entity()._listen("touchmove",$bind(this,this.ontouchmove));
 		this.get_entity()._listen("touchup",$bind(this,this.ontouchup));
 		this.get_entity()._listen("gamepaddown",$bind(this,this.ongamepaddown));
+		this.get_entity()._listen("gamepadup",$bind(this,this.ongamepadup));
 		this.get_entity()._listen("gamepadaxis",$bind(this,this.ongamepadaxis));
 	}
 	,update: function(dt) {
@@ -17851,6 +17853,9 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 	,ongamepaddown: function(e) {
 		if(e.button == 0) this._gamepadJump = true;
 	}
+	,ongamepadup: function(e) {
+		if(e.button == 0) this._gamepadJumpRelease = true;
+	}
 	,ongamepadaxis: function(e) {
 		if(e.axis == 0) {
 			if(e.value > 0.3) {
@@ -17873,7 +17878,7 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 		var iLeft = Luxe.input.keydown(snow.input.Keycodes.key_a) || this._touchMoveLeft || this._gamepadLeft;
 		var iRight = Luxe.input.keydown(snow.input.Keycodes.key_d) || this._touchMoveRight || this._gamepadRight;
 		var iJump = Luxe.input.keypressed(snow.input.Keycodes.space) || this._touchJump || this._gamepadJump;
-		var iJumpReleased = Luxe.input.keyreleased(snow.input.Keycodes.space);
+		var iJumpReleased = Luxe.input.keyreleased(snow.input.Keycodes.space) || this._gamepadJumpRelease;
 		var cLeft = this._checkCollision(-1,0);
 		var cRight = this._checkCollision(1,0);
 		if(onGround) {
@@ -17949,6 +17954,7 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 		this._jumpMarginTimer -= dt;
 		this._touchJump = false;
 		this._gamepadJump = false;
+		this._gamepadJumpRelease = false;
 	}
 	,_doCollision: function(dt) {
 		this._cX += this.vX * this.m * dt;
@@ -18025,6 +18031,7 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 		this.get_entity()._unlisten("touchmove",$bind(this,this.ontouchmove));
 		this.get_entity()._unlisten("touchup",$bind(this,this.ontouchup));
 		this.get_entity()._unlisten("gamepaddown",$bind(this,this.ongamepaddown));
+		this.get_entity()._unlisten("gamepadup",$bind(this,this.ongamepadup));
 		this.get_entity()._unlisten("gamepadaxis",$bind(this,this.ongamepadaxis));
 	}
 	,onremoved: function() {
@@ -18033,6 +18040,7 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 		this.get_entity()._unlisten("touchmove",$bind(this,this.ontouchmove));
 		this.get_entity()._unlisten("touchup",$bind(this,this.ontouchup));
 		this.get_entity()._unlisten("gamepaddown",$bind(this,this.ongamepaddown));
+		this.get_entity()._unlisten("gamepadup",$bind(this,this.ongamepadup));
 		this.get_entity()._unlisten("gamepadaxis",$bind(this,this.ongamepadaxis));
 	}
 	,__class__: player.MovementComponent
