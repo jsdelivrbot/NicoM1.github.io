@@ -18046,6 +18046,8 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 	,__class__: player.MovementComponent
 });
 player.Player = function() {
+	this._camSpeed = 100;
+	this._lockCamera = false;
 	this._camSpeedMult = 2.0;
 	var texture = Luxe.loadTexture("assets/art/character/run_strip.png");
 	texture.set_filter(phoenix.FilterType.nearest);
@@ -18057,11 +18059,31 @@ player.Player.__name__ = true;
 player.Player.__super__ = luxe.Sprite;
 player.Player.prototype = $extend(luxe.Sprite.prototype,{
 	update: function(dt) {
-		var dist = phoenix.Vector.Subtract(this.get_pos(),Luxe.camera.get_pos());
-		var _g = Luxe.camera.get_pos();
-		_g.set_x(_g.x + (dist.x - Luxe.get_screen().w / 2) * dt * this._camSpeedMult);
-		var _g1 = Luxe.camera.get_pos();
-		_g1.set_y(_g1.y + (dist.y - Luxe.get_screen().h / 2) * dt * this._camSpeedMult);
+		if(Luxe.input.keypressed(snow.input.Keycodes.key_c)) this._lockCamera = !this._lockCamera;
+		if(!this._lockCamera) {
+			var dist = phoenix.Vector.Subtract(this.get_pos(),Luxe.camera.get_pos());
+			var _g = Luxe.camera.get_pos();
+			_g.set_x(_g.x + (dist.x - Luxe.get_screen().w / 2) * dt * this._camSpeedMult);
+			var _g1 = Luxe.camera.get_pos();
+			_g1.set_y(_g1.y + (dist.y - Luxe.get_screen().h / 2) * dt * this._camSpeedMult);
+		} else {
+			if(Luxe.mouse.x < 10) {
+				var _g2 = Luxe.camera.get_pos();
+				_g2.set_x(_g2.x - dt * this._camSpeed);
+			}
+			if(Luxe.mouse.x > Luxe.get_screen().w - 10) {
+				var _g3 = Luxe.camera.get_pos();
+				_g3.set_x(_g3.x + dt * this._camSpeed);
+			}
+			if(Luxe.mouse.y < 10) {
+				var _g4 = Luxe.camera.get_pos();
+				_g4.set_y(_g4.y - dt * this._camSpeed);
+			}
+			if(Luxe.mouse.y > Luxe.get_screen().h - 10) {
+				var _g5 = Luxe.camera.get_pos();
+				_g5.set_y(_g5.y + dt * this._camSpeed);
+			}
+		}
 	}
 	,_createAnim: function() {
 		var animJSON = Luxe.loadJSON("assets/files/character_anim.json");
@@ -24189,3 +24211,5 @@ snow.utils.format.tools.InflateImpl.DIST_BASE_VAL_TBL = [1,2,3,4,5,7,9,13,17,25,
 snow.utils.format.tools.InflateImpl.CODE_LENGTHS_POS = [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
 LuxeApp.main();
 })();
+
+//# sourceMappingURL=bin\web\nicom_platformer.js.map
