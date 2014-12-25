@@ -1,0 +1,2 @@
+#!/bin/bash
+cp P:/Git-Projects/Orbitantlers-Collab/bin/web/. P:/Git-Projects/NicoM1.github.io/assorted/tests/platformer/ -R

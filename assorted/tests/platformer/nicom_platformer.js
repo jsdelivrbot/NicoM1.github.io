@@ -17810,9 +17810,6 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 		this._anim = this.get("anim");
 		this._collisionShape = luxe.collision.shapes.Polygon.rectangle(this.get_pos().x,this.get_pos().y,this.colWidth,this.colHeight);
 		this.get_pos().set_x(Luxe.get_screen().w / 2 - this.colWidth / 2);
-		this.get_entity()._listen("touchdown",$bind(this,this.ontouchdown));
-		this.get_entity()._listen("touchmove",$bind(this,this.ontouchmove));
-		this.get_entity()._listen("touchup",$bind(this,this.ontouchup));
 		this.get_entity()._listen("gamepaddown",$bind(this,this.ongamepaddown));
 		this.get_entity()._listen("gamepadup",$bind(this,this.ongamepadup));
 		this.get_entity()._listen("gamepadaxis",$bind(this,this.ongamepadaxis));
@@ -17821,34 +17818,6 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 		if(dt > 0.1) dt = 0.1;
 		this._doMovement(dt);
 		this._doCollision(dt);
-	}
-	,ontouchdown: function(e) {
-		if(this._touchMoveID == null) {
-			if(e.x <= this._touchJumpStart) {
-				this._touchMoveID = e.touch_id;
-				this._checkTouchMove(e);
-			}
-		}
-		if(e.x > this._touchJumpStart) this._touchJump = true;
-	}
-	,_checkTouchMove: function(e) {
-		if(e.x <= this._touchMoveRatio / 2) {
-			this._touchMoveLeft = true;
-			this._touchMoveRight = false;
-		} else {
-			this._touchMoveLeft = false;
-			this._touchMoveRight = true;
-		}
-	}
-	,ontouchmove: function(e) {
-		if(e.touch_id == this._touchMoveID) this._checkTouchMove(e);
-	}
-	,ontouchup: function(e) {
-		if(e.touch_id == this._touchMoveID) {
-			this._touchMoveLeft = false;
-			this._touchMoveRight = false;
-			this._touchMoveID = null;
-		}
 	}
 	,ongamepaddown: function(e) {
 		if(e.button == 0) this._gamepadJump = true;
@@ -18027,18 +17996,12 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 	}
 	,ondestroy: function() {
 		luxe.Component.prototype.ondestroy.call(this);
-		this.get_entity()._unlisten("touchdown",$bind(this,this.ontouchdown));
-		this.get_entity()._unlisten("touchmove",$bind(this,this.ontouchmove));
-		this.get_entity()._unlisten("touchup",$bind(this,this.ontouchup));
 		this.get_entity()._unlisten("gamepaddown",$bind(this,this.ongamepaddown));
 		this.get_entity()._unlisten("gamepadup",$bind(this,this.ongamepadup));
 		this.get_entity()._unlisten("gamepadaxis",$bind(this,this.ongamepadaxis));
 	}
 	,onremoved: function() {
 		luxe.Component.prototype.onremoved.call(this);
-		this.get_entity()._unlisten("touchdown",$bind(this,this.ontouchdown));
-		this.get_entity()._unlisten("touchmove",$bind(this,this.ontouchmove));
-		this.get_entity()._unlisten("touchup",$bind(this,this.ontouchup));
 		this.get_entity()._unlisten("gamepaddown",$bind(this,this.ongamepaddown));
 		this.get_entity()._unlisten("gamepadup",$bind(this,this.ongamepadup));
 		this.get_entity()._unlisten("gamepadaxis",$bind(this,this.ongamepadaxis));
@@ -18065,7 +18028,7 @@ player.Player.prototype = $extend(luxe.Sprite.prototype,{
 			var _g = Luxe.camera.get_pos();
 			_g.set_x(_g.x + (dist.x - Luxe.get_screen().w / 2) * dt * this._camSpeedMult);
 			var _g1 = Luxe.camera.get_pos();
-			_g1.set_y(_g1.y + (dist.y - Luxe.get_screen().h / 2) * dt * this._camSpeedMult);
+			_g1.set_y(_g1.y + (dist.y - Luxe.get_screen().h / 2) * dt * this._camSpeedMult * 2.5);
 		} else {
 			if(Luxe.mouse.x < 10) {
 				var _g2 = Luxe.camera.get_pos();
@@ -24211,5 +24174,3 @@ snow.utils.format.tools.InflateImpl.DIST_BASE_VAL_TBL = [1,2,3,4,5,7,9,13,17,25,
 snow.utils.format.tools.InflateImpl.CODE_LENGTHS_POS = [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
 LuxeApp.main();
 })();
-
-//# sourceMappingURL=bin\web\nicom_platformer.js.map
