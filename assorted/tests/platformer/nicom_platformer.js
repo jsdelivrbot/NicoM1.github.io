@@ -17766,7 +17766,6 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 		this._machine = new luxe.States({ name : "machine"});
 		this._anim = this.get("anim");
 		this._collisionShape = luxe.collision.shapes.Polygon.rectangle(this.get_pos().x,this.get_pos().y,this.colWidth,this.colHeight);
-		this._findScreenEdges();
 		this.get_pos().set_x(Luxe.get_screen().w / 2 - this.colWidth / 2);
 		this.get_entity()._listen("touchdown",$bind(this,this.ontouchdown));
 		this.get_entity()._listen("touchmove",$bind(this,this.ontouchmove));
@@ -17774,16 +17773,10 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 		this.get_entity()._listen("gamepaddown",$bind(this,this.ongamepaddown));
 		this.get_entity()._listen("gamepadaxis",$bind(this,this.ongamepadaxis));
 	}
-	,_findScreenEdges: function() {
-		this._leftEdge = Luxe.camera.screen_point_to_world(new phoenix.Vector()).x | 0;
-		this._rightEdge = Luxe.camera.screen_point_to_world(new phoenix.Vector(Luxe.get_screen().w)).x | 0;
-		this._floorEdge = Luxe.camera.screen_point_to_world(new phoenix.Vector(0,Luxe.get_screen().h)).y | 0;
-	}
 	,update: function(dt) {
 		if(dt > 0.1) dt = 0.1;
 		this._doMovement(dt);
 		this._doCollision(dt);
-		this._collideScreen();
 	}
 	,ontouchdown: function(e) {
 		if(this._touchMoveID == null) {
@@ -17969,30 +17962,14 @@ player.MovementComponent.prototype = $extend(luxe.Component.prototype,{
 		this.get_pos().set_x(this._collisionShape.get_x());
 		this.get_pos().set_y(this._collisionShape.get_y());
 	}
-	,_collideScreen: function() {
-		if(this.get_pos().y + this.colHeight / 2 > this._floorEdge) {
-			this.vY = 0;
-			this.get_pos().set_y(this._floorEdge - this.colHeight / 2);
-		}
-		if(this.get_pos().x + this.colWidth / 2 > this._rightEdge) {
-			this.vX = 0;
-			this.get_pos().set_x(this._rightEdge - this.colWidth / 2);
-		} else if(this.get_pos().x - this.colWidth / 2 < this._leftEdge) {
-			this.vX = 0;
-			this.get_pos().set_x(this._leftEdge + this.colWidth / 2);
-		}
-	}
 	,_sign: function(v) {
 		if(v == 0) return 0;
 		if(v < 0) return -1; else return 1;
 	}
 	,_onGround: function() {
-		if(this.get_pos().y + this._sprite.size.y / 2 >= this._floorEdge) return true;
 		return this._checkCollision(0,1);
 	}
 	,_checkCollision: function(offsetX,offsetY) {
-		if(this.get_pos().x + offsetX - this.colWidth / 2 < this._leftEdge) return true;
-		if(this.get_pos().x + offsetX + this.colWidth / 2 > this._rightEdge) return true;
 		this._collisionShape.set_x(this.get_pos().x + offsetX);
 		this._collisionShape.set_y(this.get_pos().y + offsetY);
 		return luxe.collision.Collision.testShapes(this._collisionShape,level.Level.colliders).length > 0;
@@ -24162,5 +24139,3 @@ snow.utils.format.tools.InflateImpl.DIST_BASE_VAL_TBL = [1,2,3,4,5,7,9,13,17,25,
 snow.utils.format.tools.InflateImpl.CODE_LENGTHS_POS = [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
 LuxeApp.main();
 })();
-
-//# sourceMappingURL=bin\web\nicom_platformer.js.map
