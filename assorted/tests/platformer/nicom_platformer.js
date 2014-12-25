@@ -1838,6 +1838,11 @@ level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
 	,toggleDebug: function() {
 		this._geom.set_visible(!this._geom.visible);
 	}
+	,destroy: function() {
+		this._geom.set_visible(false);
+		this._geom.drop();
+		luxe.collision.shapes.Polygon.prototype.destroy.call(this);
+	}
 	,__class__: level.Collider
 });
 level.Level = function() {
@@ -1906,6 +1911,12 @@ level.Level.prototype = {
 			while(_g4 < _g13.length) {
 				var c3 = _g13[_g4];
 				++_g4;
+				if(c3.selected && Luxe.input.keypressed(snow.input.Keycodes.key_x)) {
+					HxOverrides.remove(level.Level.colliders,c3);
+					level.Level._selectedCount--;
+					c3.destroy();
+					continue;
+				}
 				c3.update();
 			}
 		}
@@ -1941,6 +1952,11 @@ level.Level.prototype = {
 			while(_g5 < _g14.length) {
 				var v = _g14[_g5];
 				++_g5;
+				if(v.kill) {
+					HxOverrides.remove(this.visuals,v);
+					v.destroy();
+					continue;
+				}
 				v.updateDebug();
 			}
 		}
@@ -1973,7 +1989,7 @@ level.Level.prototype = {
 		this._artChunks = json.json.brushes;
 	}
 	,saveJSON: function(path) {
-		haxe.Log.trace("save only available on desktop",{ fileName : "Level.hx", lineNumber : 178, className : "level.Level", methodName : "saveJSON"});
+		haxe.Log.trace("save only available on desktop",{ fileName : "Level.hx", lineNumber : 195, className : "level.Level", methodName : "saveJSON"});
 	}
 	,_makeJSON: function() {
 		var json = { visuals : new Array(), colliders : new Array()};
@@ -2874,6 +2890,7 @@ luxe.Sprite.prototype = $extend(luxe.Visual.prototype,{
 	,__properties__: $extend(luxe.Visual.prototype.__properties__,{set_uv:"set_uv",set_flipy:"set_flipy",set_flipx:"set_flipx",set_centered:"set_centered"})
 });
 level.Visual = function(x_,y_,w_,h_,art) {
+	this.kill = false;
 	this._pressed = false;
 	this.art = art;
 	var texture = Luxe.loadTexture(art);
@@ -2906,7 +2923,7 @@ level.Visual.prototype = $extend(luxe.Sprite.prototype,{
 				var _g11 = _g2.depth;
 				_g2.set_depth(_g11 - 1);
 				_g11;
-			}
+			} else if(Luxe.input.keypressed(snow.input.Keycodes.key_x)) this.kill = true;
 		}
 		if(Luxe.input.mousereleased(1)) this._pressed = false;
 	}
@@ -2918,6 +2935,11 @@ level.Visual.prototype = $extend(luxe.Sprite.prototype,{
 	}
 	,disableDebug: function() {
 		this._geom.set_visible(false);
+	}
+	,destroy: function(_) {
+		this._geom.set_visible(false);
+		this._geom.drop();
+		luxe.Sprite.prototype.destroy.call(this);
 	}
 	,init: function() {
 	}
