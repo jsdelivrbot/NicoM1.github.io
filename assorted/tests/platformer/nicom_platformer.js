@@ -482,7 +482,7 @@ Main.prototype = $extend(luxe.Game.prototype,{
 		this._level = new level.Level();
 	}
 	,onkeyup: function(e) {
-		if(e.keycode == snow.input.Keycodes.tab) this._level.toggleEdit();
+		if(e.keycode == snow.input.Keycodes.key_e) this._level.toggleEdit();
 		if(e.keycode == snow.input.Keycodes.key_s) this._level.saveJSON("assets/files/output.lvl");
 		if(e.keycode == snow.input.Keycodes.escape) Luxe.shutdown();
 	}
@@ -1841,17 +1841,31 @@ level.Collider.prototype = $extend(luxe.collision.shapes.Polygon.prototype,{
 	,__class__: level.Collider
 });
 level.Level = function() {
+	this._selectedArt = 0;
+	this._artChunks = [{ art : "assets/art/stamp.png", w : 214, h : 252},{ art : "assets/art/mockup.png", w : 960, h : 640}];
+	this._visualMode = false;
 	this._editMode = true;
 	level.Level.colliders = new Array();
 	this.visuals = new Array();
+	this._brush = new luxe.Sprite({ texture : Luxe.loadTexture(this._artChunks[this._selectedArt].art), size : new phoenix.Vector(this._artChunks[this._selectedArt].w,this._artChunks[this._selectedArt].h)});
+	this._brush.color.a = 0.5;
+	this._brush.set_visible(false);
 	this.parseJSON("assets/files/output.lvl");
 };
 level.Level.__name__ = true;
 level.Level.prototype = {
 	update: function() {
 		if(this._editMode) {
+			if(Luxe.input.keypressed(snow.input.Keycodes.key_v)) {
+				this.toggleEdit();
+				this._enableVisualMode();
+				return;
+			}
 			var safe = false;
-			if(Luxe.input.mousepressed(3)) this._addColider(Luxe.mouse.x,Luxe.mouse.y,32,32);
+			if(Luxe.input.mousepressed(3)) {
+				var pos = Luxe.camera.screen_point_to_world(Luxe.mouse);
+				this._addColider(pos.x,pos.y,32,32);
+			}
 			if(Luxe.input.keydown(snow.input.Keycodes.key_q) || level.Level._selectedCount == 0) {
 				if(Luxe.input.mousepressed(1)) {
 					var _g = 0;
@@ -1895,6 +1909,46 @@ level.Level.prototype = {
 				c3.update();
 			}
 		}
+		if(this._visualMode) {
+			if(Luxe.input.keypressed(snow.input.Keycodes.key_v)) {
+				this.toggleEdit();
+				this._disableVisualMode();
+			}
+			if(Luxe.input.keypressed(snow.input.Keycodes.up)) {
+				if(this._selectedArt < this._artChunks.length - 1) {
+					this._selectedArt++;
+					this._resetStamp();
+				} else {
+					this._selectedArt = 0;
+					this._resetStamp();
+				}
+			} else if(Luxe.input.keypressed(snow.input.Keycodes.down)) {
+				if(this._selectedArt > 0) {
+					this._selectedArt--;
+					this._resetStamp();
+				} else {
+					this._selectedArt = this._artChunks.length - 1;
+					this._resetStamp();
+				}
+			}
+			var brushPos = Luxe.camera.screen_point_to_world(Luxe.mouse);
+			this._brush.get_pos().set_x(brushPos.x);
+			this._brush.get_pos().set_y(brushPos.y);
+			brushPos.subtract(new phoenix.Vector(this._artChunks[this._selectedArt].w / 2,this._artChunks[this._selectedArt].h / 2));
+			if(Luxe.input.mousepressed(3)) this._addVisual(Math.floor(brushPos.x),Math.floor(brushPos.y),this._artChunks[this._selectedArt].w,this._artChunks[this._selectedArt].h,this._artChunks[this._selectedArt].art).enableDebug();
+			var _g5 = 0;
+			var _g14 = this.visuals;
+			while(_g5 < _g14.length) {
+				var v = _g14[_g5];
+				++_g5;
+				v.updateDebug();
+			}
+		}
+	}
+	,_resetStamp: function() {
+		this._brush.set_texture(Luxe.loadTexture(this._artChunks[this._selectedArt].art));
+		this._brush.size.set_x(this._artChunks[this._selectedArt].w);
+		this._brush.size.set_y(this._artChunks[this._selectedArt].h);
 	}
 	,parseJSON: function(path) {
 		var json = Luxe.loadJSON(path).json;
@@ -1915,7 +1969,7 @@ level.Level.prototype = {
 		}
 	}
 	,saveJSON: function(path) {
-		haxe.Log.trace("save only available on desktop",{ fileName : "Level.hx", lineNumber : 98, className : "level.Level", methodName : "saveJSON"});
+		haxe.Log.trace("save only available on desktop",{ fileName : "Level.hx", lineNumber : 174, className : "level.Level", methodName : "saveJSON"});
 	}
 	,_makeJSON: function() {
 		var json = { visuals : new Array(), colliders : new Array()};
@@ -1927,6 +1981,14 @@ level.Level.prototype = {
 			var cJSON = { x : c.get_x(), y : c.get_y(), w : c.w, h : c.h};
 			json.colliders.push(cJSON);
 		}
+		var _g2 = 0;
+		var _g11 = this.visuals;
+		while(_g2 < _g11.length) {
+			var v = _g11[_g2];
+			++_g2;
+			var vJSON = { x : v.get_pos().x - v.size.x / 2, y : v.get_pos().y - v.size.y / 2, w : v.size.x, h : v.size.y, depth : v.depth, art : v.art};
+			json.visuals.push(vJSON);
+		}
 		return json;
 	}
 	,_addColider: function(x,y,w,h) {
@@ -1934,13 +1996,13 @@ level.Level.prototype = {
 		level.Level.colliders.push(collider);
 	}
 	,_addVisual: function(x,y,w,h,art) {
-		var texture = Luxe.loadTexture(art);
-		texture.set_filter(phoenix.FilterType.nearest);
-		var visual = new luxe.Sprite({ texture : texture, pos : new phoenix.Vector(x + w / 2,y + h / 2), size : new phoenix.Vector(w,h), depth : -1});
+		var visual = new level.Visual(x,y,w,h,art);
 		this.visuals.push(visual);
+		return visual;
 	}
 	,toggleEdit: function() {
 		this._editMode = !this._editMode;
+		if(this._editMode) this._disableVisualMode();
 		var _g = 0;
 		var _g1 = level.Level.colliders;
 		while(_g < _g1.length) {
@@ -1949,85 +2011,30 @@ level.Level.prototype = {
 			c.toggleDebug();
 		}
 	}
+	,_disableVisualMode: function() {
+		var _g = 0;
+		var _g1 = this.visuals;
+		while(_g < _g1.length) {
+			var v = _g1[_g];
+			++_g;
+			v.disableDebug();
+		}
+		this._brush.set_visible(false);
+		this._visualMode = false;
+	}
+	,_enableVisualMode: function() {
+		var _g = 0;
+		var _g1 = this.visuals;
+		while(_g < _g1.length) {
+			var v = _g1[_g];
+			++_g;
+			v.enableDebug();
+		}
+		this._brush.set_visible(true);
+		this._visualMode = true;
+	}
 	,__class__: level.Level
 };
-luxe.Audio = function(_core) {
-	this.core = _core;
-};
-luxe.Audio.__name__ = true;
-luxe.Audio.prototype = {
-	init: function() {
-		null;
-	}
-	,destroy: function() {
-		null;
-	}
-	,create: function(_id,_name,_streaming) {
-		if(_streaming == null) _streaming = false;
-		if(_name == null) _name = "";
-		return this.core.app.audio.create(_id,_name,_streaming);
-	}
-	,uncreate: function(_name) {
-		return this.core.app.audio.uncreate(_name);
-	}
-	,on: function(_name,_event,_handler) {
-		return this.core.app.audio.on(_name,_event,_handler);
-	}
-	,off: function(_name,_event,_handler) {
-		return this.core.app.audio.off(_name,_event,_handler);
-	}
-	,get: function(_name) {
-		return this.core.app.audio.get(_name);
-	}
-	,exists: function(_name) {
-		return this.get(_name) != null;
-	}
-	,on_complete: function(_name,handler) {
-	}
-	,loop: function(_name) {
-		return this.core.app.audio.loop(_name);
-	}
-	,stop: function(_name) {
-		return this.core.app.audio.stop(_name);
-	}
-	,play: function(_name) {
-		return this.core.app.audio.play(_name);
-	}
-	,pause: function(_name) {
-		return this.core.app.audio.pause(_name);
-	}
-	,toggle: function(_name) {
-		return this.core.app.audio.toggle(_name);
-	}
-	,volume: function(_name,_volume) {
-		return this.core.app.audio.volume(_name,_volume);
-	}
-	,pan: function(_name,_pan) {
-		return this.core.app.audio.pan(_name,_pan);
-	}
-	,pitch: function(_name,_pitch) {
-		return this.core.app.audio.pitch(_name,_pitch);
-	}
-	,position: function(_name,_position) {
-		return this.core.app.audio.position(_name,_position);
-	}
-	,duration: function(_name) {
-		return this.core.app.audio.duration(_name);
-	}
-	,process: function() {
-	}
-	,__class__: luxe.Audio
-};
-luxe.SizeMode = { __ename__ : true, __constructs__ : ["fit","cover","contain"] };
-luxe.SizeMode.fit = ["fit",0];
-luxe.SizeMode.fit.toString = $estr;
-luxe.SizeMode.fit.__enum__ = luxe.SizeMode;
-luxe.SizeMode.cover = ["cover",1];
-luxe.SizeMode.cover.toString = $estr;
-luxe.SizeMode.cover.__enum__ = luxe.SizeMode;
-luxe.SizeMode.contain = ["contain",2];
-luxe.SizeMode.contain.toString = $estr;
-luxe.SizeMode.contain.__enum__ = luxe.SizeMode;
 luxe.Objects = function(_name,_id) {
 	if(_id == null) _id = "";
 	if(_name == null) _name = "";
@@ -2608,6 +2615,390 @@ luxe.Entity.prototype = $extend(luxe.Objects.prototype,{
 	,__class__: luxe.Entity
 	,__properties__: {set_origin:"set_origin",get_origin:"get_origin",set_scale:"set_scale",get_scale:"get_scale",set_rotation:"set_rotation",get_rotation:"get_rotation",set_pos:"set_pos",get_pos:"get_pos",set_active:"set_active",get_active:"get_active",set_scene:"set_scene",get_scene:"get_scene",set_parent:"set_parent",get_parent:"get_parent",set_fixed_rate:"set_fixed_rate",get_fixed_rate:"get_fixed_rate",get_components:"get_components"}
 });
+luxe.Visual = function(_options) {
+	this.ignore_texture_on_geometry_change = false;
+	this._creating_geometry = false;
+	this._has_custom_origin = false;
+	this.radians = 0.0;
+	this.group = 0;
+	this.depth = 0.0;
+	this.visible = true;
+	this.locked = false;
+	var _g = this;
+	if(_options == null) throw "Visual needs not-null options at the moment";
+	this._rotation_euler = new phoenix.Vector();
+	this._rotation_quat = new phoenix.Quaternion();
+	luxe.Entity.call(this,_options);
+	this.set_color(new phoenix.Color());
+	this.set_size(new phoenix.Vector());
+	if(this.options.texture != null) this.set_texture(this.options.texture);
+	if(this.options.shader != null) this.set_shader(this.options.shader);
+	if(this.options.color != null) this.set_color(this.options.color);
+	if(this.options.depth != null) this.set_depth(this.options.depth);
+	if(this.options.group != null) this.set_group(this.options.group);
+	if(this.options.visible != null) this.set_visible(this.options.visible);
+	if(this.options.size != null) {
+		this.set_size(this.options.size);
+		this._create_geometry();
+	} else if(this.texture != null) {
+		if(this.texture.loaded) {
+			this.set_size(new phoenix.Vector(this.texture.width,this.texture.height));
+			this._create_geometry();
+		} else this.texture.set_onload(function(_texture) {
+			_g.set_size(new phoenix.Vector(_texture.width,_texture.height));
+			_g._create_geometry();
+		});
+	} else {
+		this.set_size(new phoenix.Vector(64,64));
+		this._create_geometry();
+	}
+};
+luxe.Visual.__name__ = true;
+luxe.Visual.__super__ = luxe.Entity;
+luxe.Visual.prototype = $extend(luxe.Entity.prototype,{
+	_create_geometry: function() {
+		if(this.options.geometry == null) {
+			if(this.options.no_geometry == null || this.options.no_geometry == false) {
+				this._creating_geometry = true;
+				var _batcher = null;
+				if(this.options.no_batcher_add == null || this.options.no_batcher_add == false) {
+					if(this.options.batcher != null) _batcher = this.options.batcher; else _batcher = Luxe.renderer.batcher;
+				}
+				this.set_geometry(new phoenix.geometry.QuadGeometry({ id : this.name + ".visual", x : 0, y : 0, w : this.size.x, h : this.size.y, scale : new phoenix.Vector(1,1,1), texture : this.texture, color : this.color, shader : this.shader, batcher : _batcher, depth : this.options.depth == null?0:this.options.depth, group : this.options.group == null?0:this.options.group, visible : this.options.visible == null?this.visible:this.options.visible}));
+				this._creating_geometry = false;
+				this.on_geometry_created();
+			}
+		} else this.set_geometry(this.options.geometry);
+		if(this.geometry != null) {
+			this.geometry.id = this.name + ".visual";
+			this.geometry.transform.id = this.name + ".visual.transform";
+		}
+		if(this.options.origin != null) {
+			this._has_custom_origin = true;
+			this.set_origin(this.options.origin);
+		}
+		if(this.options.rotation_z != null) this.set_rotation_z(this.options.rotation_z);
+	}
+	,ondestroy: function() {
+		if(this.geometry != null && this.geometry.added) this.geometry.drop(true);
+		this.set_geometry(null);
+		this.set_texture(null);
+	}
+	,on_geometry_created: function() {
+	}
+	,set_visible: function(_v) {
+		this.visible = _v;
+		if(this.geometry != null) this.geometry.set_visible(this.visible);
+		return this.visible;
+	}
+	,set_depth: function(_v) {
+		if(this.geometry != null) this.geometry.set_depth(_v);
+		return this.depth = _v;
+	}
+	,set_group: function(_v) {
+		if(this.geometry != null) this.geometry.set_group(_v);
+		return this.group = _v;
+	}
+	,set_color: function(_c) {
+		if(this.color != null && this.geometry != null) this.geometry.set_color(_c);
+		return this.color = _c;
+	}
+	,set_texture: function(_t) {
+		if(this.geometry != null && this.geometry.get_texture() != _t) this.geometry.set_texture(_t);
+		return this.texture = _t;
+	}
+	,set_shader: function(_s) {
+		if(this.geometry != null && this.geometry.get_shader() != _s) this.geometry.set_shader(_s);
+		return this.shader = _s;
+	}
+	,set_geometry: function(_g) {
+		if(this.geometry == _g) return this.geometry;
+		if(this.geometry != null) this.geometry.drop();
+		this.geometry = _g;
+		if(this.geometry != null) {
+			this.geometry.transform.set_parent(this.transform);
+			if(this._creating_geometry == false) {
+				this.geometry.set_color(this.color);
+				this.geometry.set_group(this.group);
+				this.geometry.set_depth(this.depth);
+				this.geometry.set_visible(this.visible);
+				if(!this.ignore_texture_on_geometry_change) {
+				}
+			}
+		}
+		return this.geometry;
+	}
+	,set_parent_from_transform: function(_parent) {
+		luxe.Entity.prototype.set_parent_from_transform.call(this,_parent);
+		if(this.geometry != null) this.geometry.transform.set_parent(this.transform);
+	}
+	,set_rotation_from_transform: function(_rotation) {
+		luxe.Entity.prototype.set_rotation_from_transform.call(this,_rotation);
+		this._rotation_euler.setEulerFromQuaternion(_rotation,null);
+		this._rotation_quat.copy(_rotation);
+	}
+	,set_size: function(_v) {
+		this.size = _v;
+		if(this.size != null) phoenix.Vector.Listen(this.size,$bind(this,this._size_change));
+		return this.size;
+	}
+	,get_rotation_z: function() {
+		return luxe.utils.Maths.degrees(this.get_radians());
+	}
+	,set_rotation_z: function(_degrees) {
+		this.set_radians(_degrees * 0.017453292519943278);
+		return _degrees;
+	}
+	,set_radians: function(_r) {
+		this._rotation_euler.set_z(_r);
+		this._rotation_quat.setFromEuler(this._rotation_euler);
+		this.set_rotation(this._rotation_quat.clone());
+		return this.radians = _r;
+	}
+	,get_radians: function() {
+		return this.radians;
+	}
+	,set_locked: function(_l) {
+		if(this.geometry != null) this.geometry.set_locked(_l);
+		return this.locked = _l;
+	}
+	,set_clip_rect: function(_val) {
+		if(this.geometry != null) this.geometry.set_clip_rect(_val);
+		return this.clip_rect = _val;
+	}
+	,_size_change: function(_v) {
+		this.set_size(this.size);
+	}
+	,init: function() {
+	}
+	,__class__: luxe.Visual
+	,__properties__: $extend(luxe.Entity.prototype.__properties__,{set_rotation_z:"set_rotation_z",get_rotation_z:"get_rotation_z",set_radians:"set_radians",get_radians:"get_radians",set_clip_rect:"set_clip_rect",set_group:"set_group",set_depth:"set_depth",set_visible:"set_visible",set_color:"set_color",set_shader:"set_shader",set_texture:"set_texture",set_locked:"set_locked",set_geometry:"set_geometry",set_size:"set_size"})
+});
+luxe.Sprite = function(options) {
+	this.flipy = false;
+	this.flipx = false;
+	this.centered = true;
+	this.set_uv(new phoenix.Rectangle());
+	if(options == null) throw "Sprite needs not-null options at the moment";
+	if(options.centered != null) this.set_centered(options.centered);
+	if(options.flipx != null) this.set_flipx(options.flipx);
+	if(options.flipy != null) this.set_flipy(options.flipy);
+	luxe.Visual.call(this,options);
+};
+luxe.Sprite.__name__ = true;
+luxe.Sprite.__super__ = luxe.Visual;
+luxe.Sprite.prototype = $extend(luxe.Visual.prototype,{
+	on_geometry_created: function() {
+		var _g = this;
+		luxe.Visual.prototype.on_geometry_created.call(this);
+		if(this.texture != null) this.texture.set_onload(function(t) {
+			if(_g.options.uv == null) _g.set_uv(new phoenix.Rectangle(0,0,_g.texture.width,_g.texture.height)); else _g.set_uv(_g.options.uv);
+			if(_g.texture.type == luxe.resource.ResourceType.render_texture) _g.set_flipy(true);
+		});
+		this.set_centered(!(!this.centered));
+		this.set_flipx(!(!this.flipx));
+		this.set_flipy(!(!this.flipy));
+	}
+	,set_geometry: function(_g) {
+		this.geometry_quad = _g;
+		return luxe.Visual.prototype.set_geometry.call(this,_g);
+	}
+	,point_inside: function(_p) {
+		if(this.geometry == null) return false;
+		return Luxe.utils.geometry.point_in_geometry(_p,this.geometry);
+	}
+	,point_inside_AABB: function(_p) {
+		if(this.get_pos() == null) return false;
+		if(this.size == null) return false;
+		var _s_x = this.size.x * this.get_scale().x;
+		var _s_y = this.size.y * this.get_scale().y;
+		if(this.centered) {
+			var _hx = _s_x / 2;
+			var _hy = _s_y / 2;
+			if(_p.x < this.get_pos().x - _hx) return false;
+			if(_p.y < this.get_pos().y - _hy) return false;
+			if(_p.x > this.get_pos().x + _s_x - _hx) return false;
+			if(_p.y > this.get_pos().y + _s_y - _hy) return false;
+		} else {
+			if(_p.x < this.get_pos().x) return false;
+			if(_p.y < this.get_pos().y) return false;
+			if(_p.x > this.get_pos().x + _s_x) return false;
+			if(_p.y > this.get_pos().y + _s_y) return false;
+		}
+		return true;
+	}
+	,set_uv: function(_uv) {
+		if(this.geometry_quad != null) this.geometry_quad.uv(_uv);
+		this.uv = _uv;
+		phoenix.Rectangle.listen(this.uv,$bind(this,this._uv_change));
+		return this.uv;
+	}
+	,set_flipy: function(_v) {
+		if(_v == this.flipy) return this.flipy;
+		if(this.geometry_quad != null) this.geometry_quad.set_flipy(_v);
+		return this.flipy = _v;
+	}
+	,set_flipx: function(_v) {
+		if(_v == this.flipx) return this.flipx;
+		if(this.geometry_quad != null) this.geometry_quad.set_flipx(_v);
+		return this.flipx = _v;
+	}
+	,set_size: function(_v) {
+		if(this.geometry_quad != null) {
+			this.geometry_quad.resize(new phoenix.Vector(_v.x,_v.y));
+			if(!this._has_custom_origin) {
+				if(this.centered) this.set_origin(new phoenix.Vector(_v.x,_v.y,_v.z,_v.w).divideScalar(2));
+			}
+		}
+		return luxe.Visual.prototype.set_size.call(this,_v);
+	}
+	,set_centered: function(_c) {
+		if(this.size != null) {
+			if(_c) this.set_origin(new phoenix.Vector(this.size.x / 2,this.size.y / 2)); else this.set_origin(new phoenix.Vector());
+		}
+		return this.centered = _c;
+	}
+	,_uv_change: function(_v) {
+		this.set_uv(this.uv);
+	}
+	,init: function() {
+	}
+	,ondestroy: function() {
+		luxe.Visual.prototype.ondestroy.call(this);
+	}
+	,__class__: luxe.Sprite
+	,__properties__: $extend(luxe.Visual.prototype.__properties__,{set_uv:"set_uv",set_flipy:"set_flipy",set_flipx:"set_flipx",set_centered:"set_centered"})
+});
+level.Visual = function(x_,y_,w_,h_,art) {
+	this._pressed = false;
+	this.art = art;
+	var texture = Luxe.loadTexture(art);
+	texture.set_filter(phoenix.FilterType.nearest);
+	luxe.Sprite.call(this,{ texture : texture, pos : new phoenix.Vector(x_ + w_ / 2,y_ + h_ / 2), size : new phoenix.Vector(w_,h_), depth : -1});
+	this._geom = new phoenix.geometry.CircleGeometry({ r : 10, x : this.get_pos().x, y : this.get_pos().y, batcher : Luxe.renderer.batcher});
+	this._geom.set_depth(10);
+	this.toggleDebug();
+};
+level.Visual.__name__ = true;
+level.Visual.__super__ = luxe.Sprite;
+level.Visual.prototype = $extend(luxe.Sprite.prototype,{
+	updateDebug: function() {
+		this._geom.transform.local.pos.set_x(this.get_pos().x);
+		this._geom.transform.local.pos.set_y(this.get_pos().y);
+		var mouse = Luxe.camera.screen_point_to_world(Luxe.mouse);
+		var dist = phoenix.Vector.Subtract(this.get_pos(),mouse);
+		if(Luxe.input.mousepressed(1)) {
+			if(Math.sqrt(dist.x * dist.x + dist.y * dist.y + dist.z * dist.z) < 10) this._pressed = true;
+		}
+		if(this._pressed) {
+			this.get_pos().subtract(dist);
+			if(Luxe.input.keypressed(snow.input.Keycodes.equals)) {
+				var _g = this;
+				var _g1 = _g.depth;
+				_g.set_depth(_g1 + 1);
+				_g1;
+			} else if(Luxe.input.keypressed(snow.input.Keycodes.minus)) {
+				var _g2 = this;
+				var _g11 = _g2.depth;
+				_g2.set_depth(_g11 - 1);
+				_g11;
+			}
+		}
+		if(Luxe.input.mousereleased(1)) this._pressed = false;
+	}
+	,toggleDebug: function() {
+		this._geom.set_visible(!this._geom.visible);
+	}
+	,enableDebug: function() {
+		this._geom.set_visible(true);
+	}
+	,disableDebug: function() {
+		this._geom.set_visible(false);
+	}
+	,init: function() {
+	}
+	,ondestroy: function() {
+		luxe.Sprite.prototype.ondestroy.call(this);
+	}
+	,__class__: level.Visual
+});
+luxe.Audio = function(_core) {
+	this.core = _core;
+};
+luxe.Audio.__name__ = true;
+luxe.Audio.prototype = {
+	init: function() {
+		null;
+	}
+	,destroy: function() {
+		null;
+	}
+	,create: function(_id,_name,_streaming) {
+		if(_streaming == null) _streaming = false;
+		if(_name == null) _name = "";
+		return this.core.app.audio.create(_id,_name,_streaming);
+	}
+	,uncreate: function(_name) {
+		return this.core.app.audio.uncreate(_name);
+	}
+	,on: function(_name,_event,_handler) {
+		return this.core.app.audio.on(_name,_event,_handler);
+	}
+	,off: function(_name,_event,_handler) {
+		return this.core.app.audio.off(_name,_event,_handler);
+	}
+	,get: function(_name) {
+		return this.core.app.audio.get(_name);
+	}
+	,exists: function(_name) {
+		return this.get(_name) != null;
+	}
+	,on_complete: function(_name,handler) {
+	}
+	,loop: function(_name) {
+		return this.core.app.audio.loop(_name);
+	}
+	,stop: function(_name) {
+		return this.core.app.audio.stop(_name);
+	}
+	,play: function(_name) {
+		return this.core.app.audio.play(_name);
+	}
+	,pause: function(_name) {
+		return this.core.app.audio.pause(_name);
+	}
+	,toggle: function(_name) {
+		return this.core.app.audio.toggle(_name);
+	}
+	,volume: function(_name,_volume) {
+		return this.core.app.audio.volume(_name,_volume);
+	}
+	,pan: function(_name,_pan) {
+		return this.core.app.audio.pan(_name,_pan);
+	}
+	,pitch: function(_name,_pitch) {
+		return this.core.app.audio.pitch(_name,_pitch);
+	}
+	,position: function(_name,_position) {
+		return this.core.app.audio.position(_name,_position);
+	}
+	,duration: function(_name) {
+		return this.core.app.audio.duration(_name);
+	}
+	,process: function() {
+	}
+	,__class__: luxe.Audio
+};
+luxe.SizeMode = { __ename__ : true, __constructs__ : ["fit","cover","contain"] };
+luxe.SizeMode.fit = ["fit",0];
+luxe.SizeMode.fit.toString = $estr;
+luxe.SizeMode.fit.__enum__ = luxe.SizeMode;
+luxe.SizeMode.cover = ["cover",1];
+luxe.SizeMode.cover.toString = $estr;
+luxe.SizeMode.cover.__enum__ = luxe.SizeMode;
+luxe.SizeMode.contain = ["contain",2];
+luxe.SizeMode.contain.toString = $estr;
+luxe.SizeMode.contain.__enum__ = luxe.SizeMode;
 luxe.Camera = function(options) {
 	this.minimum_shake = 0.1;
 	this.shaking = false;
@@ -4100,260 +4491,6 @@ luxe.Log._get_spacing = function(_file) {
 	}
 	return _spaces;
 };
-luxe.Visual = function(_options) {
-	this.ignore_texture_on_geometry_change = false;
-	this._creating_geometry = false;
-	this._has_custom_origin = false;
-	this.radians = 0.0;
-	this.group = 0;
-	this.depth = 0.0;
-	this.visible = true;
-	this.locked = false;
-	var _g = this;
-	if(_options == null) throw "Visual needs not-null options at the moment";
-	this._rotation_euler = new phoenix.Vector();
-	this._rotation_quat = new phoenix.Quaternion();
-	luxe.Entity.call(this,_options);
-	this.set_color(new phoenix.Color());
-	this.set_size(new phoenix.Vector());
-	if(this.options.texture != null) this.set_texture(this.options.texture);
-	if(this.options.shader != null) this.set_shader(this.options.shader);
-	if(this.options.color != null) this.set_color(this.options.color);
-	if(this.options.depth != null) this.set_depth(this.options.depth);
-	if(this.options.group != null) this.set_group(this.options.group);
-	if(this.options.visible != null) this.set_visible(this.options.visible);
-	if(this.options.size != null) {
-		this.set_size(this.options.size);
-		this._create_geometry();
-	} else if(this.texture != null) {
-		if(this.texture.loaded) {
-			this.set_size(new phoenix.Vector(this.texture.width,this.texture.height));
-			this._create_geometry();
-		} else this.texture.set_onload(function(_texture) {
-			_g.set_size(new phoenix.Vector(_texture.width,_texture.height));
-			_g._create_geometry();
-		});
-	} else {
-		this.set_size(new phoenix.Vector(64,64));
-		this._create_geometry();
-	}
-};
-luxe.Visual.__name__ = true;
-luxe.Visual.__super__ = luxe.Entity;
-luxe.Visual.prototype = $extend(luxe.Entity.prototype,{
-	_create_geometry: function() {
-		if(this.options.geometry == null) {
-			if(this.options.no_geometry == null || this.options.no_geometry == false) {
-				this._creating_geometry = true;
-				var _batcher = null;
-				if(this.options.no_batcher_add == null || this.options.no_batcher_add == false) {
-					if(this.options.batcher != null) _batcher = this.options.batcher; else _batcher = Luxe.renderer.batcher;
-				}
-				this.set_geometry(new phoenix.geometry.QuadGeometry({ id : this.name + ".visual", x : 0, y : 0, w : this.size.x, h : this.size.y, scale : new phoenix.Vector(1,1,1), texture : this.texture, color : this.color, shader : this.shader, batcher : _batcher, depth : this.options.depth == null?0:this.options.depth, group : this.options.group == null?0:this.options.group, visible : this.options.visible == null?this.visible:this.options.visible}));
-				this._creating_geometry = false;
-				this.on_geometry_created();
-			}
-		} else this.set_geometry(this.options.geometry);
-		if(this.geometry != null) {
-			this.geometry.id = this.name + ".visual";
-			this.geometry.transform.id = this.name + ".visual.transform";
-		}
-		if(this.options.origin != null) {
-			this._has_custom_origin = true;
-			this.set_origin(this.options.origin);
-		}
-		if(this.options.rotation_z != null) this.set_rotation_z(this.options.rotation_z);
-	}
-	,ondestroy: function() {
-		if(this.geometry != null && this.geometry.added) this.geometry.drop(true);
-		this.set_geometry(null);
-		this.set_texture(null);
-	}
-	,on_geometry_created: function() {
-	}
-	,set_visible: function(_v) {
-		this.visible = _v;
-		if(this.geometry != null) this.geometry.set_visible(this.visible);
-		return this.visible;
-	}
-	,set_depth: function(_v) {
-		if(this.geometry != null) this.geometry.set_depth(_v);
-		return this.depth = _v;
-	}
-	,set_group: function(_v) {
-		if(this.geometry != null) this.geometry.set_group(_v);
-		return this.group = _v;
-	}
-	,set_color: function(_c) {
-		if(this.color != null && this.geometry != null) this.geometry.set_color(_c);
-		return this.color = _c;
-	}
-	,set_texture: function(_t) {
-		if(this.geometry != null && this.geometry.get_texture() != _t) this.geometry.set_texture(_t);
-		return this.texture = _t;
-	}
-	,set_shader: function(_s) {
-		if(this.geometry != null && this.geometry.get_shader() != _s) this.geometry.set_shader(_s);
-		return this.shader = _s;
-	}
-	,set_geometry: function(_g) {
-		if(this.geometry == _g) return this.geometry;
-		if(this.geometry != null) this.geometry.drop();
-		this.geometry = _g;
-		if(this.geometry != null) {
-			this.geometry.transform.set_parent(this.transform);
-			if(this._creating_geometry == false) {
-				this.geometry.set_color(this.color);
-				this.geometry.set_group(this.group);
-				this.geometry.set_depth(this.depth);
-				this.geometry.set_visible(this.visible);
-				if(!this.ignore_texture_on_geometry_change) {
-				}
-			}
-		}
-		return this.geometry;
-	}
-	,set_parent_from_transform: function(_parent) {
-		luxe.Entity.prototype.set_parent_from_transform.call(this,_parent);
-		if(this.geometry != null) this.geometry.transform.set_parent(this.transform);
-	}
-	,set_rotation_from_transform: function(_rotation) {
-		luxe.Entity.prototype.set_rotation_from_transform.call(this,_rotation);
-		this._rotation_euler.setEulerFromQuaternion(_rotation,null);
-		this._rotation_quat.copy(_rotation);
-	}
-	,set_size: function(_v) {
-		this.size = _v;
-		if(this.size != null) phoenix.Vector.Listen(this.size,$bind(this,this._size_change));
-		return this.size;
-	}
-	,get_rotation_z: function() {
-		return luxe.utils.Maths.degrees(this.get_radians());
-	}
-	,set_rotation_z: function(_degrees) {
-		this.set_radians(_degrees * 0.017453292519943278);
-		return _degrees;
-	}
-	,set_radians: function(_r) {
-		this._rotation_euler.set_z(_r);
-		this._rotation_quat.setFromEuler(this._rotation_euler);
-		this.set_rotation(this._rotation_quat.clone());
-		return this.radians = _r;
-	}
-	,get_radians: function() {
-		return this.radians;
-	}
-	,set_locked: function(_l) {
-		if(this.geometry != null) this.geometry.set_locked(_l);
-		return this.locked = _l;
-	}
-	,set_clip_rect: function(_val) {
-		if(this.geometry != null) this.geometry.set_clip_rect(_val);
-		return this.clip_rect = _val;
-	}
-	,_size_change: function(_v) {
-		this.set_size(this.size);
-	}
-	,init: function() {
-	}
-	,__class__: luxe.Visual
-	,__properties__: $extend(luxe.Entity.prototype.__properties__,{set_rotation_z:"set_rotation_z",get_rotation_z:"get_rotation_z",set_radians:"set_radians",get_radians:"get_radians",set_clip_rect:"set_clip_rect",set_group:"set_group",set_depth:"set_depth",set_visible:"set_visible",set_color:"set_color",set_shader:"set_shader",set_texture:"set_texture",set_locked:"set_locked",set_geometry:"set_geometry",set_size:"set_size"})
-});
-luxe.Sprite = function(options) {
-	this.flipy = false;
-	this.flipx = false;
-	this.centered = true;
-	this.set_uv(new phoenix.Rectangle());
-	if(options == null) throw "Sprite needs not-null options at the moment";
-	if(options.centered != null) this.set_centered(options.centered);
-	if(options.flipx != null) this.set_flipx(options.flipx);
-	if(options.flipy != null) this.set_flipy(options.flipy);
-	luxe.Visual.call(this,options);
-};
-luxe.Sprite.__name__ = true;
-luxe.Sprite.__super__ = luxe.Visual;
-luxe.Sprite.prototype = $extend(luxe.Visual.prototype,{
-	on_geometry_created: function() {
-		var _g = this;
-		luxe.Visual.prototype.on_geometry_created.call(this);
-		if(this.texture != null) this.texture.set_onload(function(t) {
-			if(_g.options.uv == null) _g.set_uv(new phoenix.Rectangle(0,0,_g.texture.width,_g.texture.height)); else _g.set_uv(_g.options.uv);
-			if(_g.texture.type == luxe.resource.ResourceType.render_texture) _g.set_flipy(true);
-		});
-		this.set_centered(!(!this.centered));
-		this.set_flipx(!(!this.flipx));
-		this.set_flipy(!(!this.flipy));
-	}
-	,set_geometry: function(_g) {
-		this.geometry_quad = _g;
-		return luxe.Visual.prototype.set_geometry.call(this,_g);
-	}
-	,point_inside: function(_p) {
-		if(this.geometry == null) return false;
-		return Luxe.utils.geometry.point_in_geometry(_p,this.geometry);
-	}
-	,point_inside_AABB: function(_p) {
-		if(this.get_pos() == null) return false;
-		if(this.size == null) return false;
-		var _s_x = this.size.x * this.get_scale().x;
-		var _s_y = this.size.y * this.get_scale().y;
-		if(this.centered) {
-			var _hx = _s_x / 2;
-			var _hy = _s_y / 2;
-			if(_p.x < this.get_pos().x - _hx) return false;
-			if(_p.y < this.get_pos().y - _hy) return false;
-			if(_p.x > this.get_pos().x + _s_x - _hx) return false;
-			if(_p.y > this.get_pos().y + _s_y - _hy) return false;
-		} else {
-			if(_p.x < this.get_pos().x) return false;
-			if(_p.y < this.get_pos().y) return false;
-			if(_p.x > this.get_pos().x + _s_x) return false;
-			if(_p.y > this.get_pos().y + _s_y) return false;
-		}
-		return true;
-	}
-	,set_uv: function(_uv) {
-		if(this.geometry_quad != null) this.geometry_quad.uv(_uv);
-		this.uv = _uv;
-		phoenix.Rectangle.listen(this.uv,$bind(this,this._uv_change));
-		return this.uv;
-	}
-	,set_flipy: function(_v) {
-		if(_v == this.flipy) return this.flipy;
-		if(this.geometry_quad != null) this.geometry_quad.set_flipy(_v);
-		return this.flipy = _v;
-	}
-	,set_flipx: function(_v) {
-		if(_v == this.flipx) return this.flipx;
-		if(this.geometry_quad != null) this.geometry_quad.set_flipx(_v);
-		return this.flipx = _v;
-	}
-	,set_size: function(_v) {
-		if(this.geometry_quad != null) {
-			this.geometry_quad.resize(new phoenix.Vector(_v.x,_v.y));
-			if(!this._has_custom_origin) {
-				if(this.centered) this.set_origin(new phoenix.Vector(_v.x,_v.y,_v.z,_v.w).divideScalar(2));
-			}
-		}
-		return luxe.Visual.prototype.set_size.call(this,_v);
-	}
-	,set_centered: function(_c) {
-		if(this.size != null) {
-			if(_c) this.set_origin(new phoenix.Vector(this.size.x / 2,this.size.y / 2)); else this.set_origin(new phoenix.Vector());
-		}
-		return this.centered = _c;
-	}
-	,_uv_change: function(_v) {
-		this.set_uv(this.uv);
-	}
-	,init: function() {
-	}
-	,ondestroy: function() {
-		luxe.Visual.prototype.ondestroy.call(this);
-	}
-	,__class__: luxe.Sprite
-	,__properties__: $extend(luxe.Visual.prototype.__properties__,{set_uv:"set_uv",set_flipy:"set_flipy",set_flipx:"set_flipx",set_centered:"set_centered"})
-});
 luxe.NineSlice = function(_options) {
 	this.added = false;
 	this.midheight = 0.0;
