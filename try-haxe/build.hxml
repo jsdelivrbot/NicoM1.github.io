@@ -1,0 +1,14 @@
+-cp src
+-php app
+-main App
+
+--next
+-cp lib/haxe-bootstrap
+-D noEmbedBootstrap
+-D noEmbedJS
+-cp src
+-js app.js
+# -lib jQueryExtern
+-main App
+-D source-map-content
+-debug

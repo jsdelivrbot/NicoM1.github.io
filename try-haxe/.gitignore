@@ -1,0 +1,7 @@
+app.js
+app.js.map
+app/*
+*.sublime-project
+*.sublime-workspace
+tmp/*
+*.hxproj
