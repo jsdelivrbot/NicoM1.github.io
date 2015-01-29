@@ -112,7 +112,7 @@ Main.display = function(v) {
 	console.log(v);
 };
 Main.main = function() {
-	var url = "http://localhost:2000/remoting.n";
+	var url = "http://localhost:2000/Remoting-Server.n";
 	var cnx = haxe.remoting.HttpAsyncConnection.urlConnect(url);
 	cnx.setErrorHandler(function(err) {
 		console.log("Error: " + Std.string(err));
