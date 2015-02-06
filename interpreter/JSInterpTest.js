@@ -270,6 +270,7 @@ Parser.prototype = {
 		this._loopPoints.push(this._p);
 	}
 	,_restartLoop: function() {
+		this._loops++;
 		if(this._loops > 10000) throw "Possible infinite loop, loops are currently capped at 10000 cycles.";
 		this._p = this._loopPoints.pop();
 	}
