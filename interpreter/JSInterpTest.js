@@ -178,6 +178,9 @@ ListLexer.prototype = $extend(Lexer.prototype,{
 				} else if(this._attempt("/=")) {
 					this._match("/=");
 					return new Token(TokenType.OP,"/=");
+				} else if(this._attempt("%=")) {
+					this._match("%=");
+					return new Token(TokenType.OP,"%=");
 				} else if(this._isLetter()) return this._name(); else if(this._isInt()) return this._int(); else if(this.c == "~") return this._string();
 				throw "Invalid character: " + this.c;
 			}
@@ -396,6 +399,9 @@ ListParser.prototype = $extend(Parser.prototype,{
 				break;
 			case "/=":
 				current = current / $int | 0;
+				break;
+			case "%=":
+				current %= $int;
 				break;
 			}
 			this._symbols.set(symbol,{ text : current == null?"null":"" + current, type : VarType.INT});
