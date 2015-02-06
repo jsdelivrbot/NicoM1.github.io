@@ -454,7 +454,7 @@ ListParser.prototype = $extend(Parser.prototype,{
 			var match2 = this._LT(1).text;
 			this._match(TokenType.STRING);
 			if(this._symbols.get(symbol2).text == match2) return true;
-		}
+		} else throw "Missing condition; Current lookahead: " + this._LT(1).toString() + this._LT(2).toString() + this._LT(3).toString();
 		return false;
 	}
 	,_body: function(action) {
