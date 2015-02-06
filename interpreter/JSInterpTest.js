@@ -43,7 +43,7 @@ Main.main = function() {
 	input.style.height = "" + (window.innerHeight - 100) + "px";
 	var _this1 = window.document;
 	Main.output = _this1.createElement("textarea");
-	Main.output.innerText = "output goes here";
+	Main.output.innerText = "";
 	Main.output.style.width = "" + window.innerWidth / 2 + "px";
 	Main.output.style.height = "" + (window.innerHeight - 100) + "px";
 	var lexer;
