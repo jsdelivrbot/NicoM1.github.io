@@ -25,13 +25,6 @@ HxOverrides.cca = function(s,index) {
 	if(x != x) return undefined;
 	return x;
 };
-HxOverrides.iter = function(a) {
-	return { cur : 0, arr : a, hasNext : function() {
-		return this.cur < this.arr.length;
-	}, next : function() {
-		return this.arr[this.cur++];
-	}};
-};
 var Main = function() { };
 Main.__name__ = true;
 Main.main = function() {
@@ -240,6 +233,7 @@ TokenType.KEY.__enum__ = TokenType;
 TokenType.STRING = ["STRING",7];
 TokenType.STRING.__enum__ = TokenType;
 var Parser = function(input_,k_) {
+	this._loops = 0;
 	this._exiting = false;
 	this._p = 0;
 	this._loopPoints = new Array();
@@ -273,12 +267,15 @@ Parser.prototype = {
 		this._loopPoints.push(this._p);
 	}
 	,_restartLoop: function() {
+		this._loops++;
+		if(this._loops > 10000) throw "Possible infinite loop, loops are currently capped at 10000 cycles.";
 		this._p = this._loopPoints.pop();
 	}
 	,_exitLoop: function() {
 		if(this._loopPoints.length == 0) throw "Attempted to exit a non-existent loop";
 		this._loopPoints.pop();
 		this._exiting = true;
+		if(this._loopPoints.length == 0) this._loops = 0;
 	}
 };
 var VarType = { __ename__ : true, __constructs__ : ["STRING","REF","INT"] };
@@ -289,7 +286,6 @@ VarType.REF.__enum__ = VarType;
 VarType.INT = ["INT",2];
 VarType.INT.__enum__ = VarType;
 var ListParser = function(input) {
-	this._loops = 0;
 	Parser.call(this,input,3);
 };
 ListParser.__name__ = true;
@@ -421,14 +417,9 @@ ListParser.prototype = $extend(Parser.prototype,{
 		var condition = this._equality();
 		this._body(condition && action);
 		if(condition) {
-			this._loops++;
-			if(this._loops > 10000) throw "Possible infinite loop, loops are currently capped at 10000 cycles.";
 			this._restartLoop();
 			return;
-		} else {
-			this._loops = 0;
-			this._exitLoop();
-		}
+		} else this._exitLoop();
 	}
 	,_equality: function() {
 		var sucess = false;
