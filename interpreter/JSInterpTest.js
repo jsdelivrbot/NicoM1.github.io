@@ -28,37 +28,69 @@ HxOverrides.cca = function(s,index) {
 var Main = function() { };
 Main.__name__ = true;
 Main.main = function() {
-	var input;
+	window.document.body.style.backgroundColor = "#1a1a1a";
+	window.document.body.style.height = "" + (window.innerHeight - 30) + "px";
+	window.onresize = function(e) {
+		window.document.body.style.height = "" + (window.innerHeight - 30) + "px";
+	};
+	window.document.body.style.overflow = "hidden";
+	var containter;
 	var _this = window.document;
-	input = _this.createElement("textarea");
-	input.innerHTML = Main.demo;
-	input.style.width = "" + (window.innerWidth / 2 - 50) + "px";
-	input.style.height = "" + (window.innerHeight - 100) + "px";
+	containter = _this.createElement("div");
+	window.document.body.appendChild(containter);
+	containter.style.height = "100%";
+	containter.style.width = "100%";
+	containter.style.overflow = "hidden";
+	var input;
 	var _this1 = window.document;
-	Main.output = _this1.createElement("textarea");
+	input = _this1.createElement("textarea");
+	containter.appendChild(input);
+	input.innerHTML = Main.demo;
+	input.style.width = "50%";
+	input.style.height = "99%";
+	input.style.boxSizing = "border-box";
+	input.style.backgroundColor = "#1a1a1a";
+	input.style.color = "#ecf0f1";
+	input.style.borderColor = "#2b2b2b";
+	input.style.borderWidth = "0px";
+	input.style.resize = "none";
+	input.style.overflow = "hidden";
+	input.style.padding = "15px";
+	input.style.margin = "0px";
+	var _this2 = window.document;
+	Main.output = _this2.createElement("textarea");
+	containter.appendChild(Main.output);
 	Main.output.innerText = "";
-	Main.output.style.width = "" + window.innerWidth / 2 + "px";
-	Main.output.style.height = "" + (window.innerHeight - 100) + "px";
+	Main.output.style.width = "50%";
+	Main.output.style.height = "99%";
+	Main.output.style.boxSizing = "border-box";
+	Main.output.style.width = "50%";
+	Main.output.style.backgroundColor = "#1a1a1a";
+	Main.output.style.color = "#ecf0f1";
+	Main.output.style.borderColor = "#2b2b2b";
+	Main.output.style.borderWidth = "0px";
+	Main.output.style.resize = "none";
+	Main.output.style.overflow = "hidden";
+	Main.output.style.padding = "15px";
+	Main.output.style.margin = "0px";
 	var lexer;
 	var parser;
-	input.addEventListener("input",function(e) {
+	input.addEventListener("input",function(e1) {
 		try {
 			Main.output.innerHTML = "";
 			lexer = new ListLexer(input.value);
 			parser = new ListParser(lexer);
 			parser.stat();
-		} catch( e1 ) {
-			Main.output.innerHTML = Std.string(e1);
+		} catch( e2 ) {
+			Main.output.innerHTML = Std.string(e2);
 		}
 	});
-	window.document.body.appendChild(input);
-	window.document.body.appendChild(Main.output);
 	try {
 		lexer = new ListLexer(input.value);
 		parser = new ListParser(lexer);
 		parser.stat();
-	} catch( e2 ) {
-		Main.output.innerHTML = Std.string(e2);
+	} catch( e3 ) {
+		Main.output.innerHTML = Std.string(e3);
 	}
 };
 var Token = function(type_,text_) {
