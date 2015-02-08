@@ -176,9 +176,6 @@ ListLexer.prototype = $extend(Lexer.prototype,{
 			case ",":
 				this._consume();
 				return new Token(TokenType.COMMA,",");
-			case "=":
-				this._consume();
-				return new Token(TokenType.EQUALS,"=");
 			default:
 				if(this._attempt("should")) {
 					this._match("should");
@@ -198,6 +195,15 @@ ListLexer.prototype = $extend(Lexer.prototype,{
 				} else if(this._attempt("granted")) {
 					this._match("granted");
 					return new Token(TokenType.KEY,"while");
+				} else if(this._attempt("entangles")) {
+					this._match("entangles");
+					return new Token(TokenType.EQUALS,"=");
+				} else if(this._attempt("coincides")) {
+					this._match("coincides");
+					return new Token(TokenType.GRANTED_EQUAL,"==");
+				} else if(this._attempt("coincide")) {
+					this._match("coincide");
+					return new Token(TokenType.EQUAL,"==");
 				} else if(this._attempt("+=")) {
 					this._match("+=");
 					return new Token(TokenType.OP,"+=");
@@ -250,7 +256,7 @@ ListLexer.prototype = $extend(Lexer.prototype,{
 		while(this.c == " " || this.c == "\t" || this.c == "\n" || this.c == "\r") this._consume();
 	}
 });
-var TokenType = { __ename__ : true, __constructs__ : ["EOF","NAME","INT","EQUALS","OP","COMMA","KEY","STRING"] };
+var TokenType = { __ename__ : true, __constructs__ : ["EOF","NAME","INT","EQUALS","EQUAL","GRANTED_EQUAL","OP","COMMA","KEY","STRING"] };
 TokenType.EOF = ["EOF",0];
 TokenType.EOF.__enum__ = TokenType;
 TokenType.NAME = ["NAME",1];
@@ -259,13 +265,17 @@ TokenType.INT = ["INT",2];
 TokenType.INT.__enum__ = TokenType;
 TokenType.EQUALS = ["EQUALS",3];
 TokenType.EQUALS.__enum__ = TokenType;
-TokenType.OP = ["OP",4];
+TokenType.EQUAL = ["EQUAL",4];
+TokenType.EQUAL.__enum__ = TokenType;
+TokenType.GRANTED_EQUAL = ["GRANTED_EQUAL",5];
+TokenType.GRANTED_EQUAL.__enum__ = TokenType;
+TokenType.OP = ["OP",6];
 TokenType.OP.__enum__ = TokenType;
-TokenType.COMMA = ["COMMA",5];
+TokenType.COMMA = ["COMMA",7];
 TokenType.COMMA.__enum__ = TokenType;
-TokenType.KEY = ["KEY",6];
+TokenType.KEY = ["KEY",8];
 TokenType.KEY.__enum__ = TokenType;
-TokenType.STRING = ["STRING",7];
+TokenType.STRING = ["STRING",9];
 TokenType.STRING.__enum__ = TokenType;
 var Parser = function(input_,k_) {
 	this._loops = 0;
@@ -452,28 +462,31 @@ ListParser.prototype = $extend(Parser.prototype,{
 		if(action == null) action = true;
 		this._markLoop();
 		this._match(TokenType.KEY);
-		var condition = this._equality();
+		var condition = this._equality(true);
 		this._body(condition && action);
 		if(condition) {
 			this._restartLoop();
 			return;
 		} else this._exitLoop();
 	}
-	,_equality: function() {
+	,_equality: function(granted) {
+		if(granted == null) granted = false;
 		var sucess = false;
-		if(this._LA(1) == TokenType.NAME && this._LA(2) == TokenType.EQUALS && this._LA(3) == TokenType.INT) {
+		var equalsymbol;
+		if(granted) equalsymbol = TokenType.GRANTED_EQUAL; else equalsymbol = TokenType.EQUAL;
+		if(this._LA(1) == TokenType.NAME && this._LA(2) == equalsymbol && this._LA(3) == TokenType.INT) {
 			var symbol = this._LT(1).text;
 			if(!this._symbols.exists(symbol)) throw "Symbol not defined: " + symbol;
 			this._match(TokenType.NAME);
-			this._match(TokenType.EQUALS);
+			this._match(equalsymbol);
 			var match = this._LT(1).text;
 			this._match(TokenType.INT);
 			if(this._symbols.get(symbol).text == match) return true;
-		} else if(this._LA(1) == TokenType.NAME && this._LA(2) == TokenType.EQUALS && this._LA(3) == TokenType.NAME) {
+		} else if(this._LA(1) == TokenType.NAME && this._LA(2) == equalsymbol && this._LA(3) == TokenType.NAME) {
 			var symbol1 = this._LT(1).text;
 			if(!this._symbols.exists(symbol1)) throw "Symbol not defined: " + symbol1;
 			this._match(TokenType.NAME);
-			this._match(TokenType.EQUALS);
+			this._match(equalsymbol);
 			var match1 = this._LT(1).text;
 			this._match(TokenType.NAME);
 			var matched = this._symbols.get(match1);
@@ -484,11 +497,11 @@ ListParser.prototype = $extend(Parser.prototype,{
 				if(matched == null) throw "Symbol not defined: " + old.text;
 			}
 			if(this._symbols.get(symbol1).text == matched.text) return true;
-		} else if(this._LA(1) == TokenType.NAME && this._LA(2) == TokenType.EQUALS && this._LA(3) == TokenType.STRING) {
+		} else if(this._LA(1) == TokenType.NAME && this._LA(2) == equalsymbol && this._LA(3) == TokenType.STRING) {
 			var symbol2 = this._LT(1).text;
 			if(!this._symbols.exists(symbol2)) throw "Symbol not defined: " + symbol2;
 			this._match(TokenType.NAME);
-			this._match(TokenType.EQUALS);
+			this._match(equalsymbol);
 			var match2 = this._LT(1).text;
 			this._match(TokenType.STRING);
 			if(this._symbols.get(symbol2).text == match2) return true;
@@ -644,27 +657,27 @@ js.Boot.__string_rec = function(o,s) {
 };
 String.__name__ = true;
 Array.__name__ = true;
-Main.testVariables = "\n\t\ta = 100\n\t\tb = ~TEST~\n\t\tc = b\n\t\td = c\n\t\te = d\n\t";
-Main.testIncorrectVariables = "\n\t\ta = 2a00\t\t\n\t";
-Main.testStrings = "\n\t\ta = ~testing~\n\t";
-Main.testIncorrectStrings = "\n\t\ta = ~testing\n\t";
-Main.testConditionals = "\n\t\ta = 0\n\t\tshould a = 0 cease\n\t";
-Main.testIncorrectConditionals = "\n\t\ta = 0\n\t\tshould a = cease\n\t";
-Main.testNestedConditionals = "\n\t\ta = 100\n\t\tshould a = 0 \n\t\tcease\n\t\totherwise\n\t\tshould a = 100\n\t\t\t\tshould a = 0 cease\n\t\t\t\totherwise cease\n\t\t\tcease\n\t\tcease\n\t";
-Main.testIncorrectNestedConditionals = "\n\t\ta = 100\n\t\tshould a = 0 \n\t\tcease\n\t\totherwise\n\t\t\tshould a = 100\n\t\t\t\tshould a = 0 cease\n\t\t\t\totherwise cease\n\t\tcease\n\t";
-Main.testPrint = "\n\t\ta = ~test~\n\t\tb = 100\n\t\tutter a\n\t\tutter b\n\t\tutter ~test~\n\t\tutter 100\n\t\tc = a\n\t\td = c\n\t\tutter d\n\t";
-Main.testIncorrectPrint = "\n\t\tutter ~test~ = 100\n\t";
+Main.testVariables = "\n\t\ta entangles 100\n\t\tb entangles ~TEST~\n\t\tc entangles b\n\t\td entangles c\n\t\te entangles d\n\t";
+Main.testIncorrectVariables = "\n\t\ta entangles 2a00\t\t\n\t";
+Main.testStrings = "\n\t\ta entangles ~testing~\n\t";
+Main.testIncorrectStrings = "\n\t\ta entangles ~testing\n\t";
+Main.testConditionals = "\n\t\ta entangles 0\n\t\tshould a coincide 0 cease\n\t";
+Main.testIncorrectConditionals = "\n\t\ta entangles 0\n\t\tshould a coincide cease\n\t";
+Main.testNestedConditionals = "\n\t\ta entangles 100\n\t\tshould a coincide 0 \n\t\tcease\n\t\totherwise\n\t\tshould a coincide 100\n\t\t\t\tshould a coincide 0 cease\n\t\t\t\totherwise cease\n\t\t\tcease\n\t\tcease\n\t";
+Main.testIncorrectNestedConditionals = "\n\t\ta entangles 100\n\t\tshould a coincide 0 \n\t\tcease\n\t\totherwise\n\t\t\tshould a coincide 100\n\t\t\t\tshould a coincide 0 cease\n\t\t\t\totherwise cease\n\t\tcease\n\t";
+Main.testPrint = "\n\t\ta entangles ~test~\n\t\tb entangles 100\n\t\tutter a\n\t\tutter b\n\t\tutter ~test~\n\t\tutter 100\n\t\tc entangles a\n\t\td entangles c\n\t\tutter d\n\t";
+Main.testIncorrectPrint = "\n\t\tutter ~test~ coincide 100\n\t";
 Main.testInput = "\n\t\tutter ~Type Something Please:~\n\t\tlisten a\n\t";
 Main.testIncorrectInput = "\n\t\tlisten 100\n\t";
 Main.testConversation = "\n\t\tutter ~So hey, whats up?~\n\t";
-Main.testWhile = "\n\t\ta = 0\n\t\tb = 1\n\t\tgranted a = 0\n\t\t\tutter ~IN LOOP A, 0~\n\t\t\tlisten a\n\t\t\tgranted b = 1\n\t\t\t\tutter ~IN LOOP B, 1~\n\t\t\t\tlisten b\n\t\t\tcease\n\t\tcease\n\t";
-Main.testPlus = "\n\t\ta = 0\n\t\tb = 1\n\t\ta += b\n\t\tutter ~0 + 1 =~\n\t\tutter a\n\t";
-Main.testMinus = "\n\t\ta = 1\n\t\ta -= 1\n\t\tutter ~1 - 1 =~\n\t\tutter a\n\t";
-Main.testMult = "\n\t\ta = 1\n\t\ta *= 2\n\t\tutter ~1 * 2 =~\n\t\tutter a\n\t";
-Main.testDiv = "\n\t\ta = 2\n\t\ta /= 2\n\t\tutter ~2 / 2 =~\n\t\tutter a\n\t";
-Main.testIncrement = "\n\t\ttrue = ~true~\n\t\taccumulator = 0\n\t\tgranted true = ~true~\n\t\t\taccumulator += 1\n\t\t\tutter accumulator\n\t\t\tshould accumulator = 10\n\t\t\t\ttrue = ~false~\n\t\t\tcease\n\t\tcease\n\t\tutter ~done~\n\t";
-Main.testDecrement = "\n\t\ttrue = ~true~\n\t\taccumulator = 10\n\t\tgranted true = ~true~\n\t\t\taccumulator -= 1\n\t\t\tutter accumulator\n\t\t\tshould accumulator = 0\n\t\t\t\ttrue = ~false~\n\t\t\tcease\n\t\tcease\n\t\tutter ~done~\n\t";
-Main.fibionacci = "\n\tutter ~fibionacci~\n\ta = 0\n\tutter a\n\tb = 1\n\tutter b\n\tc = 0\n\toldb = 0\n \n \n\tloops = 10\n\tdo_fib = 1\n\tgranted do_fib = 1\n\t\toldb = b\n\t\tc = 0\n\t\tc += a\n\t\tc += b\n \n\t\tutter c\n \n\t\ta = oldb\n\t\ta += 0\n\t\tb = c\n\t\tb += 0\n \n\t\tloops -= 1\n\t\tshould loops = 0\n\t\t\tdo_fib = 0\n\t\tcease\n\tcease\n\t";
-Main.demo = "utter ~This is a toy.~ \nutter ~~\n\nutter ~It is not nearly complete, is likely full of bugs, and is changing constantly.~ \nutter ~~\n\nutter ~It uses odd/interesting keywords because hey, thesauri are fun right? (I googled that, I had the plural wrong).~\nutter ~~\n \nutter ~If this interests you, let me know what you think/made.~\nutter ~~\n\nutter ~Here are the features of the language:~\nutter ~~\n\nutter ~Variables are declared like (look on code side), and are ALWAYS by reference.~\nutter ~Should you wish to convert an integer reference to the integer itself, you must use var += 0 (for now).~\n\na = 100 \nb = a \nc = ~I'm a string~\n\nutter ~~\n \nutter ~Conditionals (ifs) are replaced with 'should', 'otherwise', and 'cease'.~ utter ~~\n\nshould a = 100 \n\tutter ~Look at code again.~ \n\tutter ~~\ncease \notherwise \n\tutter ~This will not be shown~ \ncease \n\nutter ~Loops (whiles) are replaced with 'granted'.~\nutter ~~\n\ncondition = ~true~\ngranted condition = ~true~\n\ta += 1 \n\tshould a = 110 \n\t\tutter ~Look at code again.~\n\t\tutter ~~\n\t\tcondition = ~false~\n\tcease \ncease\n\nutter ~The only math operators are `+=` `-=` `*=` and `/=`.~\nutter ~They only act on integers.~\nutter ~They only work when used with a variable on the left and an int, or integer referencing variable on the right.~\nutter ~~\n\nutter ~You should really know how to output text by now, if not then figure it out.~\nutter ~~\n\nutter ~There's input too, it is `listen`, but it's not set up on web yet.~\nutter ~~\n\nutter ~I *think* that's all the features so far, but this'll change quick, let me know if you make something cool, or just try it, @nico_m__, ~\nutter ~~\n\nutter ~Enjoy.~";
+Main.testWhile = "\n\t\ta entangles 0\n\t\tb entangles 1\n\t\tgranted a coincides 0\n\t\t\tutter ~IN LOOP A, 0~\n\t\t\tlisten a\n\t\t\tgranted b coincides 1\n\t\t\t\tutter ~IN LOOP B, 1~\n\t\t\t\tlisten b\n\t\t\tcease\n\t\tcease\n\t";
+Main.testPlus = "\n\t\ta entangles 0\n\t\tb entangles 1\n\t\ta += b\n\t\tutter ~0 + 1 =~\n\t\tutter a\n\t";
+Main.testMinus = "\n\t\ta entangles 1\n\t\ta -= 1\n\t\tutter ~1 - 1 =~\n\t\tutter a\n\t";
+Main.testMult = "\n\t\ta entangles 1\n\t\ta *= 2\n\t\tutter ~1 * 2 =~\n\t\tutter a\n\t";
+Main.testDiv = "\n\t\ta entangles 2\n\t\ta /= 2\n\t\tutter ~2 / 2 =~\n\t\tutter a\n\t";
+Main.testIncrement = "\n\t\ttrue entangles ~true~\n\t\taccumulator entangles 0\n\t\tgranted true coincides ~true~\n\t\t\taccumulator += 1\n\t\t\tutter accumulator\n\t\t\tshould accumulator coincide 10\n\t\t\t\ttrue entangles ~false~\n\t\t\tcease\n\t\tcease\n\t\tutter ~done~\n\t";
+Main.testDecrement = "\n\t\ttrue entangles ~true~\n\t\taccumulator entangles 10\n\t\tgranted true coincides ~true~\n\t\t\taccumulator -= 1\n\t\t\tutter accumulator\n\t\t\tshould accumulator coincide 0\n\t\t\t\ttrue entangles ~false~\n\t\t\tcease\n\t\tcease\n\t\tutter ~done~\n\t";
+Main.fibionacci = "\n\tutter ~fibionacci~\n\ta entangles 0\n\tutter a\n\tb entangles 1\n\tutter b\n\tc entangles 0\n\toldb entangles 0\n \n \n\tloops entangles 10\n\tdo_fib entangles 1\n\tgranted do_fib coincide 1\n\t\toldb entangles b\n\t\tc entangles 0\n\t\tc += a\n\t\tc += b\n \n\t\tutter c\n \n\t\ta entangles oldb\n\t\ta += 0\n\t\tb = c\n\t\tb += 0\n \n\t\tloops -= 1\n\t\tshould loops coincide 0\n\t\t\tdo_fib entangles 0\n\t\tcease\n\tcease\n\t";
+Main.demo = "utter ~This is a toy.~ \nutter ~~\n\nutter ~It is not nearly complete, is likely full of bugs, and is changing constantly.~ \nutter ~~\n\nutter ~It uses odd/interesting keywords because hey, thesauri are fun right? (I googled that, I had the plural wrong).~\nutter ~~\n \nutter ~If this interests you, let me know what you think/made.~\nutter ~~\n\nutter ~Here are the features of the language:~\nutter ~~\n\nutter ~Variables are declared like (look on code side), and are ALWAYS by reference.~\nutter ~Should you wish to convert an integer reference to the integer itself, you must use var += 0 (for now).~\n\na entangles 100 \nb entangles a \nc entangles ~I'm a string~\n\nutter ~~\n \nutter ~Conditionals (ifs) are replaced with 'should', 'otherwise', and 'cease'.~ utter ~~\n\nshould a coincide 100 \n\tutter ~Look at code again.~ \n\tutter ~~\ncease \notherwise \n\tutter ~This will not be shown~ \ncease \n\nutter ~Loops (whiles) are replaced with 'granted'.~\nutter ~~\n\ncondition entangles ~true~\ngranted condition coincides ~true~\n\ta += 1 \n\tshould a coincide 110 \n\t\tutter ~Look at code again.~\n\t\tutter ~~\n\t\tcondition entangles ~false~\n\tcease \ncease\n\nutter ~The only math operators are `+=` `-=` `*=` and `/=`.~\nutter ~They only act on integers.~\nutter ~They only work when used with a variable on the left and an int, or integer referencing variable on the right.~\nutter ~~\n\nutter ~You should really know how to output text by now, if not then figure it out.~\nutter ~~\n\nutter ~There's input too, it is `listen`, but it's not set up on web yet.~\nutter ~~\n\nutter ~I *think* that's all the features so far, but this'll change quick, let me know if you make something cool, or just try it, @nico_m__, ~\nutter ~~\n\nutter ~Enjoy.~";
 Main.main();
 })();
