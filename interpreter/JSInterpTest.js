@@ -483,6 +483,7 @@ ListParser.prototype = $extend(Parser.prototype,{
 		var equalsymbol;
 		if(granted) equalsymbol = TokenType.GRANTED_EQUAL; else equalsymbol = TokenType.EQUAL;
 		var type = this._LT(2).text;
+		console.log(type);
 		var secondToken = this._LT(3);
 		var secondValue = null;
 		if(firstToken.type == TokenType.NAME) {
@@ -507,7 +508,7 @@ ListParser.prototype = $extend(Parser.prototype,{
 			secondValue = { type : VarType.INT, text : secondToken.text};
 		} else throw "Expected NAME or STRING or INT for equality expression.";
 		if(type == "==") {
-			if(firstValue == secondValue) return true;
+			if(firstValue.text == secondValue.text) return true;
 		} else if(type == ">") {
 			if(firstValue.type != VarType.INT || secondValue.type != VarType.INT) throw "Dwarf/s may only be used on integers.";
 			if(firstValue.text > secondValue.text) return true;
