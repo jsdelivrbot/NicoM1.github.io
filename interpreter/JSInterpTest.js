@@ -198,15 +198,15 @@ ListLexer.prototype = $extend(Lexer.prototype,{
 				} else if(this._attempt("entangles")) {
 					this._match("entangles");
 					return new Token(TokenType.EQUALS,"=");
-				} else if(this._attempt("coincides")) {
-					this._match("coincides");
-					return new Token(TokenType.GRANTED_EQUAL,"==");
-				} else if(this._attempt("dwarf")) {
-					this._match("dwarf");
-					return new Token(TokenType.EQUAL,">");
 				} else if(this._attempt("dwarfs")) {
 					this._match("dwarfs");
 					return new Token(TokenType.GRANTED_EQUAL,">");
+				} else if(this._attempt("dwarf")) {
+					this._match("dwarf");
+					return new Token(TokenType.EQUAL,">");
+				} else if(this._attempt("coincides")) {
+					this._match("coincides");
+					return new Token(TokenType.GRANTED_EQUAL,"==");
 				} else if(this._attempt("coincide")) {
 					this._match("coincide");
 					return new Token(TokenType.EQUAL,"==");
