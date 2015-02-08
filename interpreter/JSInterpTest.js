@@ -201,6 +201,12 @@ ListLexer.prototype = $extend(Lexer.prototype,{
 				} else if(this._attempt("coincides")) {
 					this._match("coincides");
 					return new Token(TokenType.GRANTED_EQUAL,"==");
+				} else if(this._attempt("dwarf")) {
+					this._match("dwarf");
+					return new Token(TokenType.EQUAL,">");
+				} else if(this._attempt("dwarfs")) {
+					this._match("dwarfs");
+					return new Token(TokenType.GRANTED_EQUAL,">");
 				} else if(this._attempt("coincide")) {
 					this._match("coincide");
 					return new Token(TokenType.EQUAL,"==");
@@ -472,41 +478,51 @@ ListParser.prototype = $extend(Parser.prototype,{
 	,_equality: function(granted) {
 		if(granted == null) granted = false;
 		var sucess = false;
+		var firstToken = this._LT(1);
+		var firstValue = null;
 		var equalsymbol;
 		if(granted) equalsymbol = TokenType.GRANTED_EQUAL; else equalsymbol = TokenType.EQUAL;
-		if(this._LA(1) == TokenType.NAME && this._LA(2) == equalsymbol && this._LA(3) == TokenType.INT) {
-			var symbol = this._LT(1).text;
-			if(!this._symbols.exists(symbol)) throw "Symbol not defined: " + symbol;
+		var type = this._LT(2).text;
+		var secondToken = this._LT(3);
+		var secondValue = null;
+		if(firstToken.type == TokenType.NAME) {
 			this._match(TokenType.NAME);
-			this._match(equalsymbol);
-			var match = this._LT(1).text;
-			this._match(TokenType.INT);
-			if(this._symbols.get(symbol).text == match) return true;
-		} else if(this._LA(1) == TokenType.NAME && this._LA(2) == equalsymbol && this._LA(3) == TokenType.NAME) {
-			var symbol1 = this._LT(1).text;
-			if(!this._symbols.exists(symbol1)) throw "Symbol not defined: " + symbol1;
-			this._match(TokenType.NAME);
-			this._match(equalsymbol);
-			var match1 = this._LT(1).text;
-			this._match(TokenType.NAME);
-			var matched = this._symbols.get(match1);
-			if(matched == null) throw "Symbol not defined: " + match1;
-			while(matched.type == VarType.REF) {
-				var old = matched;
-				matched = this._symbols.get(old.text);
-				if(matched == null) throw "Symbol not defined: " + old.text;
-			}
-			if(this._symbols.get(symbol1).text == matched.text) return true;
-		} else if(this._LA(1) == TokenType.NAME && this._LA(2) == equalsymbol && this._LA(3) == TokenType.STRING) {
-			var symbol2 = this._LT(1).text;
-			if(!this._symbols.exists(symbol2)) throw "Symbol not defined: " + symbol2;
-			this._match(TokenType.NAME);
-			this._match(equalsymbol);
-			var match2 = this._LT(1).text;
+			firstValue = this._resolve(firstToken.text);
+		} else if(firstToken.type == TokenType.STRING) {
 			this._match(TokenType.STRING);
-			if(this._symbols.get(symbol2).text == match2) return true;
+			firstValue = { type : VarType.STRING, text : firstToken.text};
+		} else if(firstToken.type == TokenType.INT) {
+			this._match(TokenType.INT);
+			firstValue = { type : VarType.INT, text : firstToken.text};
+		} else throw "Expected NAME or STRING or INT for equality expression.";
+		this._match(equalsymbol);
+		if(secondToken.type == TokenType.NAME) {
+			this._match(TokenType.NAME);
+			secondValue = this._resolve(secondToken.text);
+		} else if(secondToken.type == TokenType.STRING) {
+			this._match(TokenType.STRING);
+			secondValue = { type : VarType.STRING, text : secondToken.text};
+		} else if(secondToken.type == TokenType.INT) {
+			this._match(TokenType.INT);
+			secondValue = { type : VarType.INT, text : secondToken.text};
+		} else throw "Expected NAME or STRING or INT for equality expression.";
+		if(type == "==") {
+			if(firstValue == secondValue) return true;
+		} else if(type == ">") {
+			if(firstValue.type != VarType.INT || secondValue.type != VarType.INT) throw "Dwarf/s may only be used on integers.";
+			if(firstValue.text > secondValue.text) return true;
 		} else throw "Missing condition; Current lookahead: " + this._LT(1).toString() + this._LT(2).toString() + this._LT(3).toString();
 		return false;
+	}
+	,_resolve: function(ref) {
+		var matched = this._symbols.get(ref);
+		if(matched == null) throw "Symbol not defined: " + ref;
+		while(matched.type == VarType.REF) {
+			var old = matched;
+			matched = this._symbols.get(old.text);
+			if(matched == null) throw "Symbol not defined: " + old.text;
+		}
+		return matched;
 	}
 	,_body: function(action) {
 		if(action == null) action = true;
