@@ -179,37 +179,37 @@ ListLexer.prototype = $extend(Lexer.prototype,{
 			default:
 				if(this._attempt("should")) {
 					this._match("should");
-					return new Token(TokenType.KEY,"if");
+					return new Token(TokenType.KEY,"should");
 				} else if(this._attempt("otherwise")) {
 					this._match("otherwise");
-					return new Token(TokenType.KEY,"else");
+					return new Token(TokenType.KEY,"otherwise");
 				} else if(this._attempt("cease")) {
 					this._match("cease");
-					return new Token(TokenType.KEY,"end");
+					return new Token(TokenType.KEY,"cease");
 				} else if(this._attempt("utter")) {
 					this._match("utter");
-					return new Token(TokenType.KEY,"print");
+					return new Token(TokenType.KEY,"utter");
 				} else if(this._attempt("listen")) {
 					this._match("listen");
-					return new Token(TokenType.KEY,"input");
+					return new Token(TokenType.KEY,"listen");
 				} else if(this._attempt("granted")) {
 					this._match("granted");
-					return new Token(TokenType.KEY,"while");
+					return new Token(TokenType.KEY,"granted");
 				} else if(this._attempt("entangles")) {
 					this._match("entangles");
-					return new Token(TokenType.EQUALS,"=");
+					return new Token(TokenType.ENTANGLES,"entangles");
 				} else if(this._attempt("dwarfs")) {
 					this._match("dwarfs");
-					return new Token(TokenType.GRANTED_EQUAL,">");
+					return new Token(TokenType.COINCIDES,"dwarfs");
 				} else if(this._attempt("dwarf")) {
 					this._match("dwarf");
-					return new Token(TokenType.EQUAL,">");
+					return new Token(TokenType.COINCIDE,"dwarf");
 				} else if(this._attempt("coincides")) {
 					this._match("coincides");
-					return new Token(TokenType.GRANTED_EQUAL,"==");
+					return new Token(TokenType.COINCIDES,"coincides");
 				} else if(this._attempt("coincide")) {
 					this._match("coincide");
-					return new Token(TokenType.EQUAL,"==");
+					return new Token(TokenType.COINCIDE,"coincide");
 				} else if(this._attempt("+=")) {
 					this._match("+=");
 					return new Token(TokenType.OP,"+=");
@@ -262,19 +262,19 @@ ListLexer.prototype = $extend(Lexer.prototype,{
 		while(this.c == " " || this.c == "\t" || this.c == "\n" || this.c == "\r") this._consume();
 	}
 });
-var TokenType = { __ename__ : true, __constructs__ : ["EOF","NAME","INT","EQUALS","EQUAL","GRANTED_EQUAL","OP","COMMA","KEY","STRING"] };
+var TokenType = { __ename__ : true, __constructs__ : ["EOF","NAME","INT","ENTANGLES","COINCIDE","COINCIDES","OP","COMMA","KEY","STRING"] };
 TokenType.EOF = ["EOF",0];
 TokenType.EOF.__enum__ = TokenType;
 TokenType.NAME = ["NAME",1];
 TokenType.NAME.__enum__ = TokenType;
 TokenType.INT = ["INT",2];
 TokenType.INT.__enum__ = TokenType;
-TokenType.EQUALS = ["EQUALS",3];
-TokenType.EQUALS.__enum__ = TokenType;
-TokenType.EQUAL = ["EQUAL",4];
-TokenType.EQUAL.__enum__ = TokenType;
-TokenType.GRANTED_EQUAL = ["GRANTED_EQUAL",5];
-TokenType.GRANTED_EQUAL.__enum__ = TokenType;
+TokenType.ENTANGLES = ["ENTANGLES",3];
+TokenType.ENTANGLES.__enum__ = TokenType;
+TokenType.COINCIDE = ["COINCIDE",4];
+TokenType.COINCIDE.__enum__ = TokenType;
+TokenType.COINCIDES = ["COINCIDES",5];
+TokenType.COINCIDES.__enum__ = TokenType;
 TokenType.OP = ["OP",6];
 TokenType.OP.__enum__ = TokenType;
 TokenType.COMMA = ["COMMA",7];
@@ -345,9 +345,9 @@ ListParser.prototype = $extend(Parser.prototype,{
 	stat: function(action) {
 		if(action == null) action = true;
 		while(this._LA(1) != TokenType.EOF) {
-			if(this._LT(1).text == "end") return;
+			if(this._LT(1).text == "cease") return;
 			var success = false;
-			if(this._LA(1) == TokenType.NAME && this._LA(2) == TokenType.EQUALS && (this._LA(3) == TokenType.NAME || this._LA(3) == TokenType.INT || this._LA(3) == TokenType.STRING)) {
+			if(this._LA(1) == TokenType.NAME && this._LA(2) == TokenType.ENTANGLES && (this._LA(3) == TokenType.NAME || this._LA(3) == TokenType.INT || this._LA(3) == TokenType.STRING)) {
 				success = true;
 				this._assign(action);
 			}
@@ -355,22 +355,22 @@ ListParser.prototype = $extend(Parser.prototype,{
 				success = true;
 				this._operator(action);
 			}
-			if(this._LA(1) == TokenType.KEY && this._LT(1).text == "if") {
+			if(this._LA(1) == TokenType.KEY && this._LT(1).text == "should") {
 				success = true;
 				this._match(TokenType.KEY);
 				this._conditional(action);
 			}
-			if(this._LA(1) == TokenType.KEY && this._LT(1).text == "print") {
+			if(this._LA(1) == TokenType.KEY && this._LT(1).text == "utter") {
 				success = true;
 				this._match(TokenType.KEY);
 				this._print(action);
 			}
-			if(this._LA(1) == TokenType.KEY && this._LT(1).text == "input") {
+			if(this._LA(1) == TokenType.KEY && this._LT(1).text == "listen") {
 				success = true;
 				this._match(TokenType.KEY);
 				this._takeInput(action);
 			}
-			if(this._LA(1) == TokenType.KEY && this._LT(1).text == "while") {
+			if(this._LA(1) == TokenType.KEY && this._LT(1).text == "granted") {
 				success = true;
 				this._while(action);
 			}
@@ -380,24 +380,24 @@ ListParser.prototype = $extend(Parser.prototype,{
 	}
 	,_assign: function(action) {
 		if(action == null) action = true;
-		if(this._LA(1) == TokenType.NAME && this._LA(2) == TokenType.EQUALS && this._LA(3) == TokenType.INT) {
+		if(this._LA(1) == TokenType.NAME && this._LA(2) == TokenType.ENTANGLES && this._LA(3) == TokenType.INT) {
 			var symbol = this._LT(1).text;
 			this._match(TokenType.NAME);
-			this._match(TokenType.EQUALS);
+			this._match(TokenType.ENTANGLES);
 			var value = this._LT(1).text;
 			this._match(TokenType.INT);
 			if(action) this._symbols.set(symbol,{ text : value, type : VarType.INT});
-		} else if(this._LA(1) == TokenType.NAME && this._LA(2) == TokenType.EQUALS && this._LA(3) == TokenType.NAME) {
+		} else if(this._LA(1) == TokenType.NAME && this._LA(2) == TokenType.ENTANGLES && this._LA(3) == TokenType.NAME) {
 			var symbol1 = this._LT(1).text;
 			this._match(TokenType.NAME);
-			this._match(TokenType.EQUALS);
+			this._match(TokenType.ENTANGLES);
 			var value1 = this._LT(1).text;
 			this._match(TokenType.NAME);
 			if(action) this._symbols.set(symbol1,{ text : value1, type : VarType.REF});
-		} else if(this._LA(1) == TokenType.NAME && this._LA(2) == TokenType.EQUALS && this._LA(3) == TokenType.STRING) {
+		} else if(this._LA(1) == TokenType.NAME && this._LA(2) == TokenType.ENTANGLES && this._LA(3) == TokenType.STRING) {
 			var symbol2 = this._LT(1).text;
 			this._match(TokenType.NAME);
-			this._match(TokenType.EQUALS);
+			this._match(TokenType.ENTANGLES);
 			var value2 = this._LT(1).text;
 			this._match(TokenType.STRING);
 			if(action) this._symbols.set(symbol2,{ text : value2, type : VarType.STRING});
@@ -459,7 +459,7 @@ ListParser.prototype = $extend(Parser.prototype,{
 		if(action == null) action = true;
 		var condition = this._equality();
 		this._body(condition && action);
-		if(this._LA(1) == TokenType.KEY && this._LT(1).text == "else") {
+		if(this._LA(1) == TokenType.KEY && this._LT(1).text == "otherwise") {
 			this._match(TokenType.KEY);
 			this._body(!condition && action);
 		}
@@ -481,7 +481,7 @@ ListParser.prototype = $extend(Parser.prototype,{
 		var firstToken = this._LT(1);
 		var firstValue = null;
 		var equalsymbol;
-		if(granted) equalsymbol = TokenType.GRANTED_EQUAL; else equalsymbol = TokenType.EQUAL;
+		if(granted) equalsymbol = TokenType.COINCIDES; else equalsymbol = TokenType.COINCIDE;
 		var type = this._LT(2).text;
 		console.log(type);
 		var secondToken = this._LT(3);
@@ -507,9 +507,9 @@ ListParser.prototype = $extend(Parser.prototype,{
 			this._match(TokenType.INT);
 			secondValue = { type : VarType.INT, text : secondToken.text};
 		} else throw "Expected NAME or STRING or INT for equality expression.";
-		if(type == "==") {
+		if(type == "coincide" || type == "coincides") {
 			if(firstValue.text == secondValue.text) return true;
-		} else if(type == ">") {
+		} else if(type == "dwarf" || type == "dwarfs") {
 			if(firstValue.type != VarType.INT || secondValue.type != VarType.INT) throw "Dwarf/s may only be used on integers.";
 			if(firstValue.text > secondValue.text) return true;
 		} else throw "Missing condition; Current lookahead: " + this._LT(1).toString() + this._LT(2).toString() + this._LT(3).toString();
@@ -528,10 +528,10 @@ ListParser.prototype = $extend(Parser.prototype,{
 	,_body: function(action) {
 		if(action == null) action = true;
 		this.stat(action);
-		if(this._LA(1) == TokenType.KEY && this._LT(1).text == "end") {
+		if(this._LA(1) == TokenType.KEY && this._LT(1).text == "cease") {
 			this._match(TokenType.KEY);
 			this._exiting = false;
-		} else throw "Missing: <'end', KEY>";
+		} else throw "Missing: <'cease', KEY>";
 	}
 	,_print: function(action) {
 		if(action == null) action = true;
@@ -554,7 +554,7 @@ ListParser.prototype = $extend(Parser.prototype,{
 				if(action) this.outputtext(ref.text);
 				this._match(TokenType.NAME);
 			}
-		} else throw "Expectiong <NAME> after print statement; Found: " + this._LT(1).toString();
+		} else throw "Expectiong value after `utter` statement; Found: " + this._LT(1).toString();
 	}
 	,_takeInput: function(action) {
 		if(action == null) action = true;
