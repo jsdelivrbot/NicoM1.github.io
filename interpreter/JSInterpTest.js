@@ -100,8 +100,12 @@ Main._fixSize = function(e) {
 	window.document.body.style.height = "" + (window.innerHeight - 30) + "px";
 	Main.input.style.width = window.document.body.scrollWidth / 2 + "px";
 	Main.output.style.width = window.document.body.scrollWidth / 2 + "px";
+	Main.input.style.height = window.document.body.clientHeight + "px";
+	Main.output.style.height = window.document.body.clientHeight + "px";
 	Main.containter1.style.width = Main.input.scrollWidth + "px";
 	Main.containter2.style.width = Main.output.scrollWidth + "px";
+	Main.containter1.style.height = Main.input.clientHeight + "px";
+	Main.containter2.style.height = Main.output.clientHeight + "px";
 };
 var Token = function(type_,text_) {
 	this.type = type_;
