@@ -78,26 +78,27 @@ Main.main = function() {
 	window.onresize = Main._fixSize;
 	var lexer;
 	var parser;
-	Main.input.addEventListener("input",function(e) {
+	Main.input.oninput = function(e) {
+		console.log("input");
 		try {
-			Main.output.innerHTML = "";
+			Main.output.value = "";
 			lexer = new ListLexer(Main.input.value);
 			parser = new ListParser(lexer);
 			parser.stat();
 		} catch( e1 ) {
-			Main.output.innerHTML = Std.string(e1);
+			Main.output.value = Std.string(e1);
 		}
-	});
+	};
 	try {
 		lexer = new ListLexer(Main.input.value);
 		parser = new ListParser(lexer);
 		parser.stat();
 	} catch( e2 ) {
-		Main.output.innerHTML = Std.string(e2);
+		Main.output.value = Std.string(e2);
 	}
 };
 Main._fixSize = function(e) {
-	window.document.body.style.height = "" + (window.innerHeight - 30) + "px";
+	window.document.body.style.height = "" + window.innerHeight + "px";
 	Main.input.style.width = window.document.body.scrollWidth / 2 + "px";
 	Main.output.style.width = window.document.body.scrollWidth / 2 + "px";
 	Main.input.style.height = window.document.body.clientHeight + "px";
@@ -309,7 +310,7 @@ var Parser = function(input_,k_) {
 Parser.__name__ = true;
 Parser.prototype = {
 	outputtext: function(v) {
-		Main.output.innerHTML = Main.output.value + "\n" + Std.string(v);
+		Main.output.value = Main.output.value + "\n" + Std.string(v);
 	}
 	,_match: function(x) {
 		if(this._LA(1) == x) this._consume(); else throw "Expecting: " + x[0] + "; found" + this._LT(1).toString();
@@ -497,7 +498,6 @@ ListParser.prototype = $extend(Parser.prototype,{
 		var equalsymbol;
 		if(granted) equalsymbol = TokenType.COINCIDES; else equalsymbol = TokenType.COINCIDE;
 		var type = this._LT(2).text;
-		console.log(type);
 		var secondToken = this._LT(3);
 		var secondValue = null;
 		if(firstToken.type == TokenType.NAME) {
