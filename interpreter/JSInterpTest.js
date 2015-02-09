@@ -525,7 +525,7 @@ ListParser.prototype = $extend(Parser.prototype,{
 			if(firstValue.text == secondValue.text) return true;
 		} else if(type == "dwarf" || type == "dwarfs") {
 			if(firstValue.type != VarType.INT || secondValue.type != VarType.INT) throw "Dwarf/s may only be used on integers.";
-			if(firstValue.text > secondValue.text) return true;
+			if(Std.parseInt(firstValue.text) > Std.parseInt(secondValue.text)) return true;
 		} else throw "Missing condition; Current lookahead: " + this._LT(1).toString() + this._LT(2).toString() + this._LT(3).toString();
 		return false;
 	}
@@ -576,10 +576,14 @@ ListParser.prototype = $extend(Parser.prototype,{
 			var symbol = this._LT(1).text;
 			this._match(TokenType.NAME);
 			if(action) {
-				var value = { text : this.input(), type : VarType.STRING};
-				this._symbols.set(symbol,value);
+				var inputT = this._lockForInput();
+				this._symbols.set(symbol,{ text : inputT, type : VarType.STRING});
 			}
 		} else throw "Expecting <NAME> found: " + this._LT(1).toString();
+	}
+	,_lockForInput: function() {
+		var inputT = this.input();
+		return inputT;
 	}
 	,input: function() {
 		return prompt();
