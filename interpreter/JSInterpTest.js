@@ -30,38 +30,39 @@ Main.__name__ = true;
 Main.main = function() {
 	window.document.body.style.backgroundColor = "#1a1a1a";
 	window.document.body.style.height = "" + (window.innerHeight - 30) + "px";
-	window.onresize = function(e) {
-		window.document.body.style.height = "" + (window.innerHeight - 30) + "px";
-	};
 	window.document.body.style.overflow = "hidden";
-	var containter;
 	var _this = window.document;
-	containter = _this.createElement("div");
-	window.document.body.appendChild(containter);
-	containter.style.height = "100%";
-	containter.style.width = "100%";
-	containter.style.overflow = "hidden";
-	var input;
+	Main.containter1 = _this.createElement("div");
+	window.document.body.appendChild(Main.containter1);
+	Main.containter1.style.height = "100%";
+	Main.containter1.style.width = "50%";
+	Main.containter1.style["float"] = "left";
+	Main.containter1.style.overflow = "hidden";
 	var _this1 = window.document;
-	input = _this1.createElement("textarea");
-	containter.appendChild(input);
-	input.innerHTML = Main.demo;
-	input.style.width = "50%";
-	input.style.height = "99%";
-	input.style.boxSizing = "border-box";
-	input.style.backgroundColor = "#1a1a1a";
-	input.style.color = "#ecf0f1";
-	input.style.borderColor = "#2b2b2b";
-	input.style.borderWidth = "0px";
-	input.style.resize = "none";
-	input.style.overflow = "hidden";
-	input.style.padding = "15px";
-	input.style.margin = "0px";
+	Main.containter2 = _this1.createElement("div");
+	window.document.body.appendChild(Main.containter2);
+	Main.containter2.style.height = "100%";
+	Main.containter2.style.width = "50%";
+	Main.containter2.style["float"] = "left";
+	Main.containter2.style.overflow = "hidden";
 	var _this2 = window.document;
-	Main.output = _this2.createElement("textarea");
-	containter.appendChild(Main.output);
+	Main.input = _this2.createElement("textarea");
+	Main.containter1.appendChild(Main.input);
+	Main.input.innerHTML = Main.demo;
+	Main.input.style.height = "99%";
+	Main.input.style.boxSizing = "border-box";
+	Main.input.style.backgroundColor = "#1a1a1a";
+	Main.input.style.color = "#ecf0f1";
+	Main.input.style.borderColor = "#2b2b2b";
+	Main.input.style.borderWidth = "0px";
+	Main.input.style.resize = "none";
+	Main.input.style.overflowY = "scroll";
+	Main.input.style.padding = "15px";
+	Main.input.style.margin = "0px";
+	var _this3 = window.document;
+	Main.output = _this3.createElement("textarea");
+	Main.containter2.appendChild(Main.output);
 	Main.output.innerText = "";
-	Main.output.style.width = "50%";
 	Main.output.style.height = "99%";
 	Main.output.style.boxSizing = "border-box";
 	Main.output.style.width = "50%";
@@ -70,28 +71,37 @@ Main.main = function() {
 	Main.output.style.borderColor = "#2b2b2b";
 	Main.output.style.borderWidth = "0px";
 	Main.output.style.resize = "none";
-	Main.output.style.overflow = "hidden";
+	Main.output.style.overflowY = "scroll";
 	Main.output.style.padding = "15px";
 	Main.output.style.margin = "0px";
+	Main._fixSize(null);
+	window.onresize = Main._fixSize;
 	var lexer;
 	var parser;
-	input.addEventListener("input",function(e1) {
+	Main.input.addEventListener("input",function(e) {
 		try {
 			Main.output.innerHTML = "";
-			lexer = new ListLexer(input.value);
+			lexer = new ListLexer(Main.input.value);
 			parser = new ListParser(lexer);
 			parser.stat();
-		} catch( e2 ) {
-			Main.output.innerHTML = Std.string(e2);
+		} catch( e1 ) {
+			Main.output.innerHTML = Std.string(e1);
 		}
 	});
 	try {
-		lexer = new ListLexer(input.value);
+		lexer = new ListLexer(Main.input.value);
 		parser = new ListParser(lexer);
 		parser.stat();
-	} catch( e3 ) {
-		Main.output.innerHTML = Std.string(e3);
+	} catch( e2 ) {
+		Main.output.innerHTML = Std.string(e2);
 	}
+};
+Main._fixSize = function(e) {
+	window.document.body.style.height = "" + (window.innerHeight - 30) + "px";
+	Main.input.style.width = window.document.body.scrollWidth / 2 + "px";
+	Main.output.style.width = window.document.body.scrollWidth / 2 + "px";
+	Main.containter1.style.width = Main.input.scrollWidth + "px";
+	Main.containter2.style.width = Main.output.scrollWidth + "px";
 };
 var Token = function(type_,text_) {
 	this.type = type_;
