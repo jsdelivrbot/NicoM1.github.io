@@ -37,17 +37,18 @@ header {
 	transition: 1s;
 	
 	margin: 0 0;
+	margin-left: 10px;
 	
 	background-color: #111111;
 	
-	text-align: center;
+	text-align: left;
 	font-family: 'Oswald', sans-serif;
 	font-weight: 700;
-	font-size: 72px;
+	font-size: 22px;
 	
 	@media only screen and (max-width: $breakpoint-one) {
-		font-size: 28px;
-		padding: 10px 10px;
+		//font-size: 28px;
+		//padding: 10px 10px;
 	}
 	
 	a {
@@ -77,24 +78,24 @@ header {
 		width: 100%;
 		
 		@media only screen and (max-width: $breakpoint-one){
-			line-height: 72px;
+			//line-height: 72px;
 		}
 		
 		span {
 			transition: 1s;
 			
 			white-space: nowrap;
-			font-size: 72px;
+			font-size: 24px;
 			
 			@media only screen and (min-width: $breakpoint-four){
 				//float: right;
-				margin-right: 70px;
+				//margin-right: 70px;
 			}
-			@media only screen and (max-width: $breakpoint-four){
-				font-size: 40px;
+			//@media only screen and (max-width: $breakpoint-four){
+				//font-size: 40px;
 				margin-top: 0px;
 				margin-bottom: 0px;
-			}
+			//}
 			
 			margin-right: 15px;
 			
