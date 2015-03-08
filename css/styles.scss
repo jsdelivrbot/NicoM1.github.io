@@ -60,7 +60,7 @@ header {
 		}
 		&:hover {
 			color: $text-col;
-			text-shadow: 3px 3px darken($text-col, 20%);;
+			text-shadow: 1px 1px darken($text-col, 20%);;
 		}
 		&:active {
 			color: darken($text-col, 20%);
@@ -108,7 +108,7 @@ header {
 					color: $sep-col;
 				}
 				&:hover {
-					text-shadow: 3px 3px $link-shadow;
+					text-shadow: 1px 1px $link-shadow;
 				}
 				&:active {
 					color: darken($sep-col, 20%);

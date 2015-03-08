@@ -32,7 +32,7 @@ header {
       color: #fefefe; }
     header a:hover {
       color: #fefefe;
-      text-shadow: 3px 3px #cbcbcb; }
+      text-shadow: 1px 1px #cbcbcb; }
     header a:active {
       color: #cbcbcb; }
   header h1 {
@@ -56,7 +56,7 @@ header {
         header h1 span a:visited {
           color: #72d572; }
         header h1 span a:hover {
-          text-shadow: 3px 3px #3c6520; }
+          text-shadow: 1px 1px #3c6520; }
         header h1 span a:active {
           color: #34ad34; }
 
