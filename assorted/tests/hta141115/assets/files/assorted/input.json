@@ -1,0 +1,166 @@
+{
+    "actions": [
+
+        {
+            "name": "main_exit",
+            "codes": ["escape"]
+        },
+        {
+            "name": "main_togglefullscreen",
+            "codes": ["key_9"]
+        },
+        {
+            "name": "main_toggleborderless",
+            "codes": ["key_0"]
+        },
+
+
+
+        {
+            "name": "debug_toggledebug",
+            "codes": ["tab"]
+        },
+        {
+            "name": "debug_addenemy",
+            "codes": ["key_1"]
+        },
+        {
+            "name": "debug_addtrap",
+            "codes": ["key_2"]
+        },
+        {
+            "name": "debug_addtest",
+            "codes": ["key_3"]
+        },
+
+
+
+
+        {
+            "name": "player_left",
+            "codes": ["key_a", "left"]
+        },
+        {
+            "name": "player_right",
+            "codes": ["key_d", "right"]
+        },
+        {
+            "name": "player_down",
+            "codes": ["key_s", "down"]
+        },
+        {
+            "name": "player_jump",
+            "codes": ["key_j", "key_z", "space"]
+        },
+        {
+            "name": "player_attack",
+            "codes": ["key_x", "key_k"]
+        },
+
+
+
+
+        {
+            "name": "editor_mod_shift",
+            "codes": ["lshift"]
+        },
+        {
+            "name": "editor_reset",
+            "codes": ["kp_period"]
+        },
+        {
+            "name": "editor_toggleedit",
+            "codes": ["key_e"]
+        },
+        {
+            "name": "editor_togglevisual",
+            "codes": ["key_v"]
+        },
+        {
+            "name": "editor_toggleoverlay",
+            "codes": ["key_c"]
+        },
+        {
+            "name": "editor_toggleinspect",
+            "codes": ["key_i"]
+        },
+        {
+            "name": "editor_loadmap",
+            "codes": ["key_6"]
+        },
+        {
+            "name": "editor_savemap",
+            "codes": ["key_5"]
+        },
+        {
+            "name": "editor_multiselect",
+            "codes": ["lshift"]
+        },
+        {
+            "name": "editor_lock90",
+            "codes": ["lctrl"]
+        },
+        {
+            "name": "editor_snap",
+            "codes": ["lalt"]
+        },
+        {
+            "name": "editor_slide",
+            "codes": ["ralt"]
+        },
+        {
+            "name": "editor_portal",
+            "codes": ["key_p"]
+        },
+        {
+            "name": "editor_delete",
+            "codes": ["key_x", "delete"]
+        },
+        {
+            "name": "editor_nextstamp",
+            "codes": ["up"]
+        },
+        {
+            "name": "editor_previousstamp",
+            "codes": ["down"]
+        },
+        {
+            "name": "editor_playerstart",
+            "codes": ["key_b"]
+        },
+
+
+
+        {
+            "name": "visual_increasedepth",
+            "codes": ["period"]
+        },
+        {
+            "name": "visual_decreasedepth",
+            "codes": ["comma"]
+        },
+        {
+            "name": "visual_flipx",
+            "codes": ["leftbracket"]
+        },
+        {
+            "name": "visual_flipy",
+            "codes": ["rightbracket"]
+        },
+        {
+            "name": "visual_rotatecw",
+            "codes": ["key_p"]
+        },
+        {
+            "name": "visual_rotateccw",
+            "codes": ["key_o"]
+        },
+
+
+
+        {
+            "name": "camera_lock",
+            "codes": ["lshift"]
+        }
+    ]
+}
