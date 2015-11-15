@@ -1,0 +1,24 @@
+{
+	"brushes": [
+		{"art": "assets/art/stamps/stamp.png", "w": "214", "h": "252"},
+		{"art": "assets/art/stamps/mockup.png", "w": "960", "h": "640"},
+		{"art": "assets/art/stamps/Stamps256x256_0.png", "w": "256", "h": "256"},
+		{"art": "assets/art/stamps/Stamps256x256_1.png", "w": "256", "h": "256"},
+		{"art": "assets/art/stamps/Stamps256x256_2.png", "w": "256", "h": "256"},
+		{"art": "assets/art/stamps/Stamps256x256_3.png", "w": "256", "h": "256"},
+		{"art": "assets/art/stamps/Stamps256x256_4.png", "w": "256", "h": "256"},
+		{"art": "assets/art/stamps/Stamps64x64_00.png", "w": "64", "h": "64"},
+		{"art": "assets/art/stamps/Stamps64x64_01.png", "w": "64", "h": "64"},
+		{"art": "assets/art/stamps/Stamps64x64_02.png", "w": "64", "h": "64"},
+		{"art": "assets/art/stamps/Stamps64x64_03.png", "w": "64", "h": "64"},
+		{"art": "assets/art/stamps/Stamps64x64_04.png", "w": "64", "h": "64"},
+		{"art": "assets/art/stamps/Stamps64x64_05.png", "w": "64", "h": "64"},
+		{"art": "assets/art/stamps/Stamps64x64_06.png", "w": "64", "h": "64"},
+		{"art": "assets/art/stamps/Stamps64x64_07.png", "w": "64", "h": "64"},
+		{"art": "assets/art/stamps/Stamps64x64_08.png", "w": "64", "h": "64"},
+		{"art": "assets/art/stamps/Stamps64x64_09.png", "w": "64", "h": "64"},
+		{"art": "assets/art/stamps/Stamps64x64_10.png", "w": "64", "h": "64"},
+		{"art": "assets/art/stamps/Stamps64x64_11.png", "w": "64", "h": "64"},
+		{"art": "assets/art/stamps/Stamps64x64_12.png", "w": "64", "h": "64"}
+	]
+}

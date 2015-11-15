@@ -1,0 +1,8 @@
+{
+	"smush": {
+		"frame_size": {"x": "256", "y": "128"},
+		"frameset": ["1-4", "hold 2", "5", "hold 2", "6", "hold 5", "7-8", "2-1"],
+		"loop": "false",
+		"speed": "16"
+	}
+}

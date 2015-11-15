@@ -1,0 +1,409 @@
+{
+	"colliders": [
+		{
+			"h": 74,
+			"x": -117.081171157064,
+			"w": 790,
+			"y": 230.655164722687
+		},
+		{
+			"h": 45,
+			"x": -107.081171157064,
+			"w": 107,
+			"y": 286.652782373457
+		},
+		{
+			"h": 165,
+			"x": -5.08117115706375,
+			"w": 100,
+			"y": 305.652782373457
+		},
+		{
+			"h": 102,
+			"x": 92.9188288429363,
+			"w": 423,
+			"y": 305.652782373457
+		},
+		{
+			"h": 80,
+			"x": 145.918828842936,
+			"w": 254,
+			"y": 404.652782373457
+		},
+		{
+			"h": 50,
+			"x": 396.918828842936,
+			"w": 116,
+			"y": 406.652782373457
+		},
+		{
+			"h": 72,
+			"x": 450.918828842936,
+			"w": 72,
+			"y": 455.652782373457
+		},
+		{
+			"h": 15.0002275824571,
+			"x": -271.75134842887,
+			"w": 2600.28477912046,
+			"y": 623.488851708876
+		},
+		{
+			"h": 89,
+			"x": 825.52126666421,
+			"w": 226,
+			"y": 300.482398671497
+		},
+		{
+			"h": 116,
+			"x": 968.52126666421,
+			"w": 246,
+			"y": 389.482398671497
+		},
+		{
+			"h": 254,
+			"x": 1047.52126666421,
+			"w": 254,
+			"y": 181.482398671497
+		},
+		{
+			"h": 77,
+			"x": 823.52126666421,
+			"w": 210,
+			"y": 15.5245896797537
+		},
+		{
+			"h": 84,
+			"x": 623.52126666421,
+			"w": 198,
+			"y": -139.517601328503
+		},
+		{
+			"h": 137,
+			"x": 673.52126666421,
+			"w": 100,
+			"y": -57.5176013285031
+		},
+		{
+			"h": 82,
+			"x": 1117.48408714476,
+			"w": 300,
+			"y": -281.886444411328
+		},
+		{
+			"h": 201,
+			"x": 1237.48408714476,
+			"w": 180,
+			"y": -200.886444411328
+		},
+		{
+			"h": 42,
+			"x": 1261.48408714476,
+			"w": 219,
+			"y": -12.8864444113278
+		},
+		{
+			"h": 131,
+			"x": 1411.48408714476,
+			"w": 67,
+			"y": -142.886444411328
+		},
+		{
+			"h": 324,
+			"x": 1869.90577885892,
+			"w": 36,
+			"y": -279.213358339836
+		},
+		{
+			"h": 327,
+			"x": 1746.90577885892,
+			"w": 45,
+			"y": -280.213358345062
+		},
+		{
+			"h": 16,
+			"x": 2005.90577885892,
+			"w": 47,
+			"y": -280.206547271262
+		},
+		{
+			"h": 178,
+			"x": 577.905778858918,
+			"w": 93,
+			"y": 398.786641654938
+		},
+		{
+			"h": 16.0000000000001,
+			"x": 2224.93480882245,
+			"w": 60,
+			"y": -282.344835277314
+		},
+		{
+			"h": 493,
+			"x": -121.049855328563,
+			"w": 15,
+			"y": -261.344835277848
+		},
+		{
+			"h": 187,
+			"x": 650.950144671437,
+			"w": 16,
+			"y": -56.3448352773133
+		}
+	],
+	"visuals": [
+		{
+			"h": 252,
+			"x": -126,
+			"y": 123,
+			"flipx": false,
+			"art": "assets/art/stamp.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 214
+		},
+		{
+			"h": 256,
+			"x": 4,
+			"y": 199,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_4.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 146,
+			"y": 230,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_0.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": -59,
+			"y": 260,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_4.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 320,
+			"y": 198,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_4.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 354,
+			"y": 296,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_1.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 260,
+			"y": 281,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_2.png",
+			"depth": -3,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 436,
+			"y": 143,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_3.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 577,
+			"y": -153,
+			"flipx": true,
+			"art": "assets/art/Stamps256x256_1.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 613,
+			"y": -153,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_1.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 589,
+			"y": -228,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_2.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 803,
+			"y": 211,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_3.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 876,
+			"y": 266,
+			"flipx": true,
+			"art": "assets/art/Stamps256x256_4.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 982,
+			"y": 326,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_2.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 1047,
+			"y": 180,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_0.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 252,
+			"x": 823,
+			"y": -89,
+			"flipx": false,
+			"art": "assets/art/stamp.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 214
+		},
+		{
+			"h": 256,
+			"x": 1096,
+			"y": -369,
+			"flipx": true,
+			"art": "assets/art/Stamps256x256_3.png",
+			"depth": 0,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 1136,
+			"y": -314,
+			"flipx": true,
+			"art": "assets/art/Stamps256x256_4.png",
+			"depth": -1,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 1209,
+			"y": -293,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_1.png",
+			"depth": -3,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 1259,
+			"y": -293,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_1.png",
+			"depth": -2,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 1280,
+			"y": -175,
+			"flipx": true,
+			"art": "assets/art/Stamps256x256_4.png",
+			"depth": -3,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 1181,
+			"y": -267,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_4.png",
+			"depth": -3,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		},
+		{
+			"h": 256,
+			"x": 1203,
+			"y": -153,
+			"flipx": false,
+			"art": "assets/art/Stamps256x256_2.png",
+			"depth": -4,
+			"flipy": false,
+			"rotation": 0,
+			"w": 256
+		}
+	]
+}
