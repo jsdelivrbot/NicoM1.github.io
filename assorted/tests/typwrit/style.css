@@ -1,0 +1,10 @@
+body {
+	background-color: rgb(243, 234, 219);
+	font-family: 'special_eliteregular';
+	text-align: center;
+}
+
+p {
+	margin-top: 25vh;
+	white-space: pre-line;
+}
