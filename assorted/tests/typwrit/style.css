@@ -8,3 +8,14 @@ p {
 	margin-top: 25vh;
 	white-space: pre-line;
 }
+
+a {
+	text-decoration: underline;
+	margin-left: 25px;
+	margin-right: 25px;
+}
+
+a:hover {
+	cursor: pointer;
+	color: rgb(75,0,0);
+}
