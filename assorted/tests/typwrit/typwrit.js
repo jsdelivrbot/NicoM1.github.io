@@ -156,6 +156,7 @@ Typwrit.prototype = {
 			++_g;
 			o.innerHTML = "";
 			o.style.display = "none";
+			o.blur();
 		}
 	}
 };

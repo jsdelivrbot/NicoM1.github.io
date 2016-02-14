@@ -146,6 +146,7 @@ Bye.
 		for(o in options) {
 			o.innerHTML = '';
 			o.style.display = 'none';
+			o.blur();
 		}
 	}
 
