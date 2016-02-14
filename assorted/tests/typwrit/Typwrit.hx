@@ -15,17 +15,9 @@ class Typwrit {
 	var options: Array<AnchorElement> = [];
 
 	var convoIDs: Map<String, ConvoNode> = new Map();
+	var values: Map<String, String> = new Map();
 
-	var text =
-"
-Test.
-
-So this appears to be working?
-
-Do you hear me now?
-
-Bye.
-";
+	var typeIndex = 0;
 
 	var convo: ConvoNode = {
 		id: 'first',
@@ -39,23 +31,54 @@ Bye.
 
 		*tap* *tap*
 		',
-		responses: [
-			{
-				response: 'Seems like it.',
-				prompt: 'Oh, uh, ok.',
-				responses: [
-					{
-						response: 'uh, ok, and?',
-						switchTo: 'first'
-					},
-					{
-						response: 'yeah continue.',
-						switchTo: 'first'
-					}
-				]
-			}
-		]
-	}
+		responses: [{
+			response: 'Seems like it.',
+			prompt: 'Oh, uh, ok.',
+			responses: [{
+				response: 'Uh, ok, and?',
+				id: 'interviewstart',
+				prompt: '
+				Normally we would conduct this in person,
+				but you understand.
+
+				In these circumstances.
+				',
+				responses: [{
+					response: '...',
+					prompt: "
+					I'm equally out of my element here,
+					sorry,
+
+					give me a minute to find my notes.
+					",
+					responses: [{
+						response: 'Uh, ok.',
+						prompt: '
+						...
+						.....
+
+						Sorry I mixed up my files,
+
+						What was your name?
+						',
+						responses: [{
+							response: 'John Doe',
+							setVal: [
+								{k:'firstname', v:'John'},
+								{k:'lastname', v:'Doe'}],
+							id: 'gotname',
+							prompt: 'Ok *(firstname)*.'
+						},{
+							response: 'Jack Turner',
+							setVal: [
+								{k:'firstname', v:'Jack'},
+								{k:'lastname', v:'Turner'}],
+							switchTo: 'gotname'
+						}]}]}]
+			},{
+				response: 'Yeah continue.',
+				switchTo: 'interviewstart'
+	}]}]}
 
 	public function new() {
 		Browser.window.onload = ready;
@@ -83,12 +106,20 @@ Bye.
 		}
 	}
 
-	function playConvo(convo: ConvoNode) {
+	function playConvo(convo: ConvoNode, ?ignoreVals: Bool = false) {
 		resetTypewriter();
 		var curnode = convo;
+		if(!ignoreVals) {
+			if(curnode.setVal != null) {
+				for(s in curnode.setVal) {
+					values[s.k] = s.v;
+				}
+				trace(values);
+			}
+		}
 		if(curnode.switchTo != null) {
 			if(convoIDs[curnode.switchTo] != null) {
-				playConvo(convoIDs[curnode.switchTo]);
+				playConvo(convoIDs[curnode.switchTo], ignoreVals);
 				return;
 			}
 			else {
@@ -102,7 +133,6 @@ Bye.
 					return;
 				}
 				options[i].onkeypress = function(code) {
-					trace(code);
 					if(code.which == 13 || code.keyCode == 13) {
 						playConvo(curnode.responses[i]);
 						return;
@@ -117,28 +147,40 @@ Bye.
 			}
 		}
 		if(curnode.prompt != null) {
-			trace(curnode.prompt);
-			typeLetters(curnode.prompt.trim(), page, function() {
+			typeLetters(replaceText(curnode.prompt), page, function() {
 				playResponses(curnode);
-			});
+			}, ++typeIndex);
 		}
 	}
 
 	function playResponses(convo: ConvoNode, ?index: Int = 0) {
-		if(index >= convo.responses.length) {
+		if(convo.responses == null || index >= convo.responses.length) {
 			return;
 		}
-		typeLetters(convo.responses[index].response, options[index], playResponses.bind(convo, ++index));
+		typeLetters(convo.responses[index].response, options[index], playResponses.bind(convo, ++index), ++typeIndex);
 	}
 
-	function typeLetters(message: String, element: Element, ?onComplete: Void -> Void) {
+	function typeLetters(message: String, element: Element, ?onComplete: Void -> Void, ?curIndex: Int = null) {
+		if(curIndex != null) {
+			if(curIndex != typeIndex) return;
+		}
 		if(message.length == 0) {
 			onComplete();
 			return;
 		}
 		element.innerHTML += message.charAt(0);
 		message = message.substr(1);
-		Timer.delay(typeLetters.bind(message, element, onComplete), Std.int(50 + Math.random()*20));
+		Timer.delay(typeLetters.bind(message, element, onComplete, curIndex), Std.int(50 + Math.random()*20));
+	}
+
+	function replaceText(text: String): String {
+		text = text.trim();
+		var replaceEReg: EReg = ~/\*\((.*?)\)\*/;
+		if(replaceEReg.match(text)) {
+			trace(replaceEReg.matched(0));
+			text = replaceEReg.replace(text, values[replaceEReg.matched(1)]);
+		}
+		return text;
 	}
 
 	function resetTypewriter() {
@@ -160,5 +202,6 @@ typedef ConvoNode = {
 	?response: String,
 	?responses: Array<ConvoNode>,
 	?id: String,
-	?switchTo: String
+	?switchTo: String,
+	?setVal: Array<{k: String, v: String}>
 }
