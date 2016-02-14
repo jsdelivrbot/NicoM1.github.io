@@ -80,7 +80,7 @@ StringTools.trim = function(s) {
 	return StringTools.ltrim(StringTools.rtrim(s));
 };
 var Typwrit = function() {
-	this.convo = { id : "first", prompt : "\r\n\t\t*cough*\r\n\r\n\t\t*ahem*\r\n\r\n\t\tIs this thing on?\r\n\r\n\t\t*tap* *tap*\r\n\t\t", responses : [{ response : "Seems like it.", prompt : "Oh, uh, ok.", responses : [{ response : "Uh, ok, and?", id : "interviewstart", prompt : "\r\n\t\t\t\tNormally we would conduct this in person,\r\n\t\t\t\tbut you understand.\r\n\r\n\t\t\t\tIn these circumstances.\r\n\t\t\t\t", responses : [{ response : "...", prompt : "\r\n\t\t\t\t\tI'm equally out of my element here,\r\n\t\t\t\t\tsorry,\r\n\r\n\t\t\t\t\tgive me a minute to find my notes.\r\n\t\t\t\t\t", responses : [{ response : "Uh, ok.", prompt : "\r\n\t\t\t\t\t\t...\r\n\t\t\t\t\t\t.....\r\n\r\n\t\t\t\t\t\tSorry I mixed up my files,\r\n\r\n\t\t\t\t\t\tWhat was your name?\r\n\t\t\t\t\t\t", responses : [{ response : "John Doe", setVal : [{ k : "firstname", v : "John"},{ k : "lastname", v : "Doe"}], id : "gotname", prompt : "Ok *(firstname)*."},{ response : "Jack Turner", setVal : [{ k : "firstname", v : "Jack"},{ k : "lastname", v : "Turner"}], switchTo : "gotname"}]}]}]},{ response : "Yeah continue.", switchTo : "interviewstart"}]}]};
+	this.convo = { id : "first", prompt : "\r\n\t\t*cough*\r\n\r\n\t\t*ahem*\r\n\r\n\t\tIs this thing on?\r\n\r\n\t\t*tap* *tap*\r\n\t\t", responses : [{ response : "Seems like it.", prompt : "Oh, uh, ok.", responses : [{ response : "Uh, ok, and?", id : "interviewstart", prompt : "\r\n\t\t\t\tNormally we would conduct this in person,\r\n\t\t\t\tbut you understand.\r\n\r\n\t\t\t\tIn these circumstances.\r\n\t\t\t\t", responses : [{ response : "...", prompt : "\r\n\t\t\t\t\tI'm equally out of my element here,\r\n\t\t\t\t\tsorry,\r\n\r\n\t\t\t\t\tgive me a minute to find my notes.\r\n\t\t\t\t\t", responses : [{ response : "Uh, ok.", prompt : "\r\n\t\t\t\t\t\t...\r\n\t\t\t\t\t\t.....\r\n\r\n\t\t\t\t\t\tSorry I mixed up my files,\r\n\r\n\t\t\t\t\t\tWhat was your name?\r\n\t\t\t\t\t\t", responses : [{ id : "gotname", response : "John Doe", setVal : [{ k : "firstname", v : "John"},{ k : "lastname", v : "Doe"}], prompt : "Ok *(firstname)*."},{ response : "Jack Turner", setVal : [{ k : "firstname", v : "Jack"},{ k : "lastname", v : "Turner"}], switchTo : "gotname"}]}]}]},{ response : "Yeah continue.", switchTo : "interviewstart"}]}]};
 	this.typeIndex = 0;
 	this.values = new haxe_ds_StringMap();
 	this.convoIDs = new haxe_ds_StringMap();
@@ -136,7 +136,7 @@ Typwrit.prototype = {
 		}
 		if(curnode.switchTo != null) {
 			if(this.convoIDs.get(curnode.switchTo) != null) {
-				this.playConvo(this.convoIDs.get(curnode.switchTo),ignoreVals);
+				this.playConvo(this.convoIDs.get(curnode.switchTo),true);
 				return;
 			} else throw new js__$Boot_HaxeError("convoid: " + "'" + curnode.switchTo + "'" + " not defined.");
 		}

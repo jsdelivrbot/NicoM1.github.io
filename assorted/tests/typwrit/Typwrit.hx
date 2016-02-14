@@ -62,11 +62,11 @@ class Typwrit {
 						What was your name?
 						',
 						responses: [{
+							id: 'gotname',
 							response: 'John Doe',
 							setVal: [
 								{k:'firstname', v:'John'},
 								{k:'lastname', v:'Doe'}],
-							id: 'gotname',
 							prompt: 'Ok *(firstname)*.'
 						},{
 							response: 'Jack Turner',
@@ -119,7 +119,7 @@ class Typwrit {
 		}
 		if(curnode.switchTo != null) {
 			if(convoIDs[curnode.switchTo] != null) {
-				playConvo(convoIDs[curnode.switchTo], ignoreVals);
+				playConvo(convoIDs[curnode.switchTo], true);
 				return;
 			}
 			else {
