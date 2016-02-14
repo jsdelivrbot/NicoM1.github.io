@@ -45,7 +45,7 @@ StringTools.trim = function(s) {
 	return StringTools.ltrim(StringTools.rtrim(s));
 };
 var Typwrit = function() {
-	this.convo = { id : "first", prompt : "\r\n\t\t*cough*\r\n\r\n\t\t*ahem*\r\n\r\n\t\tIs this thing on?\r\n\r\n\t\t*tap* *tap*\r\n\t\t", responses : [{ response : "Seems like it.", prompt : "Oh, uh, ok.", responses : [{ response : "uh, ok, and?", switchTo : "first"}]}]};
+	this.convo = { id : "first", prompt : "\r\n\t\t*cough*\r\n\r\n\t\t*ahem*\r\n\r\n\t\tIs this thing on?\r\n\r\n\t\t*tap* *tap*\r\n\t\t", responses : [{ response : "Seems like it.", prompt : "Oh, uh, ok.", responses : [{ response : "uh, ok, and?", switchTo : "first"},{ response : "yeah continue.", switchTo : "first"}]}]};
 	this.convoIDs = new haxe_ds_StringMap();
 	this.options = [];
 	window.onload = $bind(this,this.ready);
@@ -98,6 +98,15 @@ Typwrit.prototype = {
 						return;
 					};
 				})(i);
+				this.options[i[0]].onkeypress = (function(i) {
+					return function(code) {
+						console.log(code);
+						if(code.which == 13 || code.keyCode == 13) {
+							_g2.playConvo(curnode.responses[i[0]]);
+							return;
+						}
+					};
+				})(i);
 				this.options[i[0]].style.display = null;
 			}
 			if(this.options.length > curnode.responses.length) {
@@ -146,6 +155,7 @@ Typwrit.prototype = {
 			var o = _g1[_g];
 			++_g;
 			o.innerHTML = "";
+			o.style.display = "none";
 		}
 	}
 };

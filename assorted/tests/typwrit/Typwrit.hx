@@ -47,6 +47,10 @@ Bye.
 					{
 						response: 'uh, ok, and?',
 						switchTo: 'first'
+					},
+					{
+						response: 'yeah continue.',
+						switchTo: 'first'
 					}
 				]
 			}
@@ -97,6 +101,13 @@ Bye.
 					playConvo(curnode.responses[i]);
 					return;
 				}
+				options[i].onkeypress = function(code) {
+					trace(code);
+					if(code.which == 13 || code.keyCode == 13) {
+						playConvo(curnode.responses[i]);
+						return;
+					}
+				}
 				options[i].style.display = null;
 			}
 			if(options.length > curnode.responses.length) {
@@ -134,6 +145,7 @@ Bye.
 		page.innerHTML = '';
 		for(o in options) {
 			o.innerHTML = '';
+			o.style.display = 'none';
 		}
 	}
 

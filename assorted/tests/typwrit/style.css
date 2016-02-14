@@ -32,3 +32,16 @@ a:hover {
 	cursor: pointer;
 	color: rgb(75,0,0);
 }
+
+a:focus {
+	border: double;
+	outline: 0;
+	color: rgb(75,0,0);
+}
+
+::selection {
+	background: rgb(195,188,177);
+}
+::-moz-selection {
+	background: rgb(195,188,177);
+}
