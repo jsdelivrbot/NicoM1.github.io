@@ -13,6 +13,8 @@ a {
 	text-decoration: underline;
 	margin-left: 25px;
 	margin-right: 25px;
+	margin-top: 75px;
+	display: inline-block;
 }
 
 a:hover {

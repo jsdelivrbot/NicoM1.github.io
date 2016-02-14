@@ -73,7 +73,7 @@ Typwrit.prototype = {
 						return;
 					};
 				})(i);
-				this.options[i[0]].style.display = "initial";
+				this.options[i[0]].style.display = null;
 			}
 			if(this.options.length > curnode.responses.length) {
 				var _g11 = curnode.responses.length;

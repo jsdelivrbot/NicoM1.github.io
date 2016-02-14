@@ -1,3 +1,4 @@
 -js typwrit.js
 -main Typwrit
--cmd typwrit.html
+-dce full
+-cmd index.html
