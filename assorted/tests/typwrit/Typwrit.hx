@@ -7,6 +7,8 @@ import js.html.Element;
 
 import haxe.Timer;
 
+using StringTools;
+
 class Typwrit {
 	static var instance: Typwrit;
 	var page: ParagraphElement;
@@ -105,7 +107,7 @@ Bye.
 		}
 		if(curnode.prompt != null) {
 			trace(curnode.prompt);
-			typeLetters(curnode.prompt, page, function() {
+			typeLetters(curnode.prompt.trim(), page, function() {
 				playResponses(curnode);
 			});
 		}

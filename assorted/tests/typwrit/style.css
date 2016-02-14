@@ -1,11 +1,22 @@
+html, body {
+	margin: 0px;
+}
+
 body {
 	background-color: rgb(243, 234, 219);
 	font-family: 'special_eliteregular';
 	text-align: center;
+	height: 75vh;
+	border-color: rgb(195,188,177);
+	border-style: double;
+	border-top: none;
+	border-bottom: none;
+	padding-top: 25vh;
+	margin-left: 20%;
+	margin-right: 20%;
 }
 
 p {
-	margin-top: 25vh;
 	white-space: pre-line;
 }
 

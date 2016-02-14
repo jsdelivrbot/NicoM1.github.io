@@ -6,6 +6,11 @@ function $extend(from, fields) {
 	return proto;
 }
 var HxOverrides = function() { };
+HxOverrides.cca = function(s,index) {
+	var x = s.charCodeAt(index);
+	if(x != x) return undefined;
+	return x;
+};
 HxOverrides.substr = function(s,pos,len) {
 	if(pos != null && pos != 0 && len != null && len < 0) return "";
 	if(len == null) len = s.length;
@@ -18,6 +23,26 @@ HxOverrides.substr = function(s,pos,len) {
 var Std = function() { };
 Std["int"] = function(x) {
 	return x | 0;
+};
+var StringTools = function() { };
+StringTools.isSpace = function(s,pos) {
+	var c = HxOverrides.cca(s,pos);
+	return c > 8 && c < 14 || c == 32;
+};
+StringTools.ltrim = function(s) {
+	var l = s.length;
+	var r = 0;
+	while(r < l && StringTools.isSpace(s,r)) r++;
+	if(r > 0) return HxOverrides.substr(s,r,l - r); else return s;
+};
+StringTools.rtrim = function(s) {
+	var l = s.length;
+	var r = 0;
+	while(r < l && StringTools.isSpace(s,l - r - 1)) r++;
+	if(r > 0) return HxOverrides.substr(s,0,l - r); else return s;
+};
+StringTools.trim = function(s) {
+	return StringTools.ltrim(StringTools.rtrim(s));
 };
 var Typwrit = function() {
 	this.convo = { id : "first", prompt : "\r\n\t\t*cough*\r\n\r\n\t\t*ahem*\r\n\r\n\t\tIs this thing on?\r\n\r\n\t\t*tap* *tap*\r\n\t\t", responses : [{ response : "Seems like it.", prompt : "Oh, uh, ok.", responses : [{ response : "uh, ok, and?", switchTo : "first"}]}]};
@@ -86,7 +111,7 @@ Typwrit.prototype = {
 		}
 		if(curnode.prompt != null) {
 			console.log(curnode.prompt);
-			this.typeLetters(curnode.prompt,this.page,function() {
+			this.typeLetters(StringTools.trim(curnode.prompt),this.page,function() {
 				_g2.playResponses(curnode);
 			});
 		}
