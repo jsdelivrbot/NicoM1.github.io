@@ -26,6 +26,8 @@ a {
 	margin-right: 25px;
 	margin-top: 75px;
 	display: inline-block;
+	border: double;
+	border-color: rgba(195,188,177,0);
 }
 
 a:hover {
@@ -34,7 +36,7 @@ a:hover {
 }
 
 a:focus {
-	border: double;
+	border-color: #000000;
 	outline: 0;
 	color: rgb(75,0,0);
 }
