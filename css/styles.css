@@ -2,8 +2,6 @@
 @import url("https://fonts.googleapis.com/css?family=Oswald:700");
 @import url("https://fonts.googleapis.com/css?family=Lato:400,900");
 * {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
 body {
@@ -14,7 +12,6 @@ body {
   margin: 0 auto; }
 
 header {
-  -webkit-transition: 1s;
   transition: 1s;
   margin: 0 0;
   padding-left: 10px;
@@ -24,7 +21,6 @@ header {
   font-weight: 700;
   font-size: 22px; }
   header a {
-    -webkit-transition: 0.2s;
     transition: 0.2s;
     text-decoration: none;
     color: #fefefe; }
@@ -37,13 +33,11 @@ header {
       color: #cbcbcb; }
   header h1 {
     white-space: nowrap;
-    -webkit-transition: 0.5s;
     transition: 0.5s;
     color: #fefefe;
     margin: 0 0;
     width: 100%; }
     header h1 span {
-      -webkit-transition: 1s;
       transition: 1s;
       white-space: nowrap;
       font-size: 24px;
@@ -73,7 +67,6 @@ footer {
   border-right-color: #262829; }
 
 .separator {
-  -webkit-transition: 1s;
   transition: 1s;
   width: 100%;
   display: inline-block;
@@ -93,18 +86,15 @@ footer {
   border-right-color: #72d572; }
 
 section.work a {
-  -webkit-transition: 1s;
   transition: 1s;
   float: left;
   height: 230px;
-  -webkit-background-size: cover;
   background-size: cover;
   background-position: center; }
   @media only screen and (min-width: 1300px) {
     section.work a {
       height: 345px; } }
   section.work a p {
-    -webkit-transition: 1s;
     transition: 1s;
     display: inline-block;
     font-family: 'Lato', sans-serif;
@@ -131,7 +121,6 @@ section.work a {
         min-width: 330px; } }
     section.work a.framework p {
       background-color: rgba(66, 0, 64, 0.42);
-      -webkit-box-shadow: 1px 1px 10px rgba(66, 0, 64, 0.42);
       box-shadow: 1px 1px 10px rgba(66, 0, 64, 0.42); }
   section.work a.uof {
     background-image: url("../images/Game.png");
@@ -141,28 +130,34 @@ section.work a {
         width: 100%; } }
     section.work a.uof p {
       background-color: rgba(5, 154, 199, 0.57);
-      -webkit-box-shadow: 1px 1px 10px rgba(5, 154, 199, 0.57);
       box-shadow: 1px 1px 10px rgba(5, 154, 199, 0.57); }
+  section.work a.hta {
+    background-image: url("../images/hta.gif");
+    width: 65%; }
+    @media only screen and (max-width: 600px) {
+      section.work a.hta {
+        width: 100%; } }
+    section.work a.hta p {
+      background-color: rgba(21, 199, 5, 0.57);
+      box-shadow: 1px 1px 10px rgba(21, 199, 5, 0.57); }
   section.work a.game {
-    background-image: url("../images/done.gif");
+    background-image: url("../images/hta.gif");
     width: 35%; }
     @media only screen and (max-width: 600px) {
       section.work a.game {
         width: 100%; } }
     section.work a.game p {
       background-color: rgba(5, 154, 199, 0.57);
-      -webkit-box-shadow: 1px 1px 10px rgba(5, 154, 199, 0.57);
       box-shadow: 1px 1px 10px rgba(5, 154, 199, 0.57); }
   section.work a.web {
-    background-image: url("../images/Slickrock.png");
+    background-image: url("../images/Slickrock.jpg");
     width: 100%; }
     section.work a.web p {
       background-color: rgba(21, 199, 5, 0.57);
-      -webkit-box-shadow: 1px 1px 10px rgba(21, 199, 5, 0.57);
       box-shadow: 1px 1px 10px rgba(21, 199, 5, 0.57); }
   section.work a.bz {
     background-image: url("../images/done.gif");
-    width: 65%; }
+    width: 100%; }
     @media only screen and (max-width: 600px) {
       section.work a.bz {
         width: 100%; } }
@@ -171,7 +166,8 @@ section.work a {
         min-width: 330px; } }
     section.work a.bz p {
       background-color: rgba(66, 0, 64, 0.42);
-      -webkit-box-shadow: 1px 1px 10px rgba(66, 0, 64, 0.42);
       box-shadow: 1px 1px 10px rgba(66, 0, 64, 0.42); }
   section.work a:hover {
     background-position: bottom; }
+
+/*# sourceMappingURL=styles.css.map */

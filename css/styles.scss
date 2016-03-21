@@ -35,22 +35,22 @@ body {
 
 header {
 	transition: 1s;
-	
+
 	margin: 0 0;
 	padding-left: 10px;
-	
+
 	background-color: #111111;
-	
+
 	text-align: left;
 	font-family: 'Oswald', sans-serif;
 	font-weight: 700;
 	font-size: 22px;
-	
+
 	@media only screen and (max-width: $breakpoint-one) {
 		//font-size: 28px;
 		//padding: 10px 10px;
 	}
-	
+
 	a {
 		transition: 0.2s;
 		text-decoration: none;
@@ -66,27 +66,27 @@ header {
 			color: darken($text-col, 20%);
 		}
 	}
-	
+
 	h1 {
 		white-space: nowrap;
-		
+
 		transition: 0.5s;
-		
+
 		color: $text-col;
 
 		margin: 0 0;
 		width: 100%;
-		
+
 		@media only screen and (max-width: $breakpoint-one){
 			//line-height: 72px;
 		}
-		
+
 		span {
 			transition: 1s;
-			
+
 			white-space: nowrap;
 			font-size: 24px;
-			
+
 			@media only screen and (min-width: $breakpoint-four){
 				//float: right;
 				//margin-right: 70px;
@@ -96,9 +96,9 @@ header {
 				margin-top: 0px;
 				margin-bottom: 0px;
 			//}
-			
+
 			margin-right: 15px;
-			
+
 			a {
 				text-decoration: none;
 
@@ -118,12 +118,12 @@ header {
 	}
 }
 
-footer {	
+footer {
 	text-align: center;
 	font-family: 'Lato', sans-serif;
 	clear: both;
 	color: $text-col;
-	
+
 	border-style: solid;
 	border-width: 20px;
 	border-top-color: #1a1c1c;
@@ -134,21 +134,21 @@ footer {
 
 .separator {
 	transition: 1s;
-	
+
 	width: 100%;
 	display: inline-block;
 	text-align: center;
 	line-height: .5em;
-	
+
 	font-family: "Lato", sans-serif;
 	font-size: 32px;
 	font-weight: 900;
-	
+
 	text-shadow: 1px 1px 0px #8efc83;
 	color: #477b42;
-	
+
 	background-color: $sep-col;
-	
+
 	border-style: solid;
 	border-width: 20px;
 	border-top-color: $sep-col;
@@ -159,34 +159,34 @@ footer {
 
 section {
 	&.work {
-		a {		
+		a {
 			transition: 1s;
-			
+
 			float: left;
 
 			height: $block-height;
-			
+
 			@media only screen and (min-width: $breakpoint-three){
 				height: $block-height*1.5;
 			}
 
 			p {
 				transition: 1s;
-				
+
 				display: inline-block;
 				font-family: 'Lato', sans-serif;
 				font-weight: 900;
 				color: $text-col;
-				
+
 				margin: 0;
-				padding: 5px 30px 0px 10px; 
+				padding: 5px 30px 0px 10px;
 				height: 100%;
-				
+
 				@media only screen and (max-width: $breakpoint-two) {
 					padding: 5px 0 0 10px;
 					width: 130px;
 				}
-				
+
 				@media only screen and (min-width: $breakpoint-three){
 					padding-right: 100px;
 				}
@@ -194,49 +194,64 @@ section {
 
 			background-size: cover;
 			background-position: center;
-			
+
 			&.framework {
 				background-image: url('../images/IceEntityShowOff.png');
 
 				width: 65%;
-				
+
 				@media only screen and (max-width: $breakpoint-two) {
 					width: 100%;
 				}
 				@media only screen and (min-width: $breakpoint-two){
 					min-width: 330px;
 				}
-				
+
 				p {
 					background-color: $purple;
 					box-shadow: 1px 1px 10px $purple;
 				}
 			}
-			
+
 			&.uof {
 				background-image: url('../images/Game.png');
 
 				width: 35%;
-				
+
 				@media only screen and (max-width: $breakpoint-two) {
 					width: 100%;
 				}
-				
+
 				p {
 					background-color: $blue;
 					box-shadow: 1px 1px 10px $blue;
 				}
 			}
 
-			&.game {
-				background-image: url('../images/done.gif');
+			&.hta {
+				background-image: url('../images/hta.gif');
 
-				width: 35%;
-				
+				width: 65%;
+
 				@media only screen and (max-width: $breakpoint-two) {
 					width: 100%;
 				}
-				
+
+				p {
+					background-color: $green;
+					box-shadow: 1px 1px 10px $green;
+				}
+			}
+
+			&.game {
+				background-image: url('../images/hta.gif');
+
+				width: 35%;
+
+				@media only screen and (max-width: $breakpoint-two) {
+					width: 100%;
+				}
+
 				p {
 					background-color: $blue;
 					box-shadow: 1px 1px 10px $blue;
@@ -244,34 +259,34 @@ section {
 			}
 
 			&.web {
-				background-image: url('../images/Slickrock.png');
+				background-image: url('../images/Slickrock.jpg');
 
 				width: 100%;
-				
+
 				p {
 					background-color: $green;
 					box-shadow: 1px 1px 10px $green;
 				}
 			}
-			
+
 			&.bz {
 				background-image: url('../images/done.gif');
 
-				width: 65%;
-				
+				width: 100%;
+
 				@media only screen and (max-width: $breakpoint-two) {
 					width: 100%;
 				}
 				@media only screen and (min-width: $breakpoint-two){
 					min-width: 330px;
 				}
-				
+
 				p {
 					background-color: $purple;
 					box-shadow: 1px 1px 10px $purple;
 				}
 			}
-			
+
 			&:hover {
 				background-position: bottom;
 			}
