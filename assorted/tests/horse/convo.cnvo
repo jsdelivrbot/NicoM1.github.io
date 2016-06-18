@@ -1,0 +1,60 @@
+{
+   id: 'first',
+   prompt:
+   '
+   *cough*
+
+   *ahem*
+
+   Is this thing on?
+
+   *tap* *tap*
+   ',
+   responses: [{
+	   response: 'Seems like it.',
+	   prompt: 'Oh, uh, ok.',
+	   responses: [{
+		   response: 'Uh, ok, and?',
+		   id: 'interviewstart',
+		   prompt: '
+		   Normally we would conduct this in person,
+		   but you understand.
+
+		   In these circumstances.
+		   ',
+		   responses: [{
+			   response: '...',
+			   prompt: "
+			   I'm equally out of my element here,
+			   sorry,
+
+			   give me a minute to find my notes.
+			   ",
+			   responses: [{
+				   response: 'Uh, ok.',
+				   prompt: '
+				   ...
+				   .....
+
+				   Sorry I mixed up my files,
+
+				   What was your name?
+				   ',
+				   responses: [{
+					   id: 'gotname',
+					   response: 'John Doe',
+					   setVal: [
+						   {k:'firstname', v:'John'},
+						   {k:'lastname', v:'Doe'}],
+					   prompt: 'Ok *(firstname)*.'
+				   },{
+					   response: 'Jack Turner',
+					   setVal: [
+						   {k:'firstname', v:'Jack'},
+						   {k:'lastname', v:'Turner'}],
+					   switchTo: 'gotname'
+				   }]}]}]
+	   },{
+		   response: 'Yeah continue.',
+		   switchTo: 'interviewstart'
+}]}]}

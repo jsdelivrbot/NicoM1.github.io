@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>typwrit.</title>
+		<link rel="stylesheet" href="fonts/stylesheet.css" />
+		<link rel="stylesheet" href="style.css" />
+		<script type="text/plain" id="conversation">
+{
+   id: 'first',
+   prompt: 'The horse is dead.',
+   responses: [{
+		   	response: '[pet horse.]',
+		   	prompt: 'The horse is still warm.
+
+			The horse is soft.',
+			responses: [{
+				id: 'secondact',
+				response: '...',
+				prompt: 'The horse is dead.',
+				responses: [{
+					   	response: '[pet horse.]',
+						prompt: 'The flies de-cloud uneasily.',
+						responses: [{
+							response: '...',
+							prompt: 'The horse is dead.',
+							responses: [{
+									id: 'thirdact',
+									response: '[pet horse.]',
+									prompt: '
+									Something spectral escapes it\'s body.
+
+									It calls from the void.
+									',
+									responses: [{
+										response: '...',
+										prompt: 'The horse is dead.'
+									}]
+								},{
+									response: '[talk to horse.]'
+									switchTo: 'thirdact'
+								}]
+							}]
+						},
+						{
+							response: '[talk to horse]',
+							prompt: 'Would she still love us,
+
+							old friend?',
+							responses: [{
+								response: '...',
+								prompt: 'The horse is dead.'
+							}]
+						}]
+					}]
+	   },{
+   			response: '[talk to horse.]',
+   			prompt: '"you\'re tired, aren\'t you, old boy."
+
+			"there\'s a lonesome wind blowing,
+
+			can\'t you taste it?"
+			',
+			responses: [{
+				response: '...',
+				switchTo: 'secondact'
+			}]}
+]}
+		</script>
+		<!--
+		responses: [{
+				response: '[pet horse.]',
+				prompt: '',
+			},{
+				response: '[talk to horse.]'
+				prompt: ''}]
+		}]
+		-->
+		<script type="text/javascript" src="typwrit.js"></script>
+	</head>
+	<body>
+		<p id="page">
+		</p>
+		<a id="op1" tabindex="1"></a>
+		<a id="op2" tabindex="0.9"></a>
+	</body>
+</html>

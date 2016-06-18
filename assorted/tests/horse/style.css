@@ -1,0 +1,49 @@
+html, body {
+	margin: 0px;
+}
+
+body {
+	background-color: rgb(243, 234, 219);
+	font-family: 'special_eliteregular';
+	text-align: center;
+	height: 75vh;
+	border-color: rgb(195,188,177);
+	border-style: double;
+	border-top: none;
+	border-bottom: none;
+	padding-top: 25vh;
+	margin-left: 20%;
+	margin-right: 20%;
+}
+
+p {
+	white-space: pre-line;
+}
+
+a {
+	text-decoration: underline;
+	margin-left: 25px;
+	margin-right: 25px;
+	margin-top: 75px;
+	display: inline-block;
+	border: double;
+	border-color: rgba(195,188,177,0);
+}
+
+a:hover {
+	cursor: pointer;
+	color: rgb(75,0,0);
+}
+
+a:focus {
+	border-color: #000000;
+	outline: 0;
+	color: rgb(75,0,0);
+}
+
+::selection {
+	background: rgb(195,188,177);
+}
+::-moz-selection {
+	background: rgb(195,188,177);
+}
