@@ -403,7 +403,7 @@ Main.prototype = $extend(luxe_Game.prototype,{
 	,update: function(dt) {
 		this._garden.update(dt);
 		if(Luxe.input.mousedown(1)) {
-			this.timer += dt;
+			this.timer += dt / Luxe.core.timescale;
 			var xPos = Luxe.core.screen.cursor.get_pos().x;
 			var distMouse = (xPos - this._lastMousePos.x) / this._scale;
 			this.cameraVelocity = -(distMouse == 0?0:distMouse < 0?-1:1) * Math.pow(Math.abs(distMouse),1.4285714285714286) / 5;
@@ -415,8 +415,8 @@ Main.prototype = $extend(luxe_Game.prototype,{
 			this.timer = 0;
 			this.velocityTotal = 0;
 			var _g1 = Luxe.camera.get_pos();
-			_g1.set_x(_g1.x + this.velocityAvg * dt);
-			this.velocityAvg = shared_Maths.approachZero(this.velocityAvg,dt * 5000);
+			_g1.set_x(_g1.x + this.velocityAvg * (dt / Luxe.core.timescale));
+			this.velocityAvg = shared_Maths.approachZero(this.velocityAvg,dt / Luxe.core.timescale * 5000);
 		}
 		this._lastMousePos = Luxe.core.screen.cursor.get_pos();
 		this._groundSprite.get_pos().set_x(Luxe.camera.get_pos().x - 100);
@@ -19496,8 +19496,12 @@ prototype_Critter.prototype = $extend(luxe_Sprite.prototype,{
 		childColor.set_b((this.color.b + partner.color.b) / 2);
 		if(Math.random() < 0.05) childColor = phoenix_Color.random();
 		new prototype_Critter(this._garden,this.get_pos().clone(),bounds,childColor);
+		if(Math.random() < 0.1) {
+			if(Math.random() < 0.05) childColor = phoenix_Color.random();
+			new prototype_Critter(this._garden,this.get_pos().clone(),bounds,childColor);
+		}
 		this._friskyness = 0;
-		haxe_Log.trace("[FLIRT SUCCESSFULL]",{ fileName : "Critter.hx", lineNumber : 130, className : "prototype.Critter", methodName : "handleFlirt"});
+		haxe_Log.trace("[FLIRT SUCCESSFULL]",{ fileName : "Critter.hx", lineNumber : 136, className : "prototype.Critter", methodName : "handleFlirt"});
 	}
 	,wanderStateEnter: function() {
 		this.wanderVars = { timer : 0, nextTime : 0};
@@ -19519,18 +19523,18 @@ prototype_Critter.prototype = $extend(luxe_Sprite.prototype,{
 			this._machine.set("sleep");
 			return;
 		}
-		if(this._hunger > this._hungerStamina) {
+		if(this._hunger > this._hungerStamina && this._knownFoodSources.length > 0) {
 			this._machine.set("food");
 			return;
 		}
 		if(this._friskyness > this._friskynessStamina && this._hunger < this._hungerStamina / 2) {
 			var possiblePartners = this._garden.getNearbyCritters(this.get_pos(),500);
 			HxOverrides.remove(possiblePartners,this);
-			haxe_Log.trace(possiblePartners,{ fileName : "Critter.hx", lineNumber : 169, className : "prototype.Critter", methodName : "wanderStateUpdate"});
+			haxe_Log.trace(possiblePartners,{ fileName : "Critter.hx", lineNumber : 175, className : "prototype.Critter", methodName : "wanderStateUpdate"});
 			if(possiblePartners.length == 0) return;
 			possiblePartners[Luxe.utils.random["int"](possiblePartners.length,null)].events.fire("flirt",this);
 			this._friskyness = 0;
-			haxe_Log.trace("[ATTEMPT FLIRT]",{ fileName : "Critter.hx", lineNumber : 173, className : "prototype.Critter", methodName : "wanderStateUpdate"});
+			haxe_Log.trace("[ATTEMPT FLIRT]",{ fileName : "Critter.hx", lineNumber : 179, className : "prototype.Critter", methodName : "wanderStateUpdate"});
 		}
 	}
 	,wanderStateExit: function() {
@@ -19548,7 +19552,7 @@ prototype_Critter.prototype = $extend(luxe_Sprite.prototype,{
 		}
 	}
 	,eatingStateEnter: function() {
-		haxe_Log.trace("eating state",{ fileName : "Critter.hx", lineNumber : 201, className : "prototype.Critter", methodName : "eatingStateEnter"});
+		haxe_Log.trace("eating state",{ fileName : "Critter.hx", lineNumber : 207, className : "prototype.Critter", methodName : "eatingStateEnter"});
 		this.eatingVars = { timer : Math.random() * 2 + 1};
 		this.firstRun = true;
 		this._physics.velocity.set_x(0);
@@ -19559,16 +19563,16 @@ prototype_Critter.prototype = $extend(luxe_Sprite.prototype,{
 			var amountEaten = this.foodVars.currentFoodSource.depleteSupply(1);
 			if(amountEaten == 0) {
 				HxOverrides.remove(this._knownFoodSources,this.foodVars.currentFoodSource);
-				haxe_Log.trace("out of food",{ fileName : "Critter.hx", lineNumber : 217, className : "prototype.Critter", methodName : "eatingStateUpdate"});
+				haxe_Log.trace("out of food",{ fileName : "Critter.hx", lineNumber : 223, className : "prototype.Critter", methodName : "eatingStateUpdate"});
 				this._machine.set("food");
 				return;
 			}
-			haxe_Log.trace("I ATE It",{ fileName : "Critter.hx", lineNumber : 221, className : "prototype.Critter", methodName : "eatingStateUpdate"});
+			haxe_Log.trace("I ATE It",{ fileName : "Critter.hx", lineNumber : 227, className : "prototype.Critter", methodName : "eatingStateUpdate"});
 			this._hunger = 0;
 		}
 		this.eatingVars.timer -= dt;
 		if(this.eatingVars.timer < 0) {
-			haxe_Log.trace(this._machine.current_state.name,{ fileName : "Critter.hx", lineNumber : 227, className : "prototype.Critter", methodName : "eatingStateUpdate"});
+			haxe_Log.trace(this._machine.current_state.name,{ fileName : "Critter.hx", lineNumber : 233, className : "prototype.Critter", methodName : "eatingStateUpdate"});
 			this._physics.velocity.set_y(-100);
 			if(Math.random() < 0.3) {
 				this._machine.set("wander");
@@ -19593,7 +19597,7 @@ prototype_Critter.prototype = $extend(luxe_Sprite.prototype,{
 					if(dist < closestDist) {
 						closestDist = dist;
 						this.foodVars.currentFoodSource = f;
-						haxe_Log.trace(f.supply,{ fileName : "Critter.hx", lineNumber : 253, className : "prototype.Critter", methodName : "foodStateUpdate"});
+						haxe_Log.trace(f.supply,{ fileName : "Critter.hx", lineNumber : 259, className : "prototype.Critter", methodName : "foodStateUpdate"});
 					}
 				}
 			} else {
@@ -19619,7 +19623,7 @@ prototype_Critter.prototype = $extend(luxe_Sprite.prototype,{
 				if(HxOverrides.indexOf(this._knownFoodSources,f,0) == -1) this._knownFoodSources.push(f);
 			}
 		}
-		if(this._machine.current_state.name != "sleeping") {
+		if(this._machine.current_state.name != "sleep") {
 			this.exahaustionTimer -= dt;
 			if(this.exahaustionTimer < 0) {
 				this._exhaustion++;
@@ -19627,12 +19631,12 @@ prototype_Critter.prototype = $extend(luxe_Sprite.prototype,{
 			}
 		}
 		if(this._machine.current_state.name != "eating") {
-			this.hungerTimer -= dt;
+			if(this._machine.current_state.name == "sleep") this.hungerTimer -= dt / 6; else this.hungerTimer -= dt;
 			if(this.hungerTimer < 0) {
 				this._hunger++;
-				if(this._hunger > this._hungerStamina * 2) {
+				if(this._hunger > this._hungerStamina * 3) {
 					this._garden.removeCritter(this);
-					haxe_Log.trace("U DED",{ fileName : "Critter.hx", lineNumber : 308, className : "prototype.Critter", methodName : "update"});
+					haxe_Log.trace("U DED",{ fileName : "Critter.hx", lineNumber : 319, className : "prototype.Critter", methodName : "update"});
 					return;
 				}
 				this.hungerTimer = Luxe.utils.random["float"](1,3);
@@ -19647,7 +19651,7 @@ prototype_Critter.prototype = $extend(luxe_Sprite.prototype,{
 		}
 	}
 	,destroy: function(e) {
-		haxe_Log.trace("OH GOD SAVE US",{ fileName : "Critter.hx", lineNumber : 326, className : "prototype.Critter", methodName : "destroy"});
+		haxe_Log.trace("OH GOD SAVE US",{ fileName : "Critter.hx", lineNumber : 337, className : "prototype.Critter", methodName : "destroy"});
 		this._machine.destroy();
 		this._visual.drop(true);
 		var _g = 0;
@@ -19748,7 +19752,7 @@ prototype_Garden.prototype = {
 	}
 	,removeCritter: function(critter) {
 		var _g = 0;
-		while(_g < 2) {
+		while(_g < 3) {
 			var i = _g++;
 			var foodSource = new prototype_FoodSource(new phoenix_Vector(Luxe.utils.random["float"](-1000,1000),210.));
 			this.foodSources.push(foodSource);
