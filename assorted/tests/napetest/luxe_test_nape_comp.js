@@ -487,7 +487,6 @@ napemanager_NapeItem.prototype = {
 	,addShape: function(shape) {
 		if(this.material != null) shape.set_material(this.material);
 		this.body.zpp_inner.wrap_shapes.push(shape);
-		this.body.align();
 	}
 	,removeShape: function(shape) {
 		this.body.zpp_inner.wrap_shapes.remove(shape);
@@ -28710,7 +28709,7 @@ napemanager_NapeManager.prototype = {
 	}
 	,addItem: function(item) {
 		item.body.set_space(this.space);
-		this.items.push(item);
+		if(HxOverrides.indexOf(this.items,item,0) == -1) this.items.push(item);
 	}
 	,update: function(dt) {
 		if(dt > 1 / (this.frameRate / 2)) dt = 1 / (this.frameRate / 2);
