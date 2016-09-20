@@ -1,0 +1,34 @@
+<div>
+	<div id="canvaswrapper">
+		<canvas width="640" height="480"></canvas>
+	</div>
+	<div class="buttonbar panel panel-default">
+		<button type="button" class="btn btn-primary btn-block" ng-click="addRect()">Add Rect.</button>
+		<button type="button" class="btn btn-primary btn-block" ng-click="addCirc()">Add Circ.</button>
+		<button type="button" class="btn btn-block" ng-class="{'btn-secondary': freedraw, 'btn-primary': freedraw == false}" ng-click="toggleFreeDraw()">
+			<span ng-if="freedraw == false">Enter Freedraw.</span>
+			<span ng-if="freedraw">Exit Freedraw.</span>
+		</button>
+		<button ng-if="twitterConnected == false" type="button" class="btn btn-primary btn-block" ng-click="connectTwitter()">Connect Twitter.</button>
+		<button ng-if="twitterConnected" type="button" class="btn btn-primary btn-block" ng-click="postTweet()">Post Tweet.</button>
+	</div>
+	<div class="buttonbar panel panel-default" ng-show="objectSelected">
+		<button type="button" class="btn btn-primary btn-block" ng-click="sendBackwards()">Send Backwards.</button>
+		<button type="button" class="btn btn-primary btn-block" ng-click="sendForwards()">Send Forwards.</button>
+		<button type="button" class="btn btn-primary btn-block" ng-click="sendToBack()">Send To Back.</button>
+		<button type="button" class="btn btn-primary btn-block" ng-click="sendToFront()">Send To Front.</button>
+		<button type="button" class="btn btn-primary btn-block" ng-click="removeObject()">Remove Object.</button>
+		<div class="labeled">
+			<label>Fill Color:</label>
+			<input colorpicker type="text" ng-model="selectedColor" ng-change="updateColor()" value="#FF0000"/>
+		</div>
+		<div class="labeled">
+			<label>Stroke Width:</label>
+			<input type="number" ng-model="strokeWidth" ng-change="updateStroke()" value="0"/>
+		</div>
+		<div class="labeled">
+			<label>Stroke Colour:</label>
+			<input colorpicker type="text" ng-model="strokeColor" ng-change="updateStroke()" value="0"/>
+		</div>
+	</div>
+</div>

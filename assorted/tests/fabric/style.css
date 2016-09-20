@@ -1,0 +1,38 @@
+body {
+	background-color: #eeeeee;
+}
+
+.lower-canvas {
+	background-color: #ffffff;
+	border-radius: 5px;
+}
+
+.btn {
+	margin-bottom: 7px;
+}
+
+.canvas-container {
+	outline: 0;
+}
+
+.buttonbar {
+	width: 200px;
+	display: inline-block;
+	vertical-align:top;
+	-webkit-transition:all linear 0.1s;
+	transition: 0.07s linear all;
+}
+
+.buttonbar.ng-hide {
+	opacity: 0;
+}
+
+.labeled {
+	width: 50%;
+	float: left;
+	display: inline-block;
+}
+
+input {
+	width: 100%;
+}
