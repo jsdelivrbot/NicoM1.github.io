@@ -32,7 +32,7 @@
 				'height': 50,
 				'longtitle': true,
 				'theme': 'dark',
-				'onsuccess': self.onSuccess(),
+				'onsuccess': self.onSuccess,
 				'onfailure': function() {
 					alert('oh no');
 				}
