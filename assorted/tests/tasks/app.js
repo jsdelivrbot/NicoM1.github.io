@@ -6,12 +6,12 @@
     }
     angular.module('app', ['ngRoute'])
     .config(function($routeProvider) {
-        $routeProvider.when('/', {
+        $routeProvider.when('/login', {
             templateUrl: 'login.html',
             controller: 'LoginController',
             controllerAs: 'login'
         })
-        .when('/tasks', {
+        .when('/', {
             templateUrl: 'main.html'
         })
     })
@@ -45,6 +45,37 @@
 			}
 		};
 	})
+	.factory('myJson', function($q, $http) {
+		return {
+			storeData: function(data) {
+				var deffered = $q.defer();
+				$http.post('https://api.myjson.com/bins', data).then(function(data) {
+					deffered.resolve(data);
+				}, function(error) {
+					deffered.reject(error);
+				});
+				return deffered.promise;
+			},
+			retrieveData: function(id) {
+				var deffered = $q.defer();
+				$http.get('https://api.myjson.com/bins/'+id).then(function(data) {
+					deffered.resolve(data);
+				}, function(error) {
+					deffered.reject(error);
+				});
+				return deffered.promise;
+			},
+			updateData: function(id, data) {
+				var deffered = $q.defer();
+				$http.put('https://api.myjson.com/bins/'+id, data).then(function(data) {
+					deffered.resolve(data);
+				}, function(error) {
+					deffered.reject(error);
+				});
+				return deffered.promise;
+			}
+		}
+	})
     .controller('LoginController', function($scope, $location, googleAuth) {
         var self = this;
 
@@ -52,7 +83,7 @@
 			$location.path('/tasks');
 		});
     })
-    .controller('TaskController', function($scope, googleAuth) {
+    .controller('TaskController', function($scope, googleAuth, myJson) {
         var self = this;
         self.tasks = [
             {name: 'test', checked: false},
@@ -79,19 +110,27 @@
 
         self.saveTasks = function() {
             var tasksJSON = JSON.stringify(self.tasks);
-            document.cookie = 'tasks='+tasksJSON+'; expires=Fri, 3 Aug, 2035, 20:47:11 UTC; path=/';
+			myJson.updateData('4lj7c', tasksJSON).then(function(d) {
+			}, function(e) {
+				console.log(e);
+			});
+            //document.cookie = 'tasks='+tasksJSON+'; expires=Fri, 3 Aug, 2035, 20:47:11 UTC; path=/';
         }
 
         self.loadTasks = function() {
-            var tasksJSON = getCookie('tasks');
-            if(tasksJSON != undefined) {
+            //var tasksJSON = getCookie('tasks');
+			myJson.retrieveData('4lj7c').then(function(d) {
+				console.log(d);
+				self.tasks = d.data;
+			}, function(e) {
+				alert(e.status);
+			});
+            /*if(tasksJSON != undefined) {
                 self.tasks = JSON.parse(tasksJSON);
-            }
+            }*/
         }
 
         self.loadTasks();
-
-        self.saveTasks();
     })
     .directive('tasklist', function() {
         return {
