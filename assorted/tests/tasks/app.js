@@ -15,31 +15,44 @@
             templateUrl: 'main.html'
         })
     })
-    .controller('LoginController', function($scope, $location) {
+	.factory('googleAuth', function($q) {
+		var user, deffered;
+		deffered = $q.defer();
+		function onSuccess(googleUser) {
+			user = googleUser;
+			deffered.resolve();
+		}
+		return {
+			renderButton: function(element) {
+				gapi.signin2.render(element, {
+					'scope': 'profile email',
+					'width': 240,
+					'height': 50,
+					'longtitle': true,
+					'theme': 'dark',
+					'onsuccess': self.onSuccess,
+					'onfailure': function(x) {
+						deffered.reject(x);
+					}
+				});
+				return deffered.promise;
+			},
+			isSignedIn: function() {
+				return user != undefined;
+			}
+		};
+	})
+    .controller('LoginController', function($scope, $location, googleAuth) {
         var self = this;
-        self.login = function() {
-            $location.path('/tasks');
-        }
 
 		self.onSuccess = function(googleUser) {
-			console.log(googleUser.toString());
+			self.user = googleUser;
+			$location.path('/tasks');
 		};
 
-		self.renderButton = function() {
-			gapi.signin2.render('googlelogin', {
-				'scope': 'profile email',
-				'width': 240,
-				'height': 50,
-				'longtitle': true,
-				'theme': 'dark',
-				'onsuccess': self.onSuccess,
-				'onfailure': function() {
-					alert('oh no');
-				}
-			});
-		};
-
-		self.renderButton();
+		googleAuth.renderButton('googlelogin').then(function() {
+			alert('logged in');
+		});
     })
     .controller('TaskController', function($scope) {
         var self = this;
