@@ -19,6 +19,7 @@
 		var user, deffered;
 		deffered = $q.defer();
 		function onSuccess(googleUser) {
+			alert('resolve');
 			user = googleUser;
 			deffered.resolve();
 		}
