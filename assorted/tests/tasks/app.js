@@ -15,7 +15,7 @@
             templateUrl: 'main.html'
         })
     })
-    .controller('LoginController', function($scope, $location, googleAuth) {
+    .controller('LoginController', function($scope, $location) {
         var self = this;
         self.login = function() {
             $location.path('/tasks');
