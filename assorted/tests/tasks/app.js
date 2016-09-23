@@ -19,7 +19,6 @@
 		var user, deffered;
 		deffered = $q.defer();
 		function onSuccess(googleUser) {
-			alert('resolve');
 			user = googleUser;
 			deffered.resolve();
 		}
@@ -31,7 +30,7 @@
 					'height': 50,
 					'longtitle': true,
 					'theme': 'dark',
-					'onsuccess': self.onSuccess,
+					'onsuccess': onSuccess,
 					'onfailure': function(x) {
 						deffered.reject(x);
 					}
