@@ -39,28 +39,30 @@
 			},
 			isSignedIn: function() {
 				return user != undefined;
+			},
+			getUser: function() {
+				return user.getBasicProfile().getName();
 			}
 		};
 	})
     .controller('LoginController', function($scope, $location, googleAuth) {
         var self = this;
 
-		self.onSuccess = function(googleUser) {
-			self.user = googleUser;
-			$location.path('/tasks');
-		};
-
 		googleAuth.renderButton('googlelogin').then(function() {
-			alert('logged in');
+			$location.path('/tasks');
 		});
     })
-    .controller('TaskController', function($scope) {
+    .controller('TaskController', function($scope, googleAuth) {
         var self = this;
         self.tasks = [
             {name: 'test', checked: false},
             {name: 'fake', checked: false},
             {name: 'fake', checked: true}
         ];
+
+		if(googleAuth.isSignedIn()) {
+			alert(googleAuth.getUser());
+		}
 
         self.addTask = function(taskTitle) {
             self.tasks.push({
