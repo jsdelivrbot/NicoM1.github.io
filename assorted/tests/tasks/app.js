@@ -85,11 +85,7 @@
     })
     .controller('TaskController', function($scope, googleAuth, myJson) {
         var self = this;
-        self.tasks = [
-            {name: 'test', checked: false},
-            {name: 'fake', checked: false},
-            {name: 'fake', checked: true}
-        ];
+        self.tasks = [];
 
 		if(googleAuth.isSignedIn()) {
 			alert(googleAuth.getUser());
@@ -131,6 +127,8 @@
         }
 
         self.loadTasks();
+
+		setInterval(self.loadTasks, 1000);
     })
     .directive('tasklist', function() {
         return {
