@@ -5,7 +5,11 @@
         if (parts.length == 2) return parts.pop().split(";").shift();
     }
     angular.module('app', ['ngRoute'])
-    .config(function($routeProvider) {
+    .config(function($routeProvider, $sceDelegateProvider) {
+		$sceDelegateProvider.resourceUrlWhitelist([
+  			'self',
+  			'https://www.youtube.com/**'
+		]);
         $routeProvider.when('/', {
             templateUrl: 'login.html',
             controller: 'LoginController',
@@ -76,29 +80,113 @@
 			}
 		}
 	})
-    .controller('LoginController', function($scope, $location, googleAuth) {
-        var self = this;
-
-		/*googleAuth.renderButton('googlelogin').then(function() {
-			$location.path('/tasks');
-		});*/
-
-		window.initGAPI = function() {
-			var apiKey = 'AIzaSyDOzRyuyA3bAyFZYECJecgBO8UtG14iI2Y';
-			var request = gapi.client.youtube.search.list({
-				q: 'okkervil river',
-				part: 'snippet'
-			});
-
-			console.log('test');
-
-			request.then(function(d) {
-				trace(d);
-			}, function(e) {
-				trace(e);
+	.factory('youtube', function($q, $document) {
+		var apiKey = 'AIzaSyDOzRyuyA3bAyFZYECJecgBO8UtG14iI2Y';
+		var deffered = $q.defer();
+		var available = false;
+		window._initGAPI = function() {
+			gapi.client.setApiKey(apiKey);
+			gapi.client.load('youtube', 'v3').then(function(d) {
+				available = true;
+				deffered.resolve(gapi.client.youtube);
+			}, function() {
+				deffered.reject(e)
 			});
 		}
-    })
+
+		return {
+			init: function() {
+				var script = $document[0].createElement('script');
+				script.src = 'https://apis.google.com/js/client.js?onload=_initGAPI';
+				$document[0].body.appendChild(script);
+				return deffered.promise;
+			},
+			isAvailable: function() {
+				return available;
+			},
+			search: function(query) {
+				var deffered = $q.defer();
+				var request = gapi.client.youtube.search.list({
+					q: query,
+					part: 'snippet'
+				});
+
+				request.then(function(d) {
+					deffered.resolve(d.result.items);
+				}, function(e) {
+					deffered.reject(e);
+				});
+				return deffered.promise;
+			},
+			getVideoUrl: function(id) {
+				return 'https://www.youtube.com/embed/'+id;
+			}
+		}
+	})
+	.directive('videodisplay', function() {
+		return {
+			templateUrl: 'videodisplay.html',
+			scope: {
+				videoId: '@'
+			},
+			controller: function($scope, youtube) {
+				var self = this;
+				self.getVideoUrl = function(id) {
+					return youtube.getVideoUrl(id);
+				};
+
+				$scope.$on('videoselected', function(e, id) {
+					console.log(id);
+					self.videoId = id+'?autoplay=1';
+				});
+			},
+			controllerAs: 'videodisplay',
+    		bindToController: true
+		}
+	})
+	.directive('videosearch', function() {
+		return {
+			templateUrl: 'videosearch.html',
+			controller: function($rootScope, $scope, $location, $document, googleAuth, youtube) {
+		        var self = this;
+
+				self.videos = [];
+
+				self.search = 'okkervil river black';
+
+				self.getVideoUrl = function(id) {
+					return youtube.getVideoUrl(id);
+				};
+
+				self.searchVideos = function(query) {
+					youtube.search(query).then(function(d) {
+						console.log(d);
+						self.videos = d;
+					}, function(e) {
+						console.log(e);
+					});
+				};
+
+				self.selectVideo = function(id) {
+					$rootScope.$broadcast('videoselected', id);
+				};
+
+				/*googleAuth.renderButton('googlelogin').then(function() {
+					$location.path('/tasks');
+				});*/
+				youtube.init().then(function() {
+					$scope.$watch(function() {return self.search}, function() {
+						self.searchVideos(self.search);
+					});
+
+				}, function(e) {
+					console.log(e);
+				});
+		    },
+			controllerAs: 'videosearch'
+		}
+	})
+    .controller('LoginController', function(){})
     .controller('TaskController', function($scope, googleAuth, myJson) {
         var self = this;
         self.tasks = [];

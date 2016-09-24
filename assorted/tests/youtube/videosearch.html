@@ -1,0 +1,9 @@
+<div class="videosearch">
+	<input class="videosearchbox" type="text" ng-model="videosearch.search" />
+	<div class="videosearchelement" ng-repeat="video in videosearch.videos track by $index" ng-click="videosearch.selectVideo(video.id.videoId)">
+		<div class="videosearchtitle">
+			{{video.snippet.title}}
+		</div>
+		<img class="videosearchthumb" ng-src="{{video.snippet.thumbnails.high.url}}"/>
+	</div>
+</div>

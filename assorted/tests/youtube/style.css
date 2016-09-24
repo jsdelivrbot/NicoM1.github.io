@@ -1,3 +1,52 @@
+body {
+	background-color: #111111;
+	color: #ffffff;
+	font-family: monospace;
+}
+
+::-webkit-scrollbar {
+    background: #222222;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333333;
+	border: 1px solid #111111;
+}
+
+.videosearch {
+	width: 500px;
+}
+
+.videosearchbox {
+	background-color: #333333;
+	border: 1px solid #444444;
+	color: #ffffff;
+	height: 40px;
+	margin-bottom: 10px;
+	padding: 5px;
+	width: 100%;
+	box-sizing: border-box;
+	font-family: monospace;
+}
+
+.videosearchelement {
+	width: 100%;
+}
+
+.videosearchthumb {
+	width: 100%;
+}
+
+.videosearchtitle {
+	display: block;
+}
+
+.videodisplay {
+	position: fixed;
+	right: 0;
+	top: 0;
+}
+
 
 .tickbox {
     float: left;
