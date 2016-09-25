@@ -126,15 +126,16 @@
 			isAvailable: function() {
 				return available;
 			},
-			search: function(query) {
+			search: function(query, pageToken) {
 				var deffered = $q.defer();
 				var request = gapi.client.youtube.search.list({
 					q: query,
-					part: 'snippet'
+					part: 'snippet',
+					pageToken: pageToken
 				});
 
 				request.then(function(d) {
-					deffered.resolve(d.result.items);
+					deffered.resolve(d.result);
 				}, function(e) {
 					deffered.reject(e);
 				});
@@ -183,19 +184,38 @@
 		        var self = this;
 
 				self.videos = [];
+				self.nextPage = null;
 
 				self.search = 'okkervil river black';
+
+				var searching = false;
+
+				window.onscroll = function(ev) {
+    				if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+        				self.searchVideos(self.search, self.nextPage);
+    				}
+				};
 
 				self.getVideoUrl = function(id) {
 					return youtube.getVideoUrl(id);
 				};
 
-				self.searchVideos = function(query) {
-					youtube.search(query).then(function(d) {
+				self.searchVideos = function(query, nextPageToken) {
+					if(searching) return;
+					searching = true;
+					youtube.search(query, nextPageToken).then(function(d) {
 						console.log(d);
-						self.videos = d;
+						if(nextPageToken == null) {
+							self.videos = d.items;
+						}
+						else {
+							self.videos = self.videos.concat(d.items);
+						}
+						self.nextPage = d.nextPageToken;
 					}, function(e) {
 						console.log(e);
+					}).finally(function() {
+						searching = false;
 					});
 				};
 
