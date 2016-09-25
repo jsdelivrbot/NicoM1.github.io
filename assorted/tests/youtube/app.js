@@ -201,7 +201,7 @@
 				};
 
 				self.searchVideos = function(query, nextPageToken) {
-					if(searching) return;
+					if(searching && nextPageToken != null) return;
 					searching = true;
 					youtube.search(query, nextPageToken).then(function(d) {
 						console.log(d);
