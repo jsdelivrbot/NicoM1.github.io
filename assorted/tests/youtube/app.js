@@ -128,6 +128,7 @@
 			},
 			search: function(query, pageToken) {
 				var deffered = $q.defer();
+				var result = {promise: deffered.promise, canceled: false};
 				var request = gapi.client.youtube.search.list({
 					q: query,
 					part: 'snippet',
@@ -135,11 +136,16 @@
 				});
 
 				request.then(function(d) {
-					deffered.resolve(d.result);
+					if(!result.canceled) {
+						deffered.resolve(d.result);
+					}
+					else {
+						deffered.reject('CANCELLED');
+					}
 				}, function(e) {
 					deffered.reject(e);
 				});
-				return deffered.promise;
+				return result;
 			},
 			getVideoUrl: function(id) {
 				return 'https://www.youtube.com/embed/'+id;
@@ -190,6 +196,8 @@
 
 				var searching = false;
 
+				var lastVideo = null;
+
 				window.onscroll = function(ev) {
     				if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
         				self.searchVideos(self.search, self.nextPage);
@@ -203,7 +211,12 @@
 				self.searchVideos = function(query, nextPageToken) {
 					if(searching && nextPageToken != null) return;
 					searching = true;
-					youtube.search(query, nextPageToken).then(function(d) {
+					if(lastVideo != null) {
+						lastVideo.canceled = true;
+					}
+					
+					lastVideo = youtube.search(query, nextPageToken);
+					lastVideo.promise.then(function(d) {
 						console.log(d);
 						if(nextPageToken == null) {
 							self.videos = d.items;
