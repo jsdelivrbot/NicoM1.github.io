@@ -168,7 +168,8 @@
 					console.log(id);
 					self.videoId = id;
 					if(self.player != null) {
-						self.player.loadVideoById(id);
+						//self.player.loadVideoById(id);
+						self.player.loadPlaylist(id);
 					}
 				});
 
@@ -194,6 +195,8 @@
 
 				self.search = 'okkervil river black';
 
+				self.playlist = [];
+
 				var searching = false;
 
 				var lastVideo = null;
@@ -214,7 +217,7 @@
 					if(lastVideo != null) {
 						lastVideo.canceled = true;
 					}
-					
+
 					lastVideo = youtube.search(query, nextPageToken);
 					lastVideo.promise.then(function(d) {
 						console.log(d);
@@ -233,7 +236,8 @@
 				};
 
 				self.selectVideo = function(id) {
-					$rootScope.$broadcast('videoselected', id);
+					self.playlist = [id].concat(self.playlist);
+					$rootScope.$broadcast('videoselected', self.playlist);
 				};
 
 				/*googleAuth.renderButton('googlelogin').then(function() {
