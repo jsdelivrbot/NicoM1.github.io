@@ -101,6 +101,28 @@
 				$document[0].body.appendChild(script);
 				return deffered.promise;
 			},
+			createPlayer: function(element) {
+				var tag = $document[0].createElement('script');
+				tag.src = 'https://www.youtube.com/iframe_api';
+				$document[0].body.appendChild(tag);
+				var deffered = $q.defer();
+
+				console.log(tag);
+
+				window.onYouTubeIframeAPIReady = function() {
+					player = new YT.Player(element, {
+						height: '390',
+						width: '640',
+						videoId: '9K7RokHjYd4',
+						events: {
+							'onReady': function() {
+								deffered.resolve(player);
+							}
+						}
+					});
+				};
+				return deffered.promise;
+			},
 			isAvailable: function() {
 				return available;
 			},
@@ -137,7 +159,17 @@
 
 				$scope.$on('videoselected', function(e, id) {
 					console.log(id);
-					self.videoId = id+'?autoplay=1';
+					self.videoId = id;
+					if(self.player != null) {
+						self.player.loadVideoById(id);
+					}
+				});
+
+				self.createPlayer = youtube.createPlayer;
+			},
+			link: function(scope, element, attrs, ctrl) {
+				ctrl.createPlayer('videodisplay').then(function(p) {
+					ctrl.player = p;
 				});
 			},
 			controllerAs: 'videodisplay',
