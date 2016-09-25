@@ -132,7 +132,8 @@
 				var request = gapi.client.youtube.search.list({
 					q: query,
 					part: 'snippet',
-					pageToken: pageToken
+					pageToken: pageToken,
+					type: 'video'
 				});
 
 				request.then(function(d) {
