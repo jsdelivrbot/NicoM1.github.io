@@ -25,6 +25,10 @@ body {
 	border: 1px solid #333333;
 }
 
+.videosearchbox:focus {
+	outline-color: #555555;
+}
+
 .videosearch {
 	width: 500px;
 }
