@@ -199,7 +199,9 @@
 
 				window.onscroll = function(ev) {
     				if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-        				self.searchVideos(self.search, self.nextPage);
+						if(self.nextPage!= null) {
+        					self.searchVideos(self.search, self.nextPage);
+						}
     				}
 				};
 
