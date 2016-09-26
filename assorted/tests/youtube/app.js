@@ -165,7 +165,7 @@
 					self.videoId = id;
 					if(self.player != null) {
 						//self.player.loadVideoById(id);
-						self.player.loadPlaylist(id);
+						self.player.loadPlaylist(id, id.length-1);
 					}
 				});
 
@@ -234,7 +234,7 @@
 				};
 
 				self.selectVideo = function(id) {
-					self.playlist = [id].concat(self.playlist);
+					self.playlist.push(id);
 					$rootScope.$broadcast('videoselected', self.playlist);
 				};
 
