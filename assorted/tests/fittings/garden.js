@@ -1621,6 +1621,7 @@ var Main = function() {
 	this.lastTap = 0;
 	this.selectingPos = new phoenix_Vector();
 	this.selecting = false;
+	this.doneTutorial = false;
 	this.inventoryAmount = 6;
 	this.inventoryFull = [];
 	this.inventory = [];
@@ -1639,37 +1640,53 @@ Main.prototype = $extend(luxe_Game.prototype,{
 		return config;
 	}
 	,ready: function() {
+		var _g = this;
 		Main.scale = Luxe.core.screen.get_size().x / 960;
 		Main.scale *= 3;
-		var _g = 0;
-		while(_g < 8) {
-			var i = _g++;
+		var _g1 = 0;
+		while(_g1 < 8) {
+			var i = _g1++;
 			if(i < 4) this.rings[i] = Luxe.draw.ring({ x : Luxe.core.screen.cursor.get_pos().x, y : Luxe.core.screen.cursor.get_pos().y, r : 20 * Main.scale, depth : 1001}); else this.rings[i] = Luxe.draw.ring({ x : Luxe.core.screen.cursor.get_pos().x, y : Luxe.core.screen.cursor.get_pos().y, r : 10 * Main.scale, depth : 1001});
 			this.rings[i].set_visible(false);
 		}
-		var _g1 = 0;
-		while(_g1 < 6) {
-			var i1 = _g1++;
-			this.inventory[i1] = Luxe.draw.ring({ x : i1 * 12 * Main.scale + 7 * Main.scale, y : Luxe.core.screen.height - 7 * Main.scale, r : 5 * Main.scale, color : new phoenix_Color(0.6,0.6,0.6), depth : 999});
-		}
 		var _g2 = 0;
 		while(_g2 < 6) {
-			var i2 = _g2++;
-			this.inventoryFull[i2] = Luxe.draw.circle({ x : i2 * 12 * Main.scale + 7 * Main.scale, y : Luxe.core.screen.height - 7 * Main.scale, r : 5 * Main.scale, depth : 1000});
-			if(i2 > 4) this.inventoryFull[i2].set_visible(false);
+			var i1 = _g2++;
+			this.inventory[i1] = Luxe.draw.ring({ x : i1 * 12 * Main.scale + 7 * Main.scale, y : Luxe.core.screen.height - 7 * Main.scale, r : 5 * Main.scale, color : new phoenix_Color(0.6,0.6,0.6), depth : 999});
 		}
-		this.garbage = Luxe.draw.ring({ x : Luxe.core.screen.width, y : Luxe.core.screen.height, r : 70 * Main.scale});
-		this.garbageFull = Luxe.draw.circle({ x : Luxe.core.screen.width, y : Luxe.core.screen.height, r : 75 * Main.scale});
-		this.garbageSmall = Luxe.draw.circle({ x : Luxe.core.screen.width, y : Luxe.core.screen.height, r : 33 * Main.scale});
+		var _g3 = 0;
+		while(_g3 < 6) {
+			var i2 = _g3++;
+			this.inventoryFull[i2] = Luxe.draw.circle({ x : i2 * 12 * Main.scale + 7 * Main.scale, y : Luxe.core.screen.height - 7 * Main.scale, r : 5 * Main.scale, depth : 1000});
+		}
+		this.tutorialGuide = new TutorialVisual();
+		this.tutorialGuide.set_animation(TutorialAnim.Pulse);
+		this.tutorialGuide.onPress = function() {
+			if(_g.rings[0].transform.local.pos != null) {
+				_g.tutorialGuide.moveTo(_g.rings[0].transform.local.pos,0.3);
+				_g.tutorialGuide.onPress = null;
+			}
+		};
+		this.garbage = Luxe.draw.ring({ x : Luxe.core.screen.width, y : Luxe.core.screen.height, r : 70 * Main.scale, depth : 1000});
+		this.garbageFull = Luxe.draw.circle({ x : Luxe.core.screen.width, y : Luxe.core.screen.height, r : 75 * Main.scale, depth : 1000});
+		this.garbageSmall = Luxe.draw.circle({ x : Luxe.core.screen.width, y : Luxe.core.screen.height, r : 33 * Main.scale, depth : 1000});
 		this.garbage.set_visible(false);
 		this.garbageFull.set_visible(false);
 		this.garbageSmall.set_visible(false);
 		Luxe.renderer.clear_color.set(0,0,0,1);
+		this.setupInventory();
+		Luxe.events.listen("node.delete",function(x) {
+			_g.inventoryAmount++;
+			_g.setupInventory();
+		});
 	}
 	,onkeyup: function(e) {
 		if(e.keycode == 27) Luxe.core.shutdown();
 	}
+	,onmousedown: function(e) {
+	}
 	,update: function(dt) {
+		var _g = this;
 		this.lastTap += dt;
 		if(this.lineA != null && this.lineB != null) {
 			var c = luxe_collision_Collision.rayWithRay(this.lineA,this.lineB);
@@ -1678,7 +1695,7 @@ Main.prototype = $extend(luxe_Game.prototype,{
 				var rend = new phoenix_Vector(c.ray2.end.x,c.ray2.end.y);
 				var rstart = new phoenix_Vector(c.ray2.start.x,c.ray2.start.y);
 				if(c.u2 <= phoenix_Vector.Subtract(this.lineA.start,this.lineA.end).get_length()) {
-					haxe_Log.trace(c.u2,{ fileName : "Main.hx", lineNumber : 204, className : "Main", methodName : "update", customParams : [phoenix_Vector.Subtract(this.lineB.start,this.lineB.end).get_length()]});
+					haxe_Log.trace(c.u2,{ fileName : "Main.hx", lineNumber : 229, className : "Main", methodName : "update", customParams : [phoenix_Vector.Subtract(this.lineB.start,this.lineB.end).get_length()]});
 					var pos = new phoenix_Vector(rstart.x,rstart.y,rstart.z,rstart.w).add_xyz(c.ray2.get_dir().x * c.u2,c.ray2.get_dir().y * c.u2,null);
 					if(new phoenix_Vector(pos.x - rstart.x,pos.y - rstart.y,pos.z - rstart.z).get_length() < phoenix_Vector.Subtract(this.lineA.start,this.lineA.end).get_length()) Luxe.draw.ring({ x : pos.x, y : pos.y, immediate : true});
 				}
@@ -1691,7 +1708,7 @@ Main.prototype = $extend(luxe_Game.prototype,{
 			if(Main.breaking) {
 				if(phoenix_Vector.Subtract(Luxe.core.screen.cursor.get_pos(),new phoenix_Vector(Luxe.core.screen.width,Luxe.core.screen.height)).get_length() < 33 * Main.scale) {
 					if(!this.garbageFull.visible) {
-						haxe_Log.trace("yeah",{ fileName : "Main.hx", lineNumber : 230, className : "Main", methodName : "update"});
+						haxe_Log.trace("yeah",{ fileName : "Main.hx", lineNumber : 255, className : "Main", methodName : "update"});
 						this.garbageFull.transform.local.scale.set_xy(0,0);
 						luxe_tween_Actuate.tween(this.garbageFull.transform.local.scale,0.1,{ x : 1, y : 1});
 					}
@@ -1702,11 +1719,11 @@ Main.prototype = $extend(luxe_Game.prototype,{
 		if(this.lastPressed == null && !this.selecting) {
 			if(Luxe.input.mousedown(1)) {
 				var hit = false;
-				var _g = 0;
-				var _g1 = Main.fittings;
-				while(_g < _g1.length) {
-					var f = _g1[_g];
-					++_g;
+				var _g1 = 0;
+				var _g11 = Main.fittings;
+				while(_g1 < _g11.length) {
+					var f = _g11[_g1];
+					++_g1;
 					if(Luxe.core.screen.cursor.get_pos().clone().subtract(f.pos).get_length() < f._visual.transform.local.scale.x * 110 * Main.scale) {
 						if(!hit) {
 							f.pressed();
@@ -1730,10 +1747,10 @@ Main.prototype = $extend(luxe_Game.prototype,{
 					if(!hit) {
 						this.selecting = true;
 						this.selectingPos = Luxe.core.screen.cursor.get_pos().clone();
-						var _g11 = 0;
+						var _g12 = 0;
 						var _g2 = this.rings.length;
-						while(_g11 < _g2) {
-							var r = _g11++;
+						while(_g12 < _g2) {
+							var r = _g12++;
 							var ring = this.rings[r];
 							ring.set_visible(true);
 							ring.transform.set_pos((function($this) {
@@ -1774,9 +1791,9 @@ Main.prototype = $extend(luxe_Game.prototype,{
 			}
 			if(Luxe.input.mousereleased(1)) {
 				var _g3 = 0;
-				var _g12 = Main.fittings;
-				while(_g3 < _g12.length) {
-					var f1 = _g12[_g3];
+				var _g13 = Main.fittings;
+				while(_g3 < _g13.length) {
+					var f1 = _g13[_g3];
 					++_g3;
 					f1.released();
 				}
@@ -1792,46 +1809,47 @@ Main.prototype = $extend(luxe_Game.prototype,{
 			var angle = Math.atan2(mouse.x - this.selectingPos.x,mouse.y - this.selectingPos.y);
 			var increment = Math.PI / 8;
 			if(angle < 0) angle = Math.PI * 2 + angle;
-			haxe_Log.trace(angle,{ fileName : "Main.hx", lineNumber : 321, className : "Main", methodName : "update"});
+			haxe_Log.trace(angle,{ fileName : "Main.hx", lineNumber : 346, className : "Main", methodName : "update"});
 			if(phoenix_Vector.Subtract(mouse,this.selectingPos).get_length() > 10 * Main.scale) {
 				if(angle > increment * 15 || angle < increment) {
 					selected = 0;
-					Luxe.draw.circle({ x : this.rings[1].transform.local.pos.x, y : this.rings[1].transform.local.pos.y, immediate : true, r : 20 * Main.scale});
+					Luxe.draw.circle({ x : this.rings[1].transform.local.pos.x, y : this.rings[1].transform.local.pos.y, immediate : true, r : 20 * Main.scale, depth : 1000});
 				} else if(angle < increment * 3) {
 					selected = 1;
-					Luxe.draw.circle({ x : this.rings[5].transform.local.pos.x, y : this.rings[5].transform.local.pos.y, immediate : true, r : 10 * Main.scale});
+					Luxe.draw.circle({ x : this.rings[5].transform.local.pos.x, y : this.rings[5].transform.local.pos.y, immediate : true, r : 10 * Main.scale, depth : 1000});
 				} else if(angle < increment * 5) {
 					selected = 2;
-					Luxe.draw.circle({ x : this.rings[3].transform.local.pos.x, y : this.rings[3].transform.local.pos.y, immediate : true, r : 20 * Main.scale});
+					Luxe.draw.circle({ x : this.rings[3].transform.local.pos.x, y : this.rings[3].transform.local.pos.y, immediate : true, r : 20 * Main.scale, depth : 1000});
 				} else if(angle < increment * 7) {
 					selected = 3;
-					Luxe.draw.circle({ x : this.rings[4].transform.local.pos.x, y : this.rings[4].transform.local.pos.y, immediate : true, r : 10 * Main.scale});
+					Luxe.draw.circle({ x : this.rings[4].transform.local.pos.x, y : this.rings[4].transform.local.pos.y, immediate : true, r : 10 * Main.scale, depth : 1000});
 				} else if(angle < increment * 9) {
 					selected = 4;
-					Luxe.draw.circle({ x : this.rings[0].transform.local.pos.x, y : this.rings[0].transform.local.pos.y, immediate : true, r : 20 * Main.scale});
+					this.tutorialGuide.set_animation(null);
+					Luxe.draw.circle({ x : this.rings[0].transform.local.pos.x, y : this.rings[0].transform.local.pos.y, immediate : true, r : 20 * Main.scale, depth : 1000});
 				} else if(angle < increment * 11) {
 					selected = 5;
-					Luxe.draw.circle({ x : this.rings[6].transform.local.pos.x, y : this.rings[6].transform.local.pos.y, immediate : true, r : 10 * Main.scale});
+					Luxe.draw.circle({ x : this.rings[6].transform.local.pos.x, y : this.rings[6].transform.local.pos.y, immediate : true, r : 10 * Main.scale, depth : 1000});
 				} else if(angle < increment * 13) {
 					selected = 6;
-					Luxe.draw.circle({ x : this.rings[2].transform.local.pos.x, y : this.rings[2].transform.local.pos.y, immediate : true, r : 20 * Main.scale});
+					Luxe.draw.circle({ x : this.rings[2].transform.local.pos.x, y : this.rings[2].transform.local.pos.y, immediate : true, r : 20 * Main.scale, depth : 1000});
 				} else {
 					selected = 7;
-					Luxe.draw.circle({ x : this.rings[7].transform.local.pos.x, y : this.rings[7].transform.local.pos.y, immediate : true, r : 10 * Main.scale});
+					Luxe.draw.circle({ x : this.rings[7].transform.local.pos.x, y : this.rings[7].transform.local.pos.y, immediate : true, r : 10 * Main.scale, depth : 1000});
 				}
 			}
 			if(Luxe.input.mousereleased(1)) {
 				this.selecting = false;
 				var _g4 = 0;
-				var _g13 = this.rings;
-				while(_g4 < _g13.length) {
-					var r1 = _g13[_g4];
+				var _g14 = this.rings;
+				while(_g4 < _g14.length) {
+					var r1 = _g14[_g4];
 					++_g4;
 					r1.set_visible(false);
 				}
-				switch(selected) {
+				if(this.inventoryAmount > 0) switch(selected) {
 				case 0:
-					new PhysicalLamp(this.selectingPos.clone());
+					new PhysicalToggle(new phoenix_Vector(this.selectingPos.x - 10 * Main.scale,this.selectingPos.y),new phoenix_Vector(this.selectingPos.x + 10 * Main.scale,this.selectingPos.y),new phoenix_Vector(this.selectingPos.x,this.selectingPos.y + 10 * Main.scale));
 					break;
 				case 1:
 					new PhysicalNumberGenerator(this.selectingPos.clone());
@@ -1843,7 +1861,8 @@ Main.prototype = $extend(luxe_Game.prototype,{
 					new PhysicalSplitter(new phoenix_Vector(this.selectingPos.x - 10 * Main.scale,this.selectingPos.y),new phoenix_Vector(this.selectingPos.x + 10 * Main.scale,this.selectingPos.y),new phoenix_Vector(this.selectingPos.x,this.selectingPos.y + 10 * Main.scale));
 					break;
 				case 4:
-					new PhysicalToggle(new phoenix_Vector(this.selectingPos.x - 10 * Main.scale,this.selectingPos.y),new phoenix_Vector(this.selectingPos.x + 10 * Main.scale,this.selectingPos.y),new phoenix_Vector(this.selectingPos.x,this.selectingPos.y + 10 * Main.scale));
+					this.doneTutorial = true;
+					new PhysicalLamp(this.selectingPos.clone());
 					break;
 				case 5:
 					new PhysicalNumericalReadOut(this.selectingPos.clone());
@@ -1855,6 +1874,20 @@ Main.prototype = $extend(luxe_Game.prototype,{
 					new PhysicalCabling(new phoenix_Vector(this.selectingPos.x - 10 * Main.scale,this.selectingPos.y),new phoenix_Vector(this.selectingPos.x + 10 * Main.scale,this.selectingPos.y));
 					break;
 				}
+				if(selected != -1 && this.inventoryAmount > 0) {
+					this.inventoryAmount--;
+					this.setupInventory();
+				}
+				if(!this.doneTutorial) {
+					this.tutorialGuide.moveTo(Luxe.core.screen.get_mid());
+					this.tutorialGuide.set_animation(TutorialAnim.Pulse);
+					this.tutorialGuide.onPress = function() {
+						if(_g.rings[0].transform.local.pos != null) {
+							_g.tutorialGuide.moveTo(_g.rings[0].transform.local.pos,0.3);
+							_g.tutorialGuide.onPress = null;
+						}
+					};
+				}
 			}
 		}
 		Main.fittings.sort(function(a,b) {
@@ -1862,6 +1895,22 @@ Main.prototype = $extend(luxe_Game.prototype,{
 			if(a._visual.state.depth < b._visual.state.depth) return 1;
 			return 0;
 		});
+	}
+	,setupInventory: function() {
+		var _g2 = this;
+		var _g1 = 0;
+		var _g = this.inventoryFull.length;
+		while(_g1 < _g) {
+			var r = [_g1++];
+			if(r[0] < this.inventoryAmount) {
+				this.inventoryFull[r[0]].set_visible(true);
+				luxe_tween_Actuate.tween(this.inventoryFull[r[0]].transform.local.scale,0.3,{ x : 1, y : 1});
+			} else luxe_tween_Actuate.tween(this.inventoryFull[r[0]].transform.local.scale,0.1,{ x : 0.4, y : 0.4}).onComplete((function(r) {
+				return function() {
+					_g2.inventoryFull[r[0]].set_visible(false);
+				};
+			})(r));
+		}
 	}
 	,__class__: Main
 });
@@ -1899,12 +1948,14 @@ PhysicalCabling.prototype = {
 	}
 	,__class__: PhysicalCabling
 };
-var PhysicalFitting = function(name_,pos_,fullObject_) {
+var PhysicalFitting = function(name_,pos_,fullObject_,scalePercent_) {
+	if(scalePercent_ == null) scalePercent_ = 0.1;
 	this.pos = pos_;
 	this.fullObject = fullObject_;
 	this._visual = Luxe.draw.circle({ x : 0, y : 0, r : 100 * Main.scale, color : phoenix_Color.random(), depth : -1});
 	this._visual.transform.local.set_pos(this.pos);
-	this._visual.transform.local.scale.set_xy(0.1,0.1);
+	this._visual.transform.local.scale.set_xy(0,0);
+	luxe_tween_Actuate.tween(this._visual.transform.local.scale,0.3,{ x : scalePercent_, y : scalePercent_});
 	Fitting.call(this,name_);
 	Main.fittings.push(this);
 };
@@ -1925,7 +1976,10 @@ PhysicalFitting.prototype = $extend(Fitting.prototype,{
 	,clicked: function() {
 	}
 	,released: function() {
-		if(Main.breaking && phoenix_Vector.Subtract(this.pos,new phoenix_Vector(Luxe.core.screen.width,Luxe.core.screen.height)).get_length() < 33 * Main.scale) Luxe.next(($_=this.fullObject,$bind($_,$_.destroy)));
+		if(Main.breaking && phoenix_Vector.Subtract(this.pos,new phoenix_Vector(Luxe.core.screen.width,Luxe.core.screen.height)).get_length() < 33 * Main.scale) {
+			Luxe.next(($_=this.fullObject,$bind($_,$_.destroy)));
+			Luxe.events.fire("node.delete");
+		}
 	}
 	,pressed: function() {
 		this.move();
@@ -1961,8 +2015,7 @@ PhysicalFitting.prototype = $extend(Fitting.prototype,{
 var PhysicalLamp = function(pos_) {
 	this.times = 0;
 	var _g = this;
-	PhysicalFitting.call(this,"lamp",pos_,this);
-	this._visual.transform.local.scale.multiplyScalar(2);
+	PhysicalFitting.call(this,"lamp",pos_,this,0.2);
 	this._visual.set_depth(1);
 	this.onReceiveData = function(data,seen) {
 		var tween = luxe_tween_Actuate.tween(_g._visual.transform.local.scale,0.2,{ x : _g._visual.transform.local.scale.x + 0.02, y : _g._visual.transform.local.scale.y + 0.02});
@@ -1982,8 +2035,7 @@ PhysicalLamp.prototype = $extend(PhysicalFitting.prototype,{
 	__class__: PhysicalLamp
 });
 var PhysicalNumberGenerator = function(pos_) {
-	PhysicalFitting.call(this,"generator",pos_,this);
-	this._visual.transform.local.scale.multiplyScalar(1.5);
+	PhysicalFitting.call(this,"generator",pos_,this,0.15);
 	this._visual.color.set(1,1,1,1);
 	this._visual.set_depth(1);
 	Luxe.timer.schedule(0.5,$bind(this,this.generate));
@@ -2240,6 +2292,87 @@ StringTools.replace = function(s,sub,by) {
 StringTools.fastCodeAt = function(s,index) {
 	return s.charCodeAt(index);
 };
+var TutorialVisual = function() {
+	this.timer = 0;
+	this.stopping = false;
+	luxe_Sprite.call(this,{ name : "tutorial"});
+	this.set_visible(false);
+	this.centerCircle = Luxe.draw.circle({ r : 21 * Main.scale, x : Luxe.core.screen.get_mid().x, y : Luxe.core.screen.get_mid().y});
+	this.outerRing = Luxe.draw.ring({ r : 21 * Main.scale, x : Luxe.core.screen.get_mid().x, y : Luxe.core.screen.get_mid().y});
+	this.centerCircle.transform.local.scale.set_xy(0.66,0.66);
+};
+$hxClasses["TutorialVisual"] = TutorialVisual;
+TutorialVisual.__name__ = ["TutorialVisual"];
+TutorialVisual.__super__ = luxe_Sprite;
+TutorialVisual.prototype = $extend(luxe_Sprite.prototype,{
+	set_animation: function(v) {
+		var _g = this;
+		if(this.animation == v) return this.animation;
+		this.animation = v;
+		this.stopping = false;
+		this.centerCircle.transform.local.scale.set_xy(0.66,0.66);
+		this.outerRing.transform.local.scale.set_xy(1,1);
+		if(v == null) {
+			this.stopping = true;
+			haxe_Log.trace("killing tweens",{ fileName : "TutorialVisual.hx", lineNumber : 59, className : "TutorialVisual", methodName : "set_animation"});
+		} else {
+			this.centerCircle.set_visible(true);
+			this.outerRing.set_visible(true);
+			luxe_tween_Actuate.tween(this.centerCircle.transform.local.scale,0.75,{ x : 1, y : 1}).repeat().reflect().onRepeat(function() {
+				if(_g.stopping) {
+					_g.centerCircle.set_visible(false);
+					luxe_tween_Actuate.stop(_g.centerCircle.transform.local.scale,null);
+				}
+			}).onComplete(function() {
+				haxe_Log.trace("done",{ fileName : "TutorialVisual.hx", lineNumber : 41, className : "TutorialVisual", methodName : "set_animation"});
+				_g.centerCircle.set_visible(false);
+			});
+			luxe_tween_Actuate.tween(this.outerRing.transform.local.scale,0.75,{ x : 0.6, y : 0.6}).repeat().reflect().onRepeat(function() {
+				if(_g.stopping) {
+					_g.outerRing.set_visible(false);
+					luxe_tween_Actuate.stop(_g.outerRing.transform.local.scale,null);
+				}
+			}).onComplete(function() {
+				haxe_Log.trace("done",{ fileName : "TutorialVisual.hx", lineNumber : 54, className : "TutorialVisual", methodName : "set_animation"});
+				_g.outerRing.set_visible(false);
+			});
+		}
+		return this.animation;
+	}
+	,moveTo: function(pos,time) {
+		if(time == null) time = 0.75;
+		luxe_tween_Actuate.tween(this.centerCircle.transform.local.pos,time,{ x : pos.x, y : pos.y},false);
+		luxe_tween_Actuate.tween(this.outerRing.transform.local.pos,time,{ x : pos.x, y : pos.y},false);
+	}
+	,setPos: function(pos) {
+		this.centerCircle.transform.local.pos.set_xy(pos.x,pos.y);
+		this.outerRing.transform.local.pos.set_xy(pos.x,pos.y);
+	}
+	,onPress: function() {
+	}
+	,update: function(dt) {
+		if(Luxe.input.mousedown(1)) {
+			if(phoenix_Vector.Subtract(Luxe.core.screen.cursor.get_pos(),this.centerCircle.transform.local.pos).get_length() < 20 * Main.scale) {
+				this.timer += dt;
+				if(this.timer > 0.05) {
+					if($bind(this,this.onPress) != null) this.onPress();
+				}
+			}
+		} else this.timer = 0;
+	}
+	,init: function() {
+		luxe_Sprite.prototype.init.call(this);
+	}
+	,ondestroy: function() {
+		luxe_Sprite.prototype.ondestroy.call(this);
+	}
+	,__class__: TutorialVisual
+	,__properties__: $extend(luxe_Sprite.prototype.__properties__,{set_animation:"set_animation"})
+});
+var TutorialAnim = $hxClasses["TutorialAnim"] = { __ename__ : ["TutorialAnim"], __constructs__ : ["Pulse"] };
+TutorialAnim.Pulse = ["Pulse",0];
+TutorialAnim.Pulse.toString = $estr;
+TutorialAnim.Pulse.__enum__ = TutorialAnim;
 var ValueType = $hxClasses["ValueType"] = { __ename__ : ["ValueType"], __constructs__ : ["TNull","TInt","TFloat","TBool","TObject","TFunction","TClass","TEnum","TUnknown"] };
 ValueType.TNull = ["TNull",0];
 ValueType.TNull.toString = $estr;
@@ -25548,7 +25681,7 @@ snow_systems_input_Keycodes.eject = snow_systems_input_Keycodes.from_scan(snow_s
 snow_systems_input_Keycodes.sleep = snow_systems_input_Keycodes.from_scan(snow_systems_input_Scancodes.sleep);
 snow_types_Config.app_runtime = "snow.core.web.Runtime";
 snow_types_Config.app_config = "config.json";
-snow_types_Config.app_ident = "com.luxeengine.empty";
+snow_types_Config.app_ident = "com.nicom.garden";
 snow_types_Config.app_main = "luxe.Engine";
 snow_types_Config.module_assets = "snow.core.web.assets.Assets";
 snow_types_Config.module_audio = "snow.modules.webaudio.Audio";

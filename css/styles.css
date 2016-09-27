@@ -140,6 +140,15 @@ section.work a {
     section.work a.hta p {
       background-color: rgba(21, 199, 5, 0.57);
       box-shadow: 1px 1px 10px rgba(21, 199, 5, 0.57); }
+	section.work a.assorted {
+	    background-image: url("../images/vainlang.png");
+	    width: 100%; }
+	    @media only screen and (max-width: 600px) {
+	      section.work a.assorted {
+	        width: 100%; } }
+	    section.work a.assorted p {
+	      background-color: rgba(100,100,100, 0.57);
+	      box-shadow: 1px 1px 10px rgba(100,100,100, 0.57); }
   section.work a.game {
     background-image: url("../images/hta.gif");
     width: 35%; }
