@@ -12,7 +12,7 @@
 
 		var authToken = null;
 
-		var spreadsheetId = null;
+		var spreadsheetId = localStorage.getItem('sheetid');
 
 		var picker = null;
 
@@ -24,8 +24,12 @@
 		function handleAuthResult(authResult) {
 			if(!authResult.error) {
 				authToken = authResult.access_token;
-				createPicker();
-				loadSheetsApi();
+				if(spreadsheetId == null) {
+					createPicker();
+				}
+				else {
+					updateTeachers();
+				}
 			}
 			else {
 				deffered.reject(authResult.error);
@@ -56,18 +60,22 @@
 		}
 
 		function loadSheetsApi() {
+			var deffered = $q.defer();
 			var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
 			gapi.client.load(discoveryUrl).then(function(d) {
 				hasSheetsApi = true;
+				deffered.resolve();
 			}, function(e) {
-				throw(e);
+				deffered.reject(e);
 			});
+			return deffered.promise;
 		}
 
 		function gotPicker(data) {
 			if(data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
 				var doc = data[google.picker.Response.DOCUMENTS][0];
-				spreadsheetId = doc[google.picker.Document.ID]
+				spreadsheetId = doc[google.picker.Document.ID];
+				localStorage.setItem('sheetid', spreadsheetId);
 				updateTeachers();
 			}
 		}
@@ -87,16 +95,17 @@
 		return {
 			init: function() {
 				gapi.load('client', function() {
-					gapi.load('auth', {callback: function() {
-						hasAuthApi = true;
-						gapi.auth.authorize({
-							client_id: CLIENT_ID,
-							scope: SCOPES,
-							immediate: true },
-							handleAuthResult);
-						deffered.resolve();
-					}});
-					loadSheetsApi();
+					loadSheetsApi().then(function() {
+						gapi.load('auth', {callback: function() {
+							hasAuthApi = true;
+							gapi.auth.authorize({
+								client_id: CLIENT_ID,
+								scope: SCOPES,
+								immediate: true },
+								handleAuthResult);
+							deffered.resolve();
+						}});
+					});
 				});
 				gapi.load('picker', {callback: function() {
 					hasPickerApi = true;
