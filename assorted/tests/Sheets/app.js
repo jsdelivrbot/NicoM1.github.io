@@ -21,9 +21,39 @@
 		var deffered;
 		deffered = $q.defer();
 
+		function initApi() {
+			gapi.load('client', function() {
+				loadSheetsApi().then(function() {
+					gapi.load('picker', {callback: function() {
+						hasPickerApi = true;
+						gapi.load('auth', {callback: function() {
+							hasAuthApi = true;
+							gapi.auth.authorize({
+								client_id: CLIENT_ID,
+								scope: SCOPES,
+								immediate: true },
+								handleAuthResult);
+						}});
+					}});
+				});
+			});
+		}
+
+		function handleAuth() {
+			if(hasAuthApi) {
+				gapi.auth.authorize({
+					client_id: CLIENT_ID,
+					scope: SCOPES,
+					immediate: false },
+					handleAuthResult);
+			}
+			return deffered.promise;
+		}
+
 		function handleAuthResult(authResult) {
 			if(!authResult.error) {
 				authToken = authResult.access_token;
+				deffered.resolve();
 				if(spreadsheetId == null) {
 					createPicker();
 				}
@@ -93,47 +123,31 @@
 		}
 
 		return {
-			init: function() {
-				gapi.load('client', function() {
-					loadSheetsApi().then(function() {
-						gapi.load('auth', {callback: function() {
-							hasAuthApi = true;
-							gapi.auth.authorize({
-								client_id: CLIENT_ID,
-								scope: SCOPES,
-								immediate: true },
-								handleAuthResult);
-							deffered.resolve();
-						}});
-					});
-				});
-				gapi.load('picker', {callback: function() {
-					hasPickerApi = true;
-				}});
-			},
-			handleAuth: function() {
-				if(hasAuthApi) {
-					gapi.auth.authorize({
-						client_id: CLIENT_ID,
-						scope: SCOPES,
-						immediate: false },
-						handleAuthResult);
-				}
-				return deffered.promise;
-			},
+			init: initApi,
+			handleAuth: handleAuth,
 			getTeachers: function() {
 				return teachers;
+			},
+			hasSheetId: function() {
+				return spreadsheetId != null;
+			},
+			pickSheet: function() {
+				createPicker();
 			}
 		};
 	})
 	.controller('sheets', function($scope, googleAuth) {
 		this.teachers = googleAuth.getTeachers();
+		this.showSelectButton = function() {
+			return !googleAuth.hasSheetId();
+		}
+		this.pickSheet = googleAuth.pickSheet;
 		googleAuth.init();
 	})
 	.directive('googlelogin', function() {
 		return {
 			restrict: 'E',
-			template: '<button id="authorize" ng-click="login.handleAuthClick()" ng-show="sheets.teachers.length == 0">Select Spreadsheet.</button>',
+			template: '<button id="authorize" ng-click="login.handleAuthClick()" ng-show="sheets.showSelectButton()">Select Spreadsheet.</button>',
 			controller: function($scope, googleAuth) {
 				this.hasUser = false;
 				this.handleAuthClick = function() {

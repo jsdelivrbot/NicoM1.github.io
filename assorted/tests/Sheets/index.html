@@ -6,12 +6,21 @@
 		<script type="text/javascript" src="app.js"></script>
 	</head>
 	<body ng-app="sheets" ng-controller="sheets as sheets">
+		<input type="text" ng-model="sheets.search" ng-if="sheets.teachers.length > 0"/>
 		<googlelogin></googlelogin>
-		<input type="text" ng-model="sheets.search" ng-show="sheets.teachers.length > 0"/>
-		<div>
-			<div ng-repeat="teacher in sheets.teachers | filter:sheets.search track by $index">
-				{{teacher.firstName}} {{teacher.lastName}} <a href="mailto:{{teacher.email}}">{{teacher.email}}</a>
-			</div>
-		</div>
+		<button ng-click="sheets.pickSheet()" ng-if="sheets.teachers.length > 0">Change Sheet.</button>
+		<table>
+			<tr ng-repeat="teacher in sheets.teachers | filter:sheets.search track by $index">
+				<td>
+					{{::teacher.firstName}}
+				</td>
+				<td>
+					{{::teacher.lastName}}
+				</td>
+				<td>
+					<a href="mailto:{{teacher.email}}">{{::teacher.email}}</a>
+				</td>
+			</tr>
+		</table>
 	</body>
 </html>
