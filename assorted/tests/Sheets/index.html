@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
+		<script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0-beta.5/angular.min.js"></script>
 		<script type="text/javascript" src="app.js"></script>
 	</head>
-	<body ng-app="sheets">
+	<body ng-app="sheets" ng-controller="sheets as sheets">
 		<googlelogin></googlelogin>
+		<input type="text" ng-model="sheets.search" ng-show="login.hasUser"/>
+		<div>
+			<div ng-repeat="teacher in sheets.teachers | filter:sheets.search track by $index">
+				{{teacher.firstName}} {{teacher.lastName}} <a href="mailto:{{teacher.email}}">{{teacher.email}}</a>
+			</div>
+		</div>
 	</body>
 </html>
