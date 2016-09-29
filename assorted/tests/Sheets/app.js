@@ -89,6 +89,11 @@
 				gapi.load('client', function() {
 					gapi.load('auth', {callback: function() {
 						hasAuthApi = true;
+						gapi.auth.authorize({
+							client_id: CLIENT_ID,
+							scope: SCOPES,
+							immediate: true },
+							handleAuthResult);
 						deffered.resolve();
 					}});
 					loadSheetsApi();
