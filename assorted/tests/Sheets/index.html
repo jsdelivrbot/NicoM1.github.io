@@ -12,13 +12,13 @@
 		<table>
 			<tr ng-repeat="teacher in sheets.teachers | filter:sheets.search track by $index">
 				<td>
-					{{::teacher.firstName}}
+					{{teacher.firstName}}
 				</td>
 				<td>
-					{{::teacher.lastName}}
+					{{teacher.lastName}}
 				</td>
 				<td>
-					<a href="mailto:{{teacher.email}}">{{::teacher.email}}</a>
+					<a href="mailto:{{teacher.email}}">{{teacher.email}}</a>
 				</td>
 			</tr>
 		</table>

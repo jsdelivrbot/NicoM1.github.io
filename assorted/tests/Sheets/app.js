@@ -80,7 +80,8 @@
 							teachers.push({
 								firstName: teacher[0],
 								lastName: teacher[1],
-								email: teacher[2]
+								email: teacher[2],
+								fullName: teacher[0] + ' ' + teacher[1] + ' ' + teacher[2]
 							});
 						});
 					}
