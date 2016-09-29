@@ -3,6 +3,7 @@
 	angular.module('sheets', [])
 	.factory('googleAuth', function($q, $rootScope) {
 		var CLIENT_ID = '977588012097-tp6j1qv1ipm7s9c0582dprb157lp13p0.apps.googleusercontent.com';
+		var API_KEY = 'AIzaSyCdKBQGd4QfCTFFqQ1Lh9FNDwO0mT1QY1c';
 		var SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly', 'https://www.googleapis.com/auth/drive.readonly'];
 
 		var hasSheetsApi = false;
@@ -13,11 +14,23 @@
 
 		var spreadsheetId = null;
 
-		var teachers = [];
+		var picker = null;
 
+		var teachers = [];
 
 		var deffered;
 		deffered = $q.defer();
+
+		function handleAuthResult(authResult) {
+			if(!authResult.error) {
+				authToken = authResult.access_token;
+				createPicker();
+				loadSheetsApi();
+			}
+			else {
+				deffered.reject(authResult.error);
+			}
+		}
 
 		function updateTeachers() {
 			if(hasSheetsApi && spreadsheetId) {
@@ -42,29 +55,15 @@
 			}
 		}
 
-		function handleAuthResult(authResult) {
-			if(!authResult.error) {
-				authToken = authResult.access_token;
-				loadSheetsApi();
-				gapi.load('picker', {callback: function() {
-					hasPickerApi = true;
-					createPicker();
-				}});
-			}
-			else {
-				deffered.reject(authResult.error);
-			}
-		}
 		function loadSheetsApi() {
 			var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
 			gapi.client.load(discoveryUrl).then(function(d) {
 				hasSheetsApi = true;
-				deffered.resolve();
-				$rootScope.$broadcast('got-sheets-api');
 			}, function(e) {
-				deffered.reject(e);
+				throw(e);
 			});
 		}
+
 		function gotPicker(data) {
 			if(data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
 				var doc = data[google.picker.Response.DOCUMENTS][0];
@@ -72,24 +71,31 @@
 				updateTeachers();
 			}
 		}
+
 		function createPicker() {
 			if(hasPickerApi && authToken) {
-				var picker = new google.picker.PickerBuilder()
+				picker = new google.picker.PickerBuilder()
 					.addView(google.picker.ViewId.SPREADSHEETS)
 					.setOAuthToken(authToken)
-					.setDeveloperKey('AIzaSyCdKBQGd4QfCTFFqQ1Lh9FNDwO0mT1QY1c')
+					.setDeveloperKey(API_KEY)
 					.setCallback(gotPicker)
 					.build();
 				picker.setVisible(true);
 			}
 		}
+
 		return {
 			init: function() {
 				gapi.load('client', function() {
 					gapi.load('auth', {callback: function() {
 						hasAuthApi = true;
+						deffered.resolve();
 					}});
+					loadSheetsApi();
 				});
+				gapi.load('picker', {callback: function() {
+					hasPickerApi = true;
+				}});
 			},
 			handleAuth: function() {
 				if(hasAuthApi) {
@@ -101,35 +107,26 @@
 				}
 				return deffered.promise;
 			},
-			getSpreadsheets: function() {
-				if(hasSheetsApi) {
-					return gapi.client.sheets.spreadsheets;
-				}
-				return null;
-			},
 			getTeachers: function() {
 				return teachers;
 			}
 		};
 	})
 	.controller('sheets', function($scope, googleAuth) {
-		this.spreadsheets = null;
 		this.teachers = googleAuth.getTeachers();
-
 		googleAuth.init();
 	})
 	.directive('googlelogin', function() {
 		return {
 			restrict: 'E',
 			template: '<button id="authorize" ng-click="login.handleAuthClick()" ng-show="sheets.teachers.length == 0">Select Spreadsheet.</button>',
-			controller: function(googleAuth) {
+			controller: function($scope, googleAuth) {
 				this.hasUser = false;
 				this.handleAuthClick = function() {
-					googleAuth.handleAuth().then(function() {
+					googleAuth.handleAuth();
+					$scope.$on('updated-teachers', function() {
 						this.hasUser = true;
-					}.bind(this), function(e) {
-						console.log(e);
-					});
+					}.bind(this));
 				}
 			},
 			controllerAs: 'login',
