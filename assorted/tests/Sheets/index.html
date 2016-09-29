@@ -10,7 +10,7 @@
 		<googlelogin></googlelogin>
 		<button ng-click="sheets.pickSheet()" ng-if="sheets.teachers.length > 0">Change Sheet.</button>
 		<table>
-			<tr ng-repeat="teacher in sheets.teachers | filter:sheets.search track by $index">
+			<tr ng-repeat="teacher in sheets.teachers | filter:sheets.search | orderBy:'firstName' track by $index">
 				<td>
 					{{teacher.firstName}}
 				</td>

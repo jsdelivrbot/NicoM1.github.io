@@ -1,6 +1,9 @@
 ;(function(window) {
 	"use strict"
 	angular.module('sheets', [])
+	.config(function($compileProvider) {
+		$compileProvider.debugInfoEnabled = false;
+	})
 	.factory('googleAuth', function($q, $rootScope) {
 		var CLIENT_ID = '977588012097-tp6j1qv1ipm7s9c0582dprb157lp13p0.apps.googleusercontent.com';
 		var API_KEY = 'AIzaSyCdKBQGd4QfCTFFqQ1Lh9FNDwO0mT1QY1c';
@@ -76,14 +79,14 @@
 				}).then(function(response) {
 					for(var t in response.result.values) {
 						var teacher = response.result.values[t];
-						$rootScope.$apply(function() {
+						$rootScope.$applyAsync(function(teacher) {
 							teachers.push({
 								firstName: teacher[0],
 								lastName: teacher[1],
 								email: teacher[2],
 								fullName: teacher[0] + ' ' + teacher[1] + ' ' + teacher[2]
 							});
-						});
+						}.bind(this, teacher));
 					}
 					$rootScope.$broadcast('updated-teachers');
 				});
