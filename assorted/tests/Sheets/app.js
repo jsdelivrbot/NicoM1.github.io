@@ -97,7 +97,7 @@
 					spreadsheetId: spreadsheetId,
 					range: SHEET + 'A3:C'
 				}).then(function(response) {
-					teachers = [];
+					teachers.length = 0;
 					$rootScope.$applyAsync(function() {
 						for(var t = 0; t < response.result.values.length; t++) {
 							var teacher = response.result.values[t];
