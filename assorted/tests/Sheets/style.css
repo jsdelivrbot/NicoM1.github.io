@@ -17,3 +17,11 @@
 		transform: rotate(360deg) scale(2);
 	}
 }
+
+.ng-invalid {
+	border-color: #FF0000;
+}
+
+.info {
+	cursor: pointer;
+}

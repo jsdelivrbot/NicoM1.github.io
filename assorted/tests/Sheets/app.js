@@ -1,13 +1,27 @@
 ;(function(window) {
 	"use strict"
-	angular.module('sheets', [])
-	.config(function($compileProvider) {
+	angular.module('sheets', ['ngRoute'])
+	.config(function($compileProvider, $routeProvider) {
 		$compileProvider.debugInfoEnabled = false;
+
+		$routeProvider
+			.when('/', {
+				templateUrl: 'mainlist.html',
+				controller: 'sheets as sheets'
+			})
+			.when('/details', {
+				redirectTo: '/details/0'
+			})
+			.when('/details/:teacherId', {
+				templateUrl: 'details.html',
+				controller: 'details as details'
+		});
 	})
 	.factory('googleAuth', function($q, $rootScope) {
 		var CLIENT_ID = '977588012097-tp6j1qv1ipm7s9c0582dprb157lp13p0.apps.googleusercontent.com';
 		var API_KEY = 'AIzaSyCdKBQGd4QfCTFFqQ1Lh9FNDwO0mT1QY1c';
-		var SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly', 'https://www.googleapis.com/auth/drive.readonly'];
+		var SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.readonly'];
+		var SHEET = '2015-2016 LISTSERVE Members!';
 
 		var hasSheetsApi = false;
 		var hasPickerApi = false;
@@ -75,22 +89,48 @@
 
 				spreadsheets.values.get({
 					spreadsheetId: spreadsheetId,
-					range: '2015-2016 LISTSERVE Members!A3:C'
+					range: SHEET + 'A3:C'
 				}).then(function(response) {
-					for(var t in response.result.values) {
-						var teacher = response.result.values[t];
-						$rootScope.$applyAsync(function(teacher) {
-							teachers.push({
-								firstName: teacher[0],
-								lastName: teacher[1],
-								email: teacher[2],
-								fullName: teacher[0] + ' ' + teacher[1] + ' ' + teacher[2]
-							});
-						}.bind(this, teacher));
-					}
-					$rootScope.$broadcast('updated-teachers');
+					$rootScope.$applyAsync(function() {
+						for(var t = 0; t < response.result.values.length; t++) {
+							var teacher = response.result.values[t];
+								teachers.push({
+									firstName: teacher[0],
+									lastName: teacher[1],
+									email: teacher[2],
+									fullName: teacher[0] + ' ' + teacher[1] + ' ' + teacher[2],
+									index: t
+								});
+							}
+						$rootScope.$broadcast('updated-teachers');
+					});
 				});
 			}
+		}
+
+		function updateTeacher(index, teacher) {
+			index += 3;
+			var deffered = $q.defer();
+			if(!teacher) {
+				deffered.reject('missing teacher argument');
+			}
+			if(hasSheetsApi && spreadsheetId) {
+				var spreadsheets = gapi.client.sheets.spreadsheets;
+				spreadsheets.values.update({
+					spreadsheetId: spreadsheetId,
+					range: SHEET + 'A'+index+':C'+index,
+					values: [[teacher.firstName, teacher.lastName, teacher.email]],
+					valueInputOption: 'RAW'
+				}).then(function(response) {
+					deffered.resolve(response);
+				}, function(error) {
+					deffered.reject(error);
+				});
+			}
+			else {
+				deffered.reject('could not save teacher, missing sheets api and or sheet id');
+			}
+			return deffered.promise;
 		}
 
 		function loadSheetsApi() {
@@ -137,16 +177,55 @@
 			},
 			pickSheet: function() {
 				createPicker();
+			},
+			updateTeacher: updateTeacher,
+			authorized: function() {
+				return authToken != null;
 			}
 		};
 	})
-	.controller('sheets', function($scope, googleAuth) {
+	.controller('sheets', function($scope, $location, googleAuth) {
 		this.teachers = googleAuth.getTeachers();
 		this.showSelectButton = function() {
-			return !googleAuth.hasSheetId();
+			return !googleAuth.hasSheetId() || !googleAuth.authorized();
+		}
+		this.selectTeacher = function(teacher) {
+			$location.path('/details/'+teacher.index);
 		}
 		this.pickSheet = googleAuth.pickSheet;
-		googleAuth.init();
+	})
+	.controller('details', function($scope, $routeParams, googleAuth) {
+		this.teachers = googleAuth.getTeachers();
+		this.teacherId = Number($routeParams.teacherId);
+		this.currentTeacher = this.teachers[this.teacherId];
+		this.editingTeacher = {};
+		if(this.currentTeacher) {
+			copyTeacher(this.currentTeacher, this.editingTeacher);
+		}
+		var removeListener = null;
+		function copyTeacher(fromTeacher, toTeacher) {
+			toTeacher.firstName = fromTeacher.firstName;
+			toTeacher.lastName = fromTeacher.lastName;
+			toTeacher.email = fromTeacher.email;
+			toTeacher.index = fromTeacher.index;
+		}
+		function compareTeachers(t1, t2) {
+			return t1.firstName == t2.firstName && t1.lastName == t2.lastName && t1.email == t2.email;
+		}
+
+		this.updateTeacher = function() {
+			if(this.editingTeacher && this.currentTeacher && !compareTeachers(this.editingTeacher, this.currentTeacher)) {
+				googleAuth.updateTeacher(this.editingTeacher.index, this.editingTeacher).then(function() {
+					copyTeacher(this.editingTeacher, this.currentTeacher)
+				}.bind(this), function(e) {
+					console.log(e);
+				});
+			}
+		}
+		$scope.$on('updated-teachers', function() {
+			this.currentTeacher = this.teachers[this.teacherId];
+			copyTeacher(this.currentTeacher, this.editingTeacher);
+		}.bind(this));
 	})
 	.directive('googlelogin', function() {
 		return {
@@ -165,5 +244,8 @@
 			link: function(scope, element, attrs, ctrl) {
 			}
 		}
+	})
+	.run(function(googleAuth) {
+		googleAuth.init();
 	})
 })(window);
