@@ -310,7 +310,7 @@
 			if(findId) {
 				findId = false;
 				this.teacherId = googleAuth.findTeacherIndex(this.currentTeacher);
-				$location.path('/details/'+this.teacherId);
+				$location.path('/details/'+this.teacherId).replace();
 				this.removedDupes = true;
 				this.hasDupes = false;
 			}
