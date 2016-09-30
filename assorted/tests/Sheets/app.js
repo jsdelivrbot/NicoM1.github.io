@@ -20,7 +20,7 @@
 	.factory('googleAuth', function($q, $rootScope) {
 		var CLIENT_ID = '977588012097-tp6j1qv1ipm7s9c0582dprb157lp13p0.apps.googleusercontent.com';
 		var API_KEY = 'AIzaSyCdKBQGd4QfCTFFqQ1Lh9FNDwO0mT1QY1c';
-		var SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.readonly'];
+		var SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.readonly'].join(' ');
 		var SHEET = '2015-2016 LISTSERVE Members!';
 
 		var hasSheetsApi = false;
@@ -38,19 +38,26 @@
 		var deffered;
 		deffered = $q.defer();
 
+		var auth2 = null;
+
 		function initApi() {
 			gapi.load('client', function() {
 				loadSheetsApi().then(function() {
 					gapi.load('picker', {callback: function() {
 						hasPickerApi = true;
-						gapi.load('auth', {callback: function() {
-							hasAuthApi = true;
-							gapi.auth.authorize({
+						gapi.load('auth2', {callback: function() {
+							gapi.auth2.init({
 								client_id: CLIENT_ID,
 								scope: SCOPES,
-								immediate: true },
-								handleAuthResult);
-						}});
+								immediate: true }).then(function(auth) {
+									auth2 = auth;
+									hasAuthApi = true;
+									if(auth.isSignedIn.get()) {
+										handleAuthResult(auth2.currentUser.get().getAuthResponse());
+									}
+								});
+							}
+						});
 					}});
 				});
 			});
@@ -58,16 +65,15 @@
 
 		function handleAuth() {
 			if(hasAuthApi) {
-				gapi.auth.authorize({
-					client_id: CLIENT_ID,
-					scope: SCOPES,
-					immediate: false },
-					handleAuthResult);
+				auth2.signIn().then(function(d) {
+					handleAuthResult(auth2.currentUser.get().getAuthResponse());
+				});
 			}
 			return deffered.promise;
 		}
 
 		function handleAuthResult(authResult) {
+			console.log(authResult);
 			if(!authResult.error) {
 				authToken = authResult.access_token;
 				deffered.resolve();
@@ -91,6 +97,7 @@
 					spreadsheetId: spreadsheetId,
 					range: SHEET + 'A3:C'
 				}).then(function(response) {
+					teachers = [];
 					$rootScope.$applyAsync(function() {
 						for(var t = 0; t < response.result.values.length; t++) {
 							var teacher = response.result.values[t];
@@ -166,6 +173,14 @@
 			}
 		}
 
+		function signOut() {
+			if(hasAuthApi) {
+				auth2.signOut().then(function() {
+					alert('out');
+				});
+			}
+		}
+
 		return {
 			init: initApi,
 			handleAuth: handleAuth,
@@ -181,7 +196,8 @@
 			updateTeacher: updateTeacher,
 			authorized: function() {
 				return authToken != null;
-			}
+			},
+			signOut: signOut
 		};
 	})
 	.controller('sheets', function($scope, $location, googleAuth) {
@@ -192,6 +208,7 @@
 		this.selectTeacher = function(teacher) {
 			$location.path('/details/'+teacher.index);
 		}
+		this.signOut = googleAuth.signOut;
 		this.pickSheet = googleAuth.pickSheet;
 	})
 	.controller('details', function($scope, $routeParams, googleAuth) {

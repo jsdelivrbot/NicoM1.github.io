@@ -10,11 +10,14 @@
 }
 
 @keyframes spin {
-	from {
+	0% {
 		transform: rotate(0deg) scale(1);
 	}
-	to {
-		transform: rotate(360deg) scale(2);
+	50% {
+		transform: rotate(180deg) scale(2);
+	}
+	100% {
+		transform: rotate(360deg) scale(1);
 	}
 }
 
