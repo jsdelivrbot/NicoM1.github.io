@@ -11,6 +11,10 @@
 		</div>
 	</div>
 	<div class="secondaryinfo">
+		<div ng-if="details.hasDupes">
+			Duplicates {{details.hasDupes}}
+			<button ng-click="details.removeDupes(details.currentTeacher)">Remove.</button>
+		</div>
 	</div>
 	<div class="tertiaryinfo">
 	</div>

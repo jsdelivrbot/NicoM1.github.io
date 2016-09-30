@@ -52,7 +52,7 @@
 								immediate: true }).then(function(auth) {
 									auth2 = auth;
 									hasAuthApi = true;
-									if(auth.isSignedIn.get()) {
+									if(auth2.isSignedIn.get()) {
 										handleAuthResult(auth2.currentUser.get().getAuthResponse());
 									}
 								});
@@ -89,6 +89,57 @@
 			}
 		}
 
+		function findDuplicates(teacher) {
+			var dupes = [];
+			for(var t = 0; t < teachers.length; t++) {
+				var foundTeacher = teachers[t];
+				if(teacher !== foundTeacher && (teacher.firstName.trim() == foundTeacher.firstName.trim() && teacher.lastName.trim() == foundTeacher.lastName.trim() && teacher.email.trim() == foundTeacher.email.trim())) {
+					dupes.push(foundTeacher);
+				}
+			}
+			return dupes;
+		}
+
+		function findTeacherIndex(teacher) {
+			for(var t = 0; t < teachers.length; t++) {
+				var foundTeacher = teachers[t];
+				if(teacher.firstName == foundTeacher.firstName && teacher.lastName == foundTeacher.lastName) {
+					return foundTeacher.index;
+				}
+			}
+			return 0;
+		}
+
+		function removeDuplicates(teacher) {
+			if(hasSheetsApi) {
+				var dupes = findDuplicates(teacher);
+				if(dupes.length > 0) {
+					var spreadsheets = gapi.client.sheets.spreadsheets;
+					for(var d = 0; d < dupes.length; d++) {
+						var dupe = dupes[d];
+						console.log(dupe.index + 2);
+						spreadsheets.batchUpdate({
+							spreadsheetId: spreadsheetId,
+							requests: [{
+								deleteDimension: {
+									range: {
+										sheetId: 216514658,
+										dimension: 'ROWS',
+										startIndex: dupe.index + 2,
+										endIndex: dupe.index + 3
+									}
+								}
+							}]
+						}).then(function(d) {
+							console.log(d);
+						}, function(e) {
+							console.log(e);
+						});
+					}
+				}
+			}
+		}
+
 		function updateTeachers() {
 			if(hasSheetsApi && spreadsheetId) {
 				var spreadsheets = gapi.client.sheets.spreadsheets;
@@ -97,15 +148,14 @@
 					spreadsheetId: spreadsheetId,
 					range: SHEET + 'A3:C'
 				}).then(function(response) {
-					teachers = [];
+					teachers.length = 0;
 					$rootScope.$applyAsync(function() {
 						for(var t = 0; t < response.result.values.length; t++) {
 							var teacher = response.result.values[t];
 								teachers.push({
-									firstName: teacher[0],
-									lastName: teacher[1],
-									email: teacher[2],
-									fullName: teacher[0] + ' ' + teacher[1] + ' ' + teacher[2],
+									firstName: teacher[0] || '',
+									lastName: teacher[1] || '',
+									email: teacher[2] || '',
 									index: t
 								});
 							}
@@ -197,7 +247,11 @@
 			authorized: function() {
 				return authToken != null;
 			},
-			signOut: signOut
+			signOut: signOut,
+			findDuplicates: findDuplicates,
+			removeDuplicates: removeDuplicates,
+			updateTeachers: updateTeachers,
+			findTeacherIndex: findTeacherIndex
 		};
 	})
 	.controller('sheets', function($scope, $location, googleAuth) {
@@ -211,13 +265,19 @@
 		this.signOut = googleAuth.signOut;
 		this.pickSheet = googleAuth.pickSheet;
 	})
-	.controller('details', function($scope, $routeParams, googleAuth) {
+	.controller('details', function($scope, $routeParams, $location, googleAuth) {
 		this.teachers = googleAuth.getTeachers();
 		this.teacherId = Number($routeParams.teacherId);
 		this.currentTeacher = this.teachers[this.teacherId];
 		this.editingTeacher = {};
+
+		this.getDupes = googleAuth.findDuplicates;
+
+		var findId = false;
+
 		if(this.currentTeacher) {
 			copyTeacher(this.currentTeacher, this.editingTeacher);
+			this.hasDupes = this.getDupes(this.currentTeacher).length;
 		}
 		var removeListener = null;
 		function copyTeacher(fromTeacher, toTeacher) {
@@ -239,9 +299,26 @@
 				});
 			}
 		}
+
+		this.removeDupes = function(teacher) {
+			googleAuth.removeDuplicates(teacher);
+			findId = true;
+			googleAuth.updateTeachers();
+		}
+
 		$scope.$on('updated-teachers', function() {
+			if(findId) {
+				findId = false;
+				this.teacherId = googleAuth.findTeacherIndex(this.currentTeacher);
+				$location.path('/details/'+this.teacherId);
+				this.removedDupes = true;
+				this.hasDupes = false;
+			}
 			this.currentTeacher = this.teachers[this.teacherId];
 			copyTeacher(this.currentTeacher, this.editingTeacher);
+			if(!this.removedDupes) {
+				this.hasDupes = this.getDupes(this.currentTeacher).length;
+			}
 		}.bind(this));
 	})
 	.directive('googlelogin', function() {
