@@ -22,6 +22,7 @@
 		var API_KEY = 'AIzaSyCdKBQGd4QfCTFFqQ1Lh9FNDwO0mT1QY1c';
 		var SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.readonly'].join(' ');
 		var SHEET = '2015-2016 LISTSERVE Members!';
+		var OFFSET = 2;
 
 		var hasSheetsApi = false;
 		var hasPickerApi = false;
@@ -125,8 +126,8 @@
 									range: {
 										sheetId: 216514658,
 										dimension: 'ROWS',
-										startIndex: dupe.index + 2,
-										endIndex: dupe.index + 3
+										startIndex: dupe.index + OFFSET,
+										endIndex: dupe.index + OFFSET + 1
 									}
 								}
 							}]
@@ -166,7 +167,8 @@
 		}
 
 		function updateTeacher(index, teacher) {
-			index += 3;
+			//index is 1-based here
+			index += OFFSET+1;
 			var deffered = $q.defer();
 			if(!teacher) {
 				deffered.reject('missing teacher argument');
