@@ -42,7 +42,22 @@
 		var auth2 = null;
 
 		function initApi() {
-			gapi.load('client', function() {
+			$q.all([loadApi('client'), loadApi('picker'), loadApi('auth2')]).then(function() {
+				hasPickerApi = true;
+				loadSheetsApi().then(function() {
+					gapi.auth2.init({
+						client_id: CLIENT_ID,
+						scope: SCOPES,
+						immediate: true }).then(function(auth) {
+							auth2 = auth;
+							hasAuthApi = true;
+							if(auth2.isSignedIn.get()) {
+								handleAuthResult(auth2.currentUser.get().getAuthResponse());
+							}
+						});
+				})
+			});
+			/*gapi.load('client', function() {
 				loadSheetsApi().then(function() {
 					gapi.load('picker', {callback: function() {
 						hasPickerApi = true;
@@ -61,7 +76,15 @@
 						});
 					}});
 				});
+			});*/
+		}
+
+		function loadApi(api) {
+			var deffered = $q.defer();
+			gapi.load(api, function() {
+				deffered.resolve();
 			});
+			return deffered.promise;
 		}
 
 		function handleAuth() {
