@@ -1,22 +1,72 @@
 <div class="details">
+	<div class="topbar">
+		<div class="info topbar">
+			<label>Search Criteria <input type="text" ng-model="details.searchCriteria"</label>
+		</div>
+	</div>
 	<div class="maininfo">
-		<div>
+		<div class="info primary">
 			<label>First Name <input type="text" ng-model="details.editingTeacher.firstName"</label>
 		</div>
-		<div>
+		<div class="info primary">
 			<label>Last Name <input type="text" ng-model="details.editingTeacher.lastName"</label>
 		</div>
-		<div>
-			<label>Email <input type="email" ng-model="details.editingTeacher.email"</label>
+		<div class="info primary">
+			<label>School Email <input type="email" ng-model="details.editingTeacher.schoolEmail"</label>
+		</div>
+		<div class="info primary">
+			<label>School District <input type="text" ng-model="details.editingTeacher.district"</label>
+		</div>
+		<div class="info primary">
+			<label>School <input type="text" ng-model="details.editingTeacher.school"</label>
+		</div>
+		<div class="info primary">
+			<label>Courses Taught <input type="text" ng-model="details.editingTeacher.courses"</label>
+		</div>
+		<div class="info primary">
+			<label>Comments <input type="text" ng-model="details.editingTeacher.comments"</label>
+		</div>
+		<div class="info primary">
+			<label>Last Updated <input type="date" ng-model="details.editingTeacher.lastUpdated"</label>
 		</div>
 	</div>
 	<div class="secondaryinfo">
-		<div ng-if="details.hasDupes">
-			Duplicates {{details.hasDupes}}
-			<button ng-click="details.removeDupes(details.currentTeacher)">Remove.</button>
+		<div class="info secondary">
+			<label>Facebook  <input type="checkbox" ng-model="details.editingTeacher.facebook"</label>
+		</div>
+		<div class="info secondary">
+			<label>Facebook Alias  <input type="text" ng-model="details.editingTeacher.facebookAlias"</label>
+		</div>
+		<div class="info secondary">
+			<label>Personal Email  <input type="email" ng-model="details.editingTeacher.personalEmail"</label>
 		</div>
 	</div>
 	<div class="tertiaryinfo">
+		<div class="info tertiary">
+			<label>Distric Contact/Rep/LSA President  <input type="checkbox" ng-model="details.editingTeacher.representative"</label>
+		</div>
+		<div class="info tertiary">
+			<label>BCTEA Exec  <input type="checkbox" ng-model="details.editingTeacher.executive"</label>
+		</div>
+		<div class="info tertiary">
+			<label>Last Conference Attended  <input type="email" ng-model="details.editingTeacher.lastConference"</label>
+		</div>
+		<div class="info tertiary">
+			<label>Retired  <input type="checkbox" ng-model="details.editingTeacher.retired"</label>
+			<label>Year  <input type="date" ng-model="details.editingTeacher.yearRetired"</label>
+		</div>
+		<div class="info tertiary">
+			<label>On Leave  <input type="checkbox" ng-model="details.editingTeacher.leave"</label>
+			<label>Year  <input type="date" ng-model="details.editingTeacher.yearLeft"</label>
+		</div>
 	</div>
-	<button ng-click="details.updateTeacher()">Update</button>
+	<div class="maintinence">
+		<button ng-click="details.updateTeacher()">Update</button>
+		<button ng-click="details.promptRemoveTeacher()">Remove Member</button>
+	</div>
+	<div class="nav bottom">
+		<input type="button" value="Previous" ng-click="details.previousRecord()"/>
+		<span>Record Number {{details.recordNumber}} of {{details.recordNumberTotal}}</span>
+		<input type="button" value="Next" ng-click="details.nextRecord"/>
+	</div>
 </div>
