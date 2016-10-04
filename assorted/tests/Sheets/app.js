@@ -210,7 +210,7 @@
 				emailSecondary: teacher[POSITION_INDEX.email_secondary] || '',
 				district: teacher[POSITION_INDEX.district] || '',
 				school: teacher[POSITION_INDEX.school] || '',
-				facebook: teacher[POSITION_INDEX.facebook]? true : false,
+				facebook: teacher[POSITION_INDEX.facebook] != 'FALSE' && teacher[POSITION_INDEX.facebook] != '',
 				aceIt: teacher[POSITION_INDEX.ace_it] || '',
 				conference2015: teacher[POSITION_INDEX.conference_2015] || '',
 				conference2016: teacher[POSITION_INDEX.conference_2016] || '',
