@@ -235,13 +235,28 @@
 			var deffered = $q.defer();
 			if(!teacher) {
 				deffered.reject('missing teacher argument');
+				return;
 			}
+
+			var values = [];
+			values[POSITION_INDEX.first_name] = teacher.firstName;
+			values[POSITION_INDEX.last_name] = teacher.lastName;
+			values[POSITION_INDEX.email] = teacher.email;
+			values[POSITION_INDEX.email_secondary] = teacher.emailSecondary;
+			values[POSITION_INDEX.district] = teacher.district;
+			values[POSITION_INDEX.school] = teacher.school;
+			values[POSITION_INDEX.facebook] = teacher.facebook;
+			values[POSITION_INDEX.ace_it] = teacher.aceIt;
+			values[POSITION_INDEX.conference_2015] = teacher.conference2015;
+			values[POSITION_INDEX.program] = teacher.courses;
+			values[POSITION_INDEX.contacted] = teacher.contacted;
+			values[POSITION_INDEX.contacted_2017] = teacher.contacted2017;
 			if(hasSheetsApi && spreadsheetId) {
 				var spreadsheets = gapi.client.sheets.spreadsheets;
 				spreadsheets.values.update({
 					spreadsheetId: spreadsheetId,
-					range: SHEET + 'A'+index+':C'+index,
-					values: [[teacher.firstName, teacher.lastName, teacher.email]],
+					range: SHEET + 'A'+index+':M'+index,
+					values: [values],
 					valueInputOption: 'RAW'
 				}).then(function(response) {
 					deffered.resolve(response);
@@ -357,15 +372,23 @@
 			}
 		}
 		function compareTeachers(t1, t2) {
-			return t1.firstName == t2.firstName && t1.lastName == t2.lastName && t1.email == t2.email;
+			for(var t in t1) {
+				if(t1[t] != t2[t]) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		this.updateTeacher = function() {
 			if(this.editingTeacher && this.currentTeacher && !compareTeachers(this.editingTeacher, this.currentTeacher)) {
-				googleAuth.updateTeacher(this.editingTeacher.index, this.editingTeacher).then(function() {
-					copyTeacher(this.editingTeacher, this.currentTeacher)
+				googleAuth.updateTeacher(this.editingTeacher.index, this.editingTeacher).then(function(d) {
+					copyTeacher(this.editingTeacher, this.currentTeacher);
+					console.log(d);
+					alert('updated successfully');
 				}.bind(this), function(e) {
 					console.log(e);
+					alert('failed update: ' + e.body);
 				});
 			}
 		}
@@ -378,6 +401,10 @@
 			else {
 				alert('Action Cancelled');
 			}
+		}
+
+		this.changed = function() {
+			return !compareTeachers(this.currentTeacher, this.editingTeacher);
 		}
 
 		this.removeDupes = function(teacher) {

@@ -61,7 +61,7 @@
 		</div>
 	</div>
 	<div class="maintinence">
-		<button ng-click="details.updateTeacher()">Update</button>
+		<button ng-click="details.updateTeacher()" ng-class="{changed: details.changed()}">Update</button>
 		<button ng-click="details.promptRemoveTeacher()">Remove Member</button>
 	</div>
 	<div class="nav bottom">

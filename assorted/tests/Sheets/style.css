@@ -28,3 +28,7 @@
 .info {
 	cursor: pointer;
 }
+
+.changed {
+	border: 1px solid #00FF00;
+}
