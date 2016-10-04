@@ -30,21 +30,27 @@
 
 		var POSITIONS = [
 			'district',
-			'aceit',
+			'aceIt',
 			'facebook',
-			'2015conf',
-			'2016conf',
-			'firstname',
-			'lastname',
+			'conference2015',
+			'conference2016',
+			'firstName',
+			'lastName',
 			'school',
 			'email',
-			'program',
-			'2016/17contact',
+			'courses',
+			'contacted2017',
 			'contacted',
-			'emailsecondary'
+			'emailSecondary'
 		];
 
-		var POSITION_INDEX = {
+		var POSITION_INDEX = {};
+
+		for (var i = 0; i < POSITIONS.length; i++) {
+			POSITION_INDEX[POSITIONS[i]] = i;
+		}
+
+		/*var POSITION_INDEX = {
 			district: POSITIONS.indexOf('district'),
 			ace_it: POSITIONS.indexOf('aceit'),
 			facebook: POSITIONS.indexOf('facebook'),
@@ -58,7 +64,7 @@
 			contacted_2017: POSITIONS.indexOf('2016/17contact'),
 			contacted: POSITIONS.indexOf('contacted'),
 			email_secondary: POSITIONS.indexOf('emailsecondary'),
-		};
+		};*/
 
 		var hasSheetsApi = false;
 		var hasPickerApi = false;
@@ -203,7 +209,15 @@
 		}
 
 		function parseTeacher(teacher, index) {
-			var parsed = {
+			var parsed = {};
+
+			for(var i = 0; i < POSITIONS.length; i++) {
+				parsed[POSITIONS[i]] = teacher[i];
+			}
+			parsed.index = index;
+			parsed.facebook = parsed.facebook != 'FALSE' && parsed.facebook != '';
+
+			/*var parsed = {
 				firstName: teacher[POSITION_INDEX.first_name] || '',
 				lastName: teacher[POSITION_INDEX.last_name] || '',
 				email: teacher[POSITION_INDEX.email] || '',
@@ -218,7 +232,7 @@
 				contacted: teacher[POSITION_INDEX.contacted] || '',
 				contacted2017: teacher[POSITION_INDEX.contacted_2017] || '',
 				index: index
-			};
+			};*/
 			parsed.fullName = parsed.firstName + ' ' + parsed.lastName;
 			if(parsed.conference2016) {
 				parsed.lastConference = new Date(2016, 0, 1);
