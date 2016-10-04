@@ -26,7 +26,7 @@
 		var API_KEY = 'AIzaSyCdKBQGd4QfCTFFqQ1Lh9FNDwO0mT1QY1c';
 		var SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.readonly'].join(' ');
 		var SHEET = 'Main database!';
-		var OFFSET = 2;
+		var OFFSET = 1;
 
 		var POSITIONS = [
 			'district',
