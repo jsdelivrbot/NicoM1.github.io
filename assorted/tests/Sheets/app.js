@@ -25,8 +25,40 @@
 		var CLIENT_ID = '977588012097-tp6j1qv1ipm7s9c0582dprb157lp13p0.apps.googleusercontent.com';
 		var API_KEY = 'AIzaSyCdKBQGd4QfCTFFqQ1Lh9FNDwO0mT1QY1c';
 		var SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.readonly'].join(' ');
-		var SHEET = '2015-2016 LISTSERVE Members!';
+		var SHEET = 'Main database!';
 		var OFFSET = 2;
+
+		var POSITIONS = [
+			'district',
+			'aceit',
+			'facebook',
+			'2015conf',
+			'2016conf',
+			'firstname',
+			'lastname',
+			'school',
+			'email',
+			'program',
+			'2016/17contact',
+			'contacted',
+			'emailsecondary'
+		];
+
+		var POSITION_INDEX = {
+			district: POSITIONS.indexOf('district'),
+			ace_it: POSITIONS.indexOf('aceit'),
+			facebook: POSITIONS.indexOf('facebook'),
+			conference_2015: POSITIONS.indexOf('2015conf'),
+			conference_2016: POSITIONS.indexOf('2016conf'),
+			first_name: POSITIONS.indexOf('firstname'),
+			last_name: POSITIONS.indexOf('lastname'),
+			school: POSITIONS.indexOf('school'),
+			email: POSITIONS.indexOf('email'),
+			program: POSITIONS.indexOf('program'),
+			contacted_2017: POSITIONS.indexOf('2016/17contact'),
+			contacted: POSITIONS.indexOf('contacted'),
+			email_secondary: POSITIONS.indexOf('emailsecondary'),
+		};
 
 		var hasSheetsApi = false;
 		var hasPickerApi = false;
@@ -81,7 +113,6 @@
 		}
 
 		function handleAuthResult(authResult) {
-			console.log(authResult);
 			if(!authResult.error) {
 				authToken = authResult.access_token;
 				deffered.resolve();
@@ -154,23 +185,42 @@
 
 				spreadsheets.values.get({
 					spreadsheetId: spreadsheetId,
-					range: SHEET + 'A3:C'
+					range: SHEET + 'A2:M'
 				}).then(function(response) {
 					teachers.length = 0;
 					$rootScope.$applyAsync(function() {
 						for(var t = 0; t < response.result.values.length; t++) {
 							var teacher = response.result.values[t];
-								teachers.push({
-									firstName: teacher[0] || '',
-									lastName: teacher[1] || '',
-									email: teacher[2] || '',
-									index: t
-								});
+								teachers.push(parseTeacher(teacher, t));
 							}
+						console.log(teachers);
 						$rootScope.$broadcast('updated-teachers');
 					});
+				}, function(error) {
+					console.log(error);
 				});
 			}
+		}
+
+		function parseTeacher(teacher, index) {
+			var parsed = {
+				firstName: teacher[POSITION_INDEX.first_name] || '',
+				lastName: teacher[POSITION_INDEX.last_name] || '',
+				email: teacher[POSITION_INDEX.email] || '',
+				emailSecondary: teacher[POSITION_INDEX.email_secondary] || '',
+				district: teacher[POSITION_INDEX.district] || '',
+				school: teacher[POSITION_INDEX.school] || '',
+				facebook: teacher[POSITION_INDEX.facebook] || '',
+				aceIt: teacher[POSITION_INDEX.ace_it] || '',
+				conference2015: teacher[POSITION_INDEX.conference_2015] || '',
+				conference2016: teacher[POSITION_INDEX.conference_2016] || '',
+				courses: teacher[POSITION_INDEX.program] || '',
+				contacted: teacher[POSITION_INDEX.contacted] || '',
+				contacted2017: teacher[POSITION_INDEX.contacted_2017] || '',
+				index: index
+			}
+			parsed.fullName = parsed.firstName + ' ' + parsed.lastName;
+			return parsed;
 		}
 
 		function updateTeacher(index, teacher) {
@@ -296,10 +346,9 @@
 		}
 		var removeListener = null;
 		function copyTeacher(fromTeacher, toTeacher) {
-			toTeacher.firstName = fromTeacher.firstName;
-			toTeacher.lastName = fromTeacher.lastName;
-			toTeacher.email = fromTeacher.email;
-			toTeacher.index = fromTeacher.index;
+			for(var t in fromTeacher) {
+				toTeacher[t] = fromTeacher[t];
+			}
 		}
 		function compareTeachers(t1, t2) {
 			return t1.firstName == t2.firstName && t1.lastName == t2.lastName && t1.email == t2.email;

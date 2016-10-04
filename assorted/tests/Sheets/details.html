@@ -12,7 +12,7 @@
 			<label>Last Name <input type="text" ng-model="details.editingTeacher.lastName"</label>
 		</div>
 		<div class="info primary">
-			<label>School Email <input type="email" ng-model="details.editingTeacher.schoolEmail"</label>
+			<label>School Email <input type="email" ng-model="details.editingTeacher.email"</label>
 		</div>
 		<div class="info primary">
 			<label>School District <input type="text" ng-model="details.editingTeacher.district"</label>
@@ -69,4 +69,5 @@
 		<span>Record Number {{details.recordNumber}} of {{details.recordNumberTotal}}</span>
 		<input type="button" value="Next" ng-click="details.nextRecord"/>
 	</div>
+	{{details.editingTeacher}}
 </div>
