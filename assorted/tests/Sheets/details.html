@@ -38,7 +38,7 @@
 			<label>Facebook Alias  <input type="text" ng-model="details.editingTeacher.facebookAlias"</label>
 		</div>
 		<div class="info secondary">
-			<label>Personal Email  <input type="email" ng-model="details.editingTeacher.personalEmail"</label>
+			<label>Personal Email  <input type="email" ng-model="details.editingTeacher.emailSecondary"</label>
 		</div>
 	</div>
 	<div class="tertiaryinfo">
@@ -49,7 +49,7 @@
 			<label>BCTEA Exec  <input type="checkbox" ng-model="details.editingTeacher.executive"</label>
 		</div>
 		<div class="info tertiary">
-			<label>Last Conference Attended  <input type="email" ng-model="details.editingTeacher.lastConference"</label>
+			<label>Last Conference Attended  <input type="date" ng-model="details.editingTeacher.lastConference"</label>
 		</div>
 		<div class="info tertiary">
 			<label>Retired  <input type="checkbox" ng-model="details.editingTeacher.retired"</label>
@@ -65,9 +65,9 @@
 		<button ng-click="details.promptRemoveTeacher()">Remove Member</button>
 	</div>
 	<div class="nav bottom">
-		<input type="button" value="Previous" ng-click="details.previousRecord()"/>
+		<input type="button" value="Previous" ng-click="details.previousRecord()" ng-show="details.editingTeacher.index > 0"/>
 		<span>Record Number {{details.recordNumber}} of {{details.recordNumberTotal}}</span>
-		<input type="button" value="Next" ng-click="details.nextRecord"/>
+		<input type="button" value="Next" ng-click="details.nextRecord()" ng-show="details.recordNumber < details.recordNumberTotal"/>
 	</div>
 	{{details.editingTeacher}}
 </div>

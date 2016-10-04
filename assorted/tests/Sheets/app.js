@@ -210,7 +210,7 @@
 				emailSecondary: teacher[POSITION_INDEX.email_secondary] || '',
 				district: teacher[POSITION_INDEX.district] || '',
 				school: teacher[POSITION_INDEX.school] || '',
-				facebook: teacher[POSITION_INDEX.facebook] || '',
+				facebook: teacher[POSITION_INDEX.facebook]? true : false,
 				aceIt: teacher[POSITION_INDEX.ace_it] || '',
 				conference2015: teacher[POSITION_INDEX.conference_2015] || '',
 				conference2016: teacher[POSITION_INDEX.conference_2016] || '',
@@ -218,8 +218,14 @@
 				contacted: teacher[POSITION_INDEX.contacted] || '',
 				contacted2017: teacher[POSITION_INDEX.contacted_2017] || '',
 				index: index
-			}
+			};
 			parsed.fullName = parsed.firstName + ' ' + parsed.lastName;
+			if(parsed.conference2016) {
+				parsed.lastConference = new Date(2016, 0, 1);
+			}
+			else if(parsed.conference2015) {
+				parsed.lastConference = new Date(2015, 0, 1);
+			}
 			return parsed;
 		}
 
@@ -340,10 +346,10 @@
 
 		var findId = false;
 
-		if(this.currentTeacher) {
+		/*if(this.currentTeacher) {
 			copyTeacher(this.currentTeacher, this.editingTeacher);
 			this.hasDupes = this.getDupes(this.currentTeacher).length;
-		}
+		}*/
 		var removeListener = null;
 		function copyTeacher(fromTeacher, toTeacher) {
 			for(var t in fromTeacher) {
@@ -380,7 +386,14 @@
 			googleAuth.updateTeachers();
 		}
 
-		$scope.$on('updated-teachers', function() {
+		this.nextRecord = function() {
+			$location.path('/details/'+Number(this.teacherId+1));
+		}
+		this.previousRecord = function() {
+			$location.path('/details/'+Number(this.teacherId-1));
+		}
+
+		function reset() {
 			if(findId) {
 				findId = false;
 				this.teacherId = googleAuth.findTeacherIndex(this.currentTeacher);
@@ -394,8 +407,11 @@
 				this.hasDupes = this.getDupes(this.currentTeacher).length;
 			}
 			this.recordNumberTotal = this.teachers.length;
-			this.recordNumber = this.teacherId;
-		}.bind(this));
+			this.recordNumber = this.teacherId+1;
+		}
+
+		$scope.$on('updated-teachers', reset.bind(this));
+		reset.call(this);
 	})
 	.directive('googlelogin', function() {
 		return {
