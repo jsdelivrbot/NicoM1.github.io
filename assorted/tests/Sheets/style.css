@@ -74,6 +74,10 @@ label {
     margin-top: 20px;
 }
 
+.details {
+	margin: 10px;
+}
+
 @media (max-width: 500px) {
 	.maininfo {
 		width: 100%
