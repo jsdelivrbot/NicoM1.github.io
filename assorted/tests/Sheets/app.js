@@ -325,7 +325,8 @@
 					requests: [{
 						deleteDimension: {
 							range: {
-								sheetId: 216514658,
+								//TODO FIND PROGRAMATICALLY
+								sheetId: 596327781,
 								dimension: 'ROWS',
 								startIndex: teacher.index + OFFSET,
 								endIndex: teacher.index + OFFSET + 1
@@ -333,6 +334,7 @@
 						}
 					}]
 				}).then(function(d) {
+					$rootScope.$broadcast('updated-teachers');
 					console.log(d);
 				}, function(e) {
 					console.log(e);
@@ -344,12 +346,13 @@
 			var index = teachers.indexOf(teacher);
 			if(index != -1) {
 				teachers.splice(index, 1);
+				$rootScope.$broadcast('updated-teachers');
+				return updateRemoved(teacher).then(function(d) {
+					removeTeacherFromSheet(teacher);
+				}, function(e) {
+					console.log(e);
+				});
 			}
-			return updateRemoved(teacher).then(function(d) {
-				removeTeacherFromSheet(teacher);
-			}, function(e) {
-				console.log(e);
-			});
 		}
 
 		function signOut() {
@@ -441,6 +444,7 @@
 			if(confirmed) {
 				googleAuth.removeTeacher(this.currentTeacher).then(function(d) {
 					alert('Member Removed');
+					$location.path('/').replace();
 				},function(e) {
 					alert('ERROR: see console');
 					console.log(e);
