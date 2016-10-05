@@ -46,28 +46,6 @@
 			'id'
 		];
 
-		/*var POSITION_INDEX = {};
-
-		for (var i = 0; i < POSITIONS.length; i++) {
-			POSITION_INDEX[POSITIONS[i]] = i;
-		}*/
-
-		/*var POSITION_INDEX = {
-			district: POSITIONS.indexOf('district'),
-			ace_it: POSITIONS.indexOf('aceit'),
-			facebook: POSITIONS.indexOf('facebook'),
-			conference_2015: POSITIONS.indexOf('2015conf'),
-			conference_2016: POSITIONS.indexOf('2016conf'),
-			first_name: POSITIONS.indexOf('firstname'),
-			last_name: POSITIONS.indexOf('lastname'),
-			school: POSITIONS.indexOf('school'),
-			email: POSITIONS.indexOf('email'),
-			program: POSITIONS.indexOf('program'),
-			contacted_2017: POSITIONS.indexOf('2016/17contact'),
-			contacted: POSITIONS.indexOf('contacted'),
-			email_secondary: POSITIONS.indexOf('emailsecondary'),
-		};*/
-
 		var hasSheetsApi = false;
 		var hasPickerApi = false;
 		var hasAuthApi = false;
@@ -136,17 +114,6 @@
 			}
 		}
 
-		/*function findDuplicates(teacher) {
-			var dupes = [];
-			for(var t = 0; t < teachers.length; t++) {
-				var foundTeacher = teachers[t];
-				if(teacher !== foundTeacher && (teacher.firstName.trim() == foundTeacher.firstName.trim() && teacher.lastName.trim() == foundTeacher.lastName.trim() && teacher.email.trim() == foundTeacher.email.trim())) {
-					dupes.push(foundTeacher);
-				}
-			}
-			return dupes;
-		}*/
-
 		function findTeacherIndex(teacher) {
 			for(var t = 0; t < teachers.length; t++) {
 				var foundTeacher = teachers[t];
@@ -157,40 +124,9 @@
 			return 0;
 		}
 
-		/*function removeDuplicates(teacher) {
-			if(hasSheetsApi) {
-				var dupes = findDuplicates(teacher);
-				if(dupes.length > 0) {
-					var spreadsheets = gapi.client.sheets.spreadsheets;
-					for(var d = 0; d < dupes.length; d++) {
-						var dupe = dupes[d];
-						console.log(dupe.index + 2);
-						spreadsheets.batchUpdate({
-							spreadsheetId: spreadsheetId,
-							requests: [{
-								deleteDimension: {
-									range: {
-										sheetId: 216514658,
-										dimension: 'ROWS',
-										startIndex: dupe.index + OFFSET,
-										endIndex: dupe.index + OFFSET + 1
-									}
-								}
-							}]
-						}).then(function(d) {
-							console.log(d);
-						}, function(e) {
-							console.log(e);
-						});
-					}
-				}
-			}
-		}*/
-
 		function updateTeachers() {
 			if(hasSheetsApi && spreadsheetId) {
 				var spreadsheets = gapi.client.sheets.spreadsheets;
-				//console.log(ALPHABET[POSITIONS.length-1]);
 				spreadsheets.values.get({
 					spreadsheetId: spreadsheetId,
 					range: SHEET + 'A2:'+ALPHABET[POSITIONS.length-1]
@@ -201,7 +137,6 @@
 							var teacher = response.result.values[t];
 							teachers.push(parseTeacher(teacher, t));
 						}
-						//console.log(teachers);
 						$rootScope.$broadcast('updated-teachers');
 					});
 				}, function(error) {
@@ -219,53 +154,10 @@
 			return final;
 		}
 
-		/*var batched = [];
-
-		function addToBatched(teacher) {
-			batched.push(teacher);
-		}
-
-		function pushBatched() {
-			if(hasSheetsApi) {
-				if(batched.length > 0) {
-					var spreadsheets = gapi.client.sheets.spreadsheets;
-					for(var d = 0; d < batched.length; d++) {
-						var item = batched[d];
-						var requests = [];
-						//TODO
-						for(var i = 0; i < 5; i++) {
-							var current = batched[i];
-							var rows = [];
-							for(var x = 0; x < POSITIONS.length; x++) {
-								rows[x] = current[POSITIONS[x]];
-							}
-							var index = getTeacherIndex(current);
-							requests.push({
-								range: SHEET + 'A'+index+':'+ALPHABET[POSITIONS.length-1]+index,
-								majorDimension: 'ROWS',
-								values: rows
-							});
-						}
-						spreadsheets.values.batchUpdate({
-							spreadsheetId: spreadsheetId,
-							valueInputOption: 'RAW',
-							data: requests
-						}).then(function(d) {
-							console.log(d);
-						}, function(e) {
-							console.log(e);
-						});
-					}
-				}
-				batched = [];
-			}
-		}*/
-
 		function parseTeacher(teacher, index) {
 			var parsed = {};
 
 			for(var i = 0; i < POSITIONS.length; i++) {
-				//if(i == POSITIONS.length-1) console.log(teacher[i]);
 				parsed[POSITIONS[i]] = teacher[i];
 			}
 			parsed.index = index;
@@ -273,31 +165,7 @@
 			if(parsed.id == '' || parsed.id == null || parsed.id.length != 8) {
 				parsed.id = generateID();
 				parsed.newID = true;
-				//addToBatched(parsed);
-				//console.log(parsed);
-				/*updateTeacher(parsed).then(function(d) {
-					console.log(d);
-				}, function(e) {console.log(e)});*/
 			}
-			/*else {
-				console.log('no');
-			}*/
-			/*var parsed = {
-				firstName: teacher[POSITION_INDEX.first_name] || '',
-				lastName: teacher[POSITION_INDEX.last_name] || '',
-				email: teacher[POSITION_INDEX.email] || '',
-				emailSecondary: teacher[POSITION_INDEX.email_secondary] || '',
-				district: teacher[POSITION_INDEX.district] || '',
-				school: teacher[POSITION_INDEX.school] || '',
-				facebook: teacher[POSITION_INDEX.facebook] != 'FALSE' && teacher[POSITION_INDEX.facebook] != '',
-				aceIt: teacher[POSITION_INDEX.ace_it] || '',
-				conference2015: teacher[POSITION_INDEX.conference_2015] || '',
-				conference2016: teacher[POSITION_INDEX.conference_2016] || '',
-				courses: teacher[POSITION_INDEX.program] || '',
-				contacted: teacher[POSITION_INDEX.contacted] || '',
-				contacted2017: teacher[POSITION_INDEX.contacted_2017] || '',
-				index: index
-			};*/
 			parsed.fullName = parsed.firstName + ' ' + parsed.lastName;
 			if(parsed.conference2016) {
 				parsed.lastConference = new Date(2016, 0, 1);
@@ -342,18 +210,7 @@
 			for(var i =0; i < POSITIONS.length; i++) {
 				values[i] = teacher[POSITIONS[i]];
 			}
-			/*values[POSITION_INDEX.first_name] = teacher.firstName;
-			values[POSITION_INDEX.last_name] = teacher.lastName;
-			values[POSITION_INDEX.email] = teacher.email;
-			values[POSITION_INDEX.email_secondary] = teacher.emailSecondary;
-			values[POSITION_INDEX.district] = teacher.district;
-			values[POSITION_INDEX.school] = teacher.school;
-			values[POSITION_INDEX.facebook] = teacher.facebook;
-			values[POSITION_INDEX.ace_it] = teacher.aceIt;
-			values[POSITION_INDEX.conference_2015] = teacher.conference2015;
-			values[POSITION_INDEX.program] = teacher.courses;
-			values[POSITION_INDEX.contacted] = teacher.contacted;
-			values[POSITION_INDEX.contacted_2017] = teacher.contacted2017;*/
+
 			if(hasSheetsApi && spreadsheetId) {
 				var spreadsheets = gapi.client.sheets.spreadsheets;
 				spreadsheets.values.update({
@@ -433,8 +290,6 @@
 			signOut: signOut,
 			getTeacher: getTeacher,
 			getTeacherIndex: getTeacherIndex,
-			//findDuplicates: findDuplicates,
-			//removeDuplicates: removeDuplicates,
 			updateTeachers: updateTeachers,
 			findTeacherIndex: findTeacherIndex
 		};
@@ -461,15 +316,8 @@
 		}
 		createScope.call(this);
 
-
-		//this.getDupes = googleAuth.findDuplicates;
-
 		var findId = false;
 
-		/*if(this.currentTeacher) {
-			copyTeacher(this.currentTeacher, this.editingTeacher);
-			this.hasDupes = this.getDupes(this.currentTeacher).length;
-		}*/
 		var removeListener = null;
 		function copyTeacher(fromTeacher, toTeacher) {
 			for(var t in fromTeacher) {
@@ -512,12 +360,6 @@
 			return !compareTeachers(this.currentTeacher, this.editingTeacher);
 		}
 
-		/*this.removeDupes = function(teacher) {
-			googleAuth.removeDuplicates(teacher);
-			findId = true;
-			googleAuth.updateTeachers();
-		}*/
-
 		this.nextRecord = function() {
 			$location.path('/details/'+this.teachers[Number(this.recordNumber+1)].id);
 		}
@@ -526,19 +368,9 @@
 		}
 
 		function reset() {
-			/*if(findId) {
-				findId = false;
-				this.teacherId = googleAuth.findTeacherIndex(this.currentTeacher);
-				$location.path('/details/'+this.teacherId).replace();
-				this.removedDupes = true;
-				this.hasDupes = false;
-			}*/
 			this.currentTeacher = googleAuth.getTeacher(this.teacherId);
-			//console.log(this.currentTeacher, this.teacherId);
 			copyTeacher(this.currentTeacher, this.editingTeacher);
-			/*if(!this.removedDupes) {
-				this.hasDupes = this.getDupes(this.currentTeacher).length;
-			}*/
+
 			this.recordNumberTotal = this.teachers.length;
 			if(this.currentTeacher) {
 				this.recordNumber = googleAuth.getTeacherIndex(this.currentTeacher);
