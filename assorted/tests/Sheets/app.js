@@ -26,6 +26,7 @@
 		var API_KEY = 'AIzaSyCdKBQGd4QfCTFFqQ1Lh9FNDwO0mT1QY1c';
 		var SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.readonly'].join(' ');
 		var SHEET = 'Main database!';
+		var SHEET_REMOVED = 'Removed Teachers';
 		var OFFSET = 1;
 		var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -43,7 +44,17 @@
 			//'contacted2017',
 			//'contacted',
 			'emailSecondary',
-			'id'
+			'id',
+			'comments',
+			'facebookAlias',
+			'psa',
+			'representative',
+			'exectutive',
+			'retired',
+			'retiredYear',
+			'leave',
+			'leaveYear',
+			'lastUpdated'
 		];
 
 		var hasSheetsApi = false;
@@ -135,7 +146,10 @@
 					$rootScope.$applyAsync(function() {
 						for(var t = 0; t < response.result.values.length; t++) {
 							var teacher = response.result.values[t];
-							teachers.push(parseTeacher(teacher, t));
+							var parsed = parseTeacher(teacher, t);
+							if(parsed) {
+								teachers.push(parsed);
+							}
 						}
 						$rootScope.$broadcast('updated-teachers');
 					});
@@ -157,11 +171,31 @@
 		function parseTeacher(teacher, index) {
 			var parsed = {};
 
+			var found = false;
 			for(var i = 0; i < POSITIONS.length; i++) {
 				parsed[POSITIONS[i]] = teacher[i];
+				if(teacher[i] != null) {
+					found = true;
+				}
+			}
+			if(!found) {
+				return null;
 			}
 			parsed.index = index;
-			parsed.facebook = parsed.facebook != 'FALSE' && parsed.facebook != '';
+			if(parsed.lastUpdated) {
+				parsed.lastUpdated = new Date(Date.parse(parsed.lastUpdated));
+			}
+			if(parsed.retiredYear) {
+				parsed.retiredYear = new Date(Date.parse(parsed.retiredYear));
+			}
+			if(parsed.leaveYear) {
+				parsed.leaveYear = new Date(Date.parse(parsed.leaveYear));
+			}
+			var checkboxes = ['facebook', 'retired', 'leave', 'psa', 'representative', 'executive'];
+			for(var c = 0; c < checkboxes.length; c++) {
+				var current = parsed[checkboxes[c]];
+				parsed[checkboxes[c]] = current != 'FALSE' && current != '' && current != null;
+			}
 			if(parsed.id == '' || parsed.id == null || parsed.id.length != 8) {
 				parsed.id = generateID();
 				parsed.newID = true;
@@ -196,7 +230,11 @@
 			return index;
 		}
 
-		function updateTeacher(teacher) {
+		function updateRemoved(teacher) {
+			return updateTeacher(teacher, true);
+		}
+
+		function updateTeacher(teacher, removed) {
 			var index = getTeacherIndex(teacher);
 			//index is 1-based here
 			index += OFFSET+1;
@@ -207,22 +245,38 @@
 			}
 
 			var values = [];
-			for(var i =0; i < POSITIONS.length; i++) {
+			for(var i = 0; i < POSITIONS.length; i++) {
 				values[i] = teacher[POSITIONS[i]];
 			}
 
 			if(hasSheetsApi && spreadsheetId) {
 				var spreadsheets = gapi.client.sheets.spreadsheets;
-				spreadsheets.values.update({
-					spreadsheetId: spreadsheetId,
-					range: SHEET + 'A'+index+':'+ALPHABET[POSITIONS.length-1]+index,
-					values: [values],
-					valueInputOption: 'RAW'
-				}).then(function(response) {
-					deffered.resolve(response);
-				}, function(error) {
-					deffered.reject(error);
-				});
+				if(!removed) {
+					spreadsheets.values.update({
+						spreadsheetId: spreadsheetId,
+						range: SHEET + 'A'+index+':'+ALPHABET[POSITIONS.length-1]+index,
+						values: [values],
+						valueInputOption: 'RAW'
+					}).then(function(response) {
+						deffered.resolve(response);
+					}, function(error) {
+						deffered.reject(error);
+					});
+				}
+				else {
+					spreadsheets.values.append({
+						spreadsheetId: spreadsheetId,
+						range: SHEET_REMOVED+'!A1',
+						values: [values],
+						valueInputOption: 'RAW',
+						insertDataOption: 'INSERT_ROWS'
+					}).then(function(response) {
+						console.log(response);
+						deffered.resolve(response);
+					}, function(error) {
+						deffered.reject(error);
+					});
+				}
 			}
 			else {
 				deffered.reject('could not save teacher, missing sheets api and or sheet id');
@@ -263,6 +317,41 @@
 			}
 		}
 
+		function removeTeacherFromSheet(teacher) {
+			if(hasSheetsApi) {
+				var spreadsheets = gapi.client.sheets.spreadsheets;
+				spreadsheets.batchUpdate({
+					spreadsheetId: spreadsheetId,
+					requests: [{
+						deleteDimension: {
+							range: {
+								sheetId: 216514658,
+								dimension: 'ROWS',
+								startIndex: teacher.index + OFFSET,
+								endIndex: teacher.index + OFFSET + 1
+							}
+						}
+					}]
+				}).then(function(d) {
+					console.log(d);
+				}, function(e) {
+					console.log(e);
+				});
+			}
+		}
+
+		function removeTeacher(teacher) {
+			var index = teachers.indexOf(teacher);
+			if(index != -1) {
+				teachers.splice(index, 1);
+			}
+			return updateRemoved(teacher).then(function(d) {
+				removeTeacherFromSheet(teacher);
+			}, function(e) {
+				console.log(e);
+			});
+		}
+
 		function signOut() {
 			if(hasAuthApi) {
 				auth2.signOut().then(function() {
@@ -290,6 +379,7 @@
 			signOut: signOut,
 			getTeacher: getTeacher,
 			getTeacherIndex: getTeacherIndex,
+			removeTeacher: removeTeacher,
 			updateTeachers: updateTeachers,
 			findTeacherIndex: findTeacherIndex
 		};
@@ -312,7 +402,6 @@
 			this.currentTeacher = googleAuth.getTeacher(this.teacherId);
 			this.editingTeacher = {};
 			this.searchCriteria = '';
-
 		}
 		createScope.call(this);
 
@@ -335,6 +424,7 @@
 
 		this.updateTeacher = function() {
 			if(this.editingTeacher && this.currentTeacher && !compareTeachers(this.editingTeacher, this.currentTeacher)) {
+				this.editingTeacher.lastUpdated = new Date();
 				googleAuth.updateTeacher(this.editingTeacher).then(function(d) {
 					copyTeacher(this.editingTeacher, this.currentTeacher);
 					console.log(d);
@@ -349,7 +439,12 @@
 		this.promptRemoveTeacher = function() {
 			var confirmed = confirm('ARE YOU SURE?');
 			if(confirmed) {
-				alert('Member Removed');
+				googleAuth.removeTeacher(this.currentTeacher).then(function(d) {
+					alert('Member Removed');
+				},function(e) {
+					alert('ERROR: see console');
+					console.log(e);
+				});
 			}
 			else {
 				alert('Action Cancelled');
@@ -361,10 +456,10 @@
 		}
 
 		this.nextRecord = function() {
-			$location.path('/details/'+this.teachers[Number(this.recordNumber+1)].id);
+			$location.path('/details/'+this.teachers[this.recordNumber+1].id);
 		}
 		this.previousRecord = function() {
-			$location.path('/details/'+this.teachers[Number(this.recordNumber-1)].id);
+			$location.path('/details/'+this.teachers[this.recordNumber-1].id);
 		}
 
 		function reset() {
