@@ -10,7 +10,7 @@
 				controller: 'sheets as sheets'
 			})
 			.when('/details', {
-				redirectTo: '/details/0'
+				redirectTo: '/'
 			})
 			.when('/details/:teacherId', {
 				templateUrl: 'details.html',
