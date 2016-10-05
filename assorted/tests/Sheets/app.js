@@ -484,7 +484,7 @@
 		}.bind(this));
 
 		this.updateSearchPath = function() {
-			if(this.searchCriteria) {
+			if(this.data.searchCriteria) {
 				this.teacherId = 0;
 				$location.path('/details/search/'+this.data.searchCriteria+'/0');
 				reset.call(this);
