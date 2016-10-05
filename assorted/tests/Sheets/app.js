@@ -92,6 +92,9 @@
 							if(auth2.isSignedIn.get()) {
 								handleAuthResult(auth2.currentUser.get().getAuthResponse());
 							}
+							else {
+								$rootScope.$broadcast('not-logged-in');
+							}
 						});
 				})
 			});
@@ -465,8 +468,13 @@
 			if(confirmed) {
 				googleAuth.removeTeacher(this.currentTeacher).then(function(d) {
 					alert('Member Removed');
-					$location.path('/').replace();
-				},function(e) {
+					if(!this.data.searchCriteria) {
+						$location.path('/').replace();
+					}
+					else if(this.teachers.length == 0){
+						$location.path('/').replace();
+					}
+				}.bind(this),function(e) {
 					alert('ERROR: see console');
 					console.log(e);
 				});
@@ -540,6 +548,12 @@
 		}
 
 		$scope.$on('updated-teachers', reset.bind(this));
+		$scope.$on('not-logged-in', function() {
+			alert('not logged in');
+			$scope.$apply(function() {
+				$location.path('/').replace();
+			})
+		});
 		reset.call(this);
 	})
 	.directive('googlelogin', function() {

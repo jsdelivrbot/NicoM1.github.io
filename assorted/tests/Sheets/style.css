@@ -21,6 +21,20 @@
 	}
 }
 
+input[type="text"], input[type="email"], input[type="date"] {
+	float: right;
+	font-weight: normal;
+}
+
+input[type="text"].topbar {
+	width: 500px;
+	float: none;
+}
+
+label {
+	width: 100%;
+}
+
 .ng-invalid, .invalid {
 	border-color: #FF0000;
 }
@@ -31,4 +45,46 @@
 
 .changed {
 	border: 1px solid #00FF00;
+}
+
+.topbar {
+    width:  100vw;
+}
+
+.maininfo {
+    width: 500px;
+    border: 1px solid #eeeeee;
+    margin: 20px 0px;
+}
+
+.secondaryinfo {
+	width: 500px;
+}
+
+.tertiaryinfo {
+	margin: 20px 0px;
+	width: 500px;
+}
+
+.maintinence {
+
+}
+
+.nav.bottom {
+    margin-top: 20px;
+}
+
+@media (max-width: 500px) {
+	.maininfo {
+		width: 100%
+	}
+	.secondaryinfo {
+		width: 100%
+	}
+	.tertiaryInfo {
+		width: 100%
+	}
+	input[type="text"].topbar {
+		width: 100%;
+	}
 }
