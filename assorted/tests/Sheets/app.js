@@ -16,6 +16,10 @@
 				templateUrl: 'details.html',
 				controller: 'details as details'
 			})
+			.when('/details/search/:searchCriteria/:teacherId', {
+				templateUrl: 'details.html',
+				controller: 'details as details'
+			})
 			.otherwise({
 				template: '404, page not found'
 			})
@@ -417,13 +421,18 @@
 		this.signOut = googleAuth.signOut;
 		this.pickSheet = googleAuth.pickSheet;
 	})
-	.controller('details', function($scope, $routeParams, $location, googleAuth) {
+	.controller('details', function($scope, $filter, $routeParams, $location, googleAuth) {
 		function createScope() {
-			this.teachers = googleAuth.getTeachers();
 			this.teacherId = $routeParams.teacherId;
-			this.currentTeacher = googleAuth.getTeacher(this.teacherId);
 			this.editingTeacher = {};
-			this.searchCriteria = '';
+			this.data = {};
+			this.data.searchCriteria = $routeParams.searchCriteria;
+			if(!this.data.searchCriteria) {
+				this.currentTeacher = googleAuth.getTeacher(this.teacherId);
+			}
+			else {
+				this.startCriteria = this.data.searchCriteria;
+			}
 		}
 		createScope.call(this);
 
@@ -474,24 +483,57 @@
 			}
 		}
 
+		$scope.$watch(function() {return this.data.searchCriteria}.bind(this), function() {
+			if(this.data.searchCriteria != this.startCriteria) {
+				this.teacherId = 0;
+				reset.call(this);
+			}
+		}.bind(this));
+
+		this.updateSearchPath = function() {
+			if(this.searchCriteria) {
+				this.teacherId = 0;
+				$location.path('/details/search/'+this.data.searchCriteria+'/0');
+				reset.call(this);
+			}
+		}
+
 		this.changed = function() {
 			return !compareTeachers(this.currentTeacher, this.editingTeacher);
 		}
 
 		this.nextRecord = function() {
-			$location.path('/details/'+this.teachers[this.recordNumber+1].id);
+			if(!this.data.searchCriteria) {
+				$location.path('/details/'+this.teachers[this.recordNumber+1].id);
+			}
+			else {
+				$location.path('/details/search/'+this.data.searchCriteria+'/'+Number(this.recordNumber+1));
+			}
 		}
 		this.previousRecord = function() {
-			$location.path('/details/'+this.teachers[this.recordNumber-1].id);
+			if(!this.data.searchCriteria) {
+				$location.path('/details/'+this.teachers[this.recordNumber-1].id);
+			}
+			else {
+				$location.path('/details/search/'+this.data.searchCriteria+'/'+Number(this.recordNumber-1));
+			}
 		}
 
 		function reset() {
-			this.currentTeacher = googleAuth.getTeacher(this.teacherId);
+			console.log('reset');
+			this.teachers = googleAuth.getTeachers();
+			if(this.data.searchCriteria) {
+				this.teachers = $filter('filter')(this.teachers, this.data.searchCriteria);
+				this.currentTeacher = this.teachers[this.teacherId];
+			}
+			else {
+				this.currentTeacher = googleAuth.getTeacher(this.teacherId);
+			}
 			copyTeacher(this.currentTeacher, this.editingTeacher);
 
 			this.recordNumberTotal = this.teachers.length;
 			if(this.currentTeacher) {
-				this.recordNumber = googleAuth.getTeacherIndex(this.currentTeacher);
+				this.recordNumber = this.teachers.indexOf(this.currentTeacher);
 				if(this.currentTeacher.newID) {
 					googleAuth.updateTeacher(this.currentTeacher).then(function(d) {
 						console.log(d);
