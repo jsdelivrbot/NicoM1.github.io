@@ -346,7 +346,6 @@
 					requests: [{
 						deleteDimension: {
 							range: {
-								//TODO FIND PROGRAMATICALLY
 								sheetId: sheetId,
 								dimension: 'ROWS',
 								startIndex: teacher.index + OFFSET,
