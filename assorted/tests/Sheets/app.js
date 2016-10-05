@@ -100,7 +100,7 @@
 		function getSheetId() {
 			if(hasSheetsApi && spreadsheetId) {
 				var spreadsheets = gapi.client.sheets.spreadsheets;
-				spreadsheets.get({
+				return spreadsheets.get({
 					spreadsheetId: spreadsheetId
 				}).then(function(d) {
 					console.log(d);
@@ -111,7 +111,11 @@
 					}
 				}, function(e) {
 					console.log(e);
+					return $q.reject(e);
 				})
+			}
+			else {
+				return $q.reject('missing sheets api and or spreadsheet id');
 			}
 		}
 
@@ -147,16 +151,6 @@
 			else {
 				deffered.reject(authResult.error);
 			}
-		}
-
-		function findTeacherIndex(teacher) {
-			for(var t = 0; t < teachers.length; t++) {
-				var foundTeacher = teachers[t];
-				if(teacher.firstName == foundTeacher.firstName && teacher.lastName == foundTeacher.lastName) {
-					return foundTeacher.index;
-				}
-			}
-			return 0;
 		}
 
 		function updateTeachers() {
@@ -406,8 +400,7 @@
 			getTeacher: getTeacher,
 			getTeacherIndex: getTeacherIndex,
 			removeTeacher: removeTeacher,
-			updateTeachers: updateTeachers,
-			findTeacherIndex: findTeacherIndex
+			updateTeachers: updateTeachers
 		};
 	})
 	.controller('sheets', function($scope, $location, googleAuth) {
