@@ -25,7 +25,7 @@
 		var CLIENT_ID = '977588012097-tp6j1qv1ipm7s9c0582dprb157lp13p0.apps.googleusercontent.com';
 		var API_KEY = 'AIzaSyCdKBQGd4QfCTFFqQ1Lh9FNDwO0mT1QY1c';
 		var SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.readonly'].join(' ');
-		var SHEET = 'Main database!';
+		var SHEET = 'Main database';
 		var SHEET_REMOVED = 'Removed Teachers';
 		var OFFSET = 1;
 		var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -64,6 +64,7 @@
 		var authToken = null;
 
 		var spreadsheetId = localStorage.getItem('sheetid');
+		var sheetId = null;
 
 		var picker = null;
 
@@ -92,6 +93,24 @@
 			});
 		}
 
+		function getSheetId() {
+			if(hasSheetsApi && spreadsheetId) {
+				var spreadsheets = gapi.client.sheets.spreadsheets;
+				spreadsheets.get({
+					spreadsheetId: spreadsheetId
+				}).then(function(d) {
+					console.log(d);
+					for(var i = 0; i < d.result.sheets.length; i++) {
+						if(d.result.sheets[i].properties.title == SHEET) {
+							sheetId = d.result.sheets[i].properties.sheetId;
+						}
+					}
+				}, function(e) {
+					console.log(e);
+				})
+			}
+		}
+
 		function loadApi(api) {
 			var deffered = $q.defer();
 			gapi.load(api, function() {
@@ -117,6 +136,7 @@
 					createPicker();
 				}
 				else {
+					getSheetId();
 					updateTeachers();
 				}
 			}
@@ -140,7 +160,7 @@
 				var spreadsheets = gapi.client.sheets.spreadsheets;
 				spreadsheets.values.get({
 					spreadsheetId: spreadsheetId,
-					range: SHEET + 'A2:'+ALPHABET[POSITIONS.length-1]
+					range: SHEET + '!A2:'+ALPHABET[POSITIONS.length-1]
 				}).then(function(response) {
 					teachers.length = 0;
 					$rootScope.$applyAsync(function() {
@@ -254,7 +274,7 @@
 				if(!removed) {
 					spreadsheets.values.update({
 						spreadsheetId: spreadsheetId,
-						range: SHEET + 'A'+index+':'+ALPHABET[POSITIONS.length-1]+index,
+						range: SHEET + '!A'+index+':'+ALPHABET[POSITIONS.length-1]+index,
 						values: [values],
 						valueInputOption: 'RAW'
 					}).then(function(response) {
@@ -301,6 +321,7 @@
 				var doc = data[google.picker.Response.DOCUMENTS][0];
 				spreadsheetId = doc[google.picker.Document.ID];
 				localStorage.setItem('sheetid', spreadsheetId);
+				getSheetId();
 				updateTeachers();
 			}
 		}
@@ -326,7 +347,7 @@
 						deleteDimension: {
 							range: {
 								//TODO FIND PROGRAMATICALLY
-								sheetId: 596327781,
+								sheetId: sheetId,
 								dimension: 'ROWS',
 								startIndex: teacher.index + OFFSET,
 								endIndex: teacher.index + OFFSET + 1
@@ -334,7 +355,6 @@
 						}
 					}]
 				}).then(function(d) {
-					$rootScope.$broadcast('updated-teachers');
 					console.log(d);
 				}, function(e) {
 					console.log(e);
