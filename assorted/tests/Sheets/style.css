@@ -2,10 +2,6 @@ html, body, ng-view {
 	width: 100%;
 }
 
-.logo {
-	position: absolute;
-}
-
 .loading {
 	width: 50px;
 	height: 10px;
@@ -30,40 +26,21 @@ html, body, ng-view {
 	}
 }
 
-tr {
-	margin: 100px 0px;
-}
-
-input[type="text"], input[type="email"], input[type="date"], textarea {
-	float: right;
-	font-weight: normal;
-}
-
-input[type="text"].topbar {
-	width: 300px;
-	float: none;
-	overflow: hidden;
-}
-
-label {
+.mainlist {
+	text-align: center;
 	width: 100%;
-	margin-bottom: 3px;
+	margin: 10px;
 }
 
-.ng-invalid, .invalid {
-	border-color: #FF0000 !important;
+.logo {
+	position: absolute;
 }
 
-.info {
-	cursor: pointer;
-}
-
-.changed {
-	border: 1px solid #00FF00;
-}
-
-.topbar {
-    width: 500px;
+.details {
+	margin: 10px auto;
+	margin-left: auto;
+	margin-right: auto;
+	width: 500px
 }
 
 .maininfo {
@@ -92,35 +69,45 @@ label {
 	text-align: center;
 }
 
-.details {
-	margin: 10px auto;
-	margin-left: auto;
-	margin-right: auto;
-	width: 500px
+label {
+	width: 100%;
+	margin-bottom: 3px;
 }
 
-td {
-	padding: 10px;
-	border: 1px solid #eeeeee;
+input[type="text"], input[type="email"], input[type="date"], textarea {
+	float: right;
+	font-weight: normal;
+}
+
+input[type="text"].topbar {
+	width: 300px;
+	float: none;
+	overflow: hidden;
 }
 
 input[type="text"].mainsearch {
 	float: none;
 }
 
-.mainlist {
-	text-align: center;
-	width: 100%;
-	margin: 10px;
+textarea {
+	width: 300px;
+	height: 60px;
+}
+
+.ng-invalid, .invalid {
+	border-color: #FF0000 !important;
+}
+
+.info {
+	cursor: pointer;
+}
+
+.topbar {
+    width: 500px;
 }
 
 .topbarmain {
 	margin: 10px;
-}
-
-table {
-	width: 500px;
-	margin: 0 auto;
 }
 
 .name {
@@ -130,7 +117,31 @@ table {
 	text-decoration: underline;
 }
 
+table {
+	width: 500px;
+	margin: 0 auto;
+}
+
+tr {
+	margin: 100px 0px;
+}
+
+td {
+	padding: 10px;
+	border: 1px solid #eeeeee;
+}
+
 @media (max-width: 700px) {
+	.logo {
+		position: static;
+	}
+	.mainlist {
+		margin: 0;
+	}
+	.details {
+		padding: 10px;
+		width: 100%;
+	}
 	.maininfo {
 		width: 100%;
 	}
@@ -142,6 +153,9 @@ table {
 	}
 	.tertiaryinfo {
 		width: 100%;
+	}
+	label {
+		margin-bottom: 5px;
 	}
 	label.topbar {
 		float: none;
@@ -155,7 +169,6 @@ table {
 	  border: 1px solid #bbb;
 	  padding: 5px;
 	}
-
 	textarea {
 		height: 120px;
 	}
@@ -163,25 +176,12 @@ table {
 		width: 100%;
 		float: right;
 	}
-	.details {
-		padding: 10px;
-		width: 100%;
-	}
 	input[type="text"].mainsearch {
 		float: none;
 		margin: 0;
 		margin-top: 10px;
 	}
-	.mainlist {
-		margin: 0;
-	}
 	.return {
 		margin-bottom: 10px;
-	}
-	label {
-		margin-bottom: 5px;
-	}
-	.logo {
-		position: static;
 	}
 }
