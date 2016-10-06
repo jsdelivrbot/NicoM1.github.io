@@ -420,8 +420,13 @@
 		this.showSelectButton = function() {
 			return !googleAuth.hasSheetId() || !googleAuth.authorized();
 		}
-		this.selectTeacher = function(teacher) {
-			$location.path('/details/'+teacher.id);
+		this.selectTeacher = function(teacher, index) {
+			if(this.search && this.search.trim().length > 0) {
+				$location.path('/details/search/'+this.search+'/'+index);
+			}
+			else {
+				$location.path('/details/'+teacher.id);
+			}
 		}
 		this.signOut = googleAuth.signOut;
 		this.pickSheet = googleAuth.pickSheet;
@@ -554,7 +559,7 @@
 			console.log('reset');
 			this.teachers = googleAuth.getTeachers();
 			if(this.data.searchCriteria) {
-				this.teachers = $filter('filter')(this.teachers, this.data.searchCriteria);
+				this.teachers = $filter('orderBy')($filter('filter')(this.teachers, this.data.searchCriteria), 'firstName');
 				this.currentTeacher = this.teachers[this.teacherId];
 			}
 			else if(this.data.listType) {

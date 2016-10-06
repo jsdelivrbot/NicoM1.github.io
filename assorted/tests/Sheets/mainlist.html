@@ -9,10 +9,10 @@
 	</div>
 	<table>
 		<tr ng-repeat="teacher in sheets.teachers | filter:sheets.search | orderBy:'firstName' track by $index" class="info">
-			<td ng-click="sheets.selectTeacher(teacher)">
+			<td ng-click="sheets.selectTeacher(teacher, $index)">
 				{{teacher.firstName}}
 			</td>
-			<td ng-click="sheets.selectTeacher(teacher)">
+			<td ng-click="sheets.selectTeacher(teacher, $index)">
 				{{teacher.lastName}}
 			</td>
 			<td>
