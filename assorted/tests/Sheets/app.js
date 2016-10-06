@@ -271,7 +271,7 @@
 			var values = [];
 			for(var i = 0; i < POSITIONS.length; i++) {
 				if(teacher[POSITIONS[i]] != '[missing]') {
-					values[i] = teacher[POSITIONS[i]];					
+					values[i] = teacher[POSITIONS[i]];
 				}
 			}
 
@@ -555,6 +555,10 @@
 					});
 				}
 			}
+		}
+
+		this.returnToMain = function() {
+			$location.path('/');
 		}
 
 		$scope.$on('updated-teachers', reset.bind(this));
