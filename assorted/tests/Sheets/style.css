@@ -125,16 +125,16 @@ table {
 
 @media (max-width: 700px) {
 	.maininfo {
-		width: 100%
+		width: 100%;
 	}
 	.topbar {
-		width: 100%
+		width: 100%;
 	}
 	.secondaryinfo {
-		width: 100%
+		width: 100%;
 	}
 	.tertiaryinfo {
-		width: 100%
+		width: 100%;
 	}
 	label.topbar {
 		float: none;
@@ -162,7 +162,11 @@ table {
 	}
 	input[type="text"].mainsearch {
 		float: none;
-		margin: 10px;
+		margin: 0;
+		margin-top: 10px;
+	}
+	.mainlist {
+		margin: 0;
 	}
 	.return {
 		margin-bottom: 10px;
