@@ -31,8 +31,13 @@ input[type="text"], input[type="email"], input[type="date"] {
 }
 
 input[type="text"].topbar {
-	width: 500px;
+	width: 300px;
 	float: none;
+	overflow: hidden;
+}
+
+label.topbar {
+	float: left;
 }
 
 label {
@@ -52,7 +57,7 @@ label {
 }
 
 .topbar {
-    width:  100vw;
+    width:  500px;
 }
 
 .maininfo {
@@ -82,10 +87,14 @@ label {
 	margin: 10px auto;
 	margin-left: auto;
 	margin-right: auto;
+	width: 500px
 }
 
 @media (max-width: 700px) {
 	.maininfo {
+		width: 100%
+	}
+	.topbar {
 		width: 100%
 	}
 	.secondaryinfo {
@@ -94,9 +103,6 @@ label {
 	.tertiaryinfo {
 		width: 100%
 	}
-	input[type="text"].topbar {
-		width: 100%;
-	}
 	input[type=text], input[type=url], input[type=email], input[type=password], input[type=tel] {
 	  -webkit-appearance: none; -moz-appearance: none;
 	  display: block;
@@ -104,5 +110,12 @@ label {
 	  width: 100%; height: 40px;
 	  line-height: 40px; font-size: 17px;
 	  border: 1px solid #bbb;
+	}
+	input[type="text"].topbar {
+		width: 100%;
+		float: right;
+	}
+	.details {
+		margin: 10px;
 	}
 }
