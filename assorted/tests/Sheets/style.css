@@ -8,6 +8,7 @@ html, body, ng-view {
 	position: absolute;
 	left: 50%;
 	top: 50%;
+	margin-left: -25px;
 	border-radius: 20%;
 	background-color: #eeeeee;
 	animation: spin 4s linear infinite;
