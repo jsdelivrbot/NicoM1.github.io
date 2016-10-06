@@ -1,6 +1,6 @@
 <div class="details">
+	<button class="btn btn-secondary return" ng-click="details.returnToMain()">Return</button>
 	<div class="topbar">
-		<button class="btn btn-secondary" ng-click="details.returnToMain()">Return</button>
 		<div class="info topbar">
 			<label class="topbar">Search Criteria <input type="text" class="topbar" ng-class="{invalid: details.teachers.length == 0}" ng-blur="details.updateSearchPath()" ng-model="details.data.searchCriteria"</label>
 		</div>
