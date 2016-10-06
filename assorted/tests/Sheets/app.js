@@ -555,6 +555,10 @@
 			}
 		}
 
+		this.switchTo = function() {
+			$location.path('/details/'+this.currentTeacher.id);
+		}
+
 		function reset() {
 			console.log('reset');
 			this.teachers = googleAuth.getTeachers();

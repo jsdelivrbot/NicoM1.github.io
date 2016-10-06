@@ -5,6 +5,9 @@
 			<label class="topbar">Search Criteria <input type="text" class="topbar" ng-class="{invalid: details.teachers.length == 0}" ng-blur="details.updateSearchPath()" ng-model="details.data.searchCriteria"</label>
 		</div>
 	</div>
+	<div ng-click="details.switchTo()" class="name">
+		{{details.currentTeacher.firstName}} {{details.currentTeacher.lastName}}
+	</div>
 	<div class="nav bottom">
 		<input type="button" value="Previous" class="btn" ng-click="details.previousRecord()" ng-show="details.recordNumber > 0"/>
 		<span>Record Number {{details.recordNumber+1}} of {{details.recordNumberTotal}}</span>
