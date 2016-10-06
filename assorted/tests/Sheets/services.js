@@ -265,10 +265,10 @@
             return null;
 		}
 
-		function getTeacherIndex(teacher) {
+		function getTeacherIndex(id) {
 			var index = 0;
 			for(var i = 0; i < teachers.length; i++) {
-				if(teachers[i].id == teacher.id) {
+				if(teachers[i].id == id) {
 					index = i;
 				}
 			}
@@ -276,7 +276,7 @@
 		}
 
 		function updateTeacher(teacher, removed) {
-			var index = getTeacherIndex(teacher);
+			var index = getTeacherIndex(teacher.id);
 			//index is 1-based here
 			index += OFFSET+1;
 			var deffered = $q.defer();
@@ -409,7 +409,6 @@
 			},
 			signOut: signOut,
 			getTeacher: getTeacher,
-			getTeacherIndex: getTeacherIndex,
 			removeTeacher: removeTeacher,
 			updateTeachers: updateTeachers,
             copyTeacher: copyTeacher,
