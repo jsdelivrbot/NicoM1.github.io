@@ -57,7 +57,8 @@ label {
 }
 
 .topbar {
-    width:  500px;
+    width: 500px;
+	margin-bottom: 20px;
 }
 
 .maininfo {
@@ -68,11 +69,13 @@ label {
 
 .secondaryinfo {
 	width: 500px;
+	border: 1px solid #eeeeee;
 }
 
 .tertiaryinfo {
 	margin: 20px 0px;
 	width: 500px;
+	border: 1px solid #eeeeee;
 }
 
 .maintinence {
@@ -103,6 +106,9 @@ label {
 	}
 	.tertiaryinfo {
 		width: 100%
+	}
+	label.topbar {
+		float: none;
 	}
 	input[type=text], input[type=url], input[type=email], input[type=password], input[type=tel], textarea {
 	  -webkit-appearance: none; -moz-appearance: none;
