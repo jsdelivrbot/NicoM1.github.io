@@ -222,7 +222,7 @@
 			var checkboxes = ['facebook', 'retired', 'leave', 'psa', 'representative', 'executive'];
 			for(var c = 0; c < checkboxes.length; c++) {
 				var current = parsed[checkboxes[c]];
-				parsed[checkboxes[c]] = current != 'FALSE' && current != '' && current != null;
+				parsed[checkboxes[c]] = current != 'FALSE' && current != '' && current != null && current != '[missing]';
 			}
 			if(parsed.id == '' || parsed.id == null || parsed.id.length != 8) {
 				parsed.id = generateID();
