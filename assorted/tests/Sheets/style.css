@@ -41,12 +41,9 @@ input[type="text"].topbar {
 	overflow: hidden;
 }
 
-label.topbar {
-	float: left;
-}
-
 label {
 	width: 100%;
+	margin-bottom: 3px;
 }
 
 .ng-invalid, .invalid {
@@ -63,13 +60,12 @@ label {
 
 .topbar {
     width: 500px;
-	margin-bottom: 20px;
 }
 
 .maininfo {
     width: 500px;
     border: 1px solid #eeeeee;
-    margin: 20px 0px;
+    margin: 15px 0px;
 }
 
 .secondaryinfo {
@@ -78,7 +74,7 @@ label {
 }
 
 .tertiaryinfo {
-	margin: 20px 0px;
+	margin: 15px 0px;
 	width: 500px;
 	border: 1px solid #eeeeee;
 }
@@ -165,6 +161,9 @@ table {
 		margin: 10px;
 	}
 	.return {
-		margin-bottom: 20px;
+		margin-bottom: 10px;
+	}
+	label {
+		margin-bottom: 5px;
 	}
 }
