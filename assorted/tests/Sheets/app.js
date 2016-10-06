@@ -195,7 +195,10 @@
 			var found = false;
 			for(var i = 0; i < POSITIONS.length; i++) {
 				parsed[POSITIONS[i]] = teacher[i];
-				if(teacher[i] != null) {
+				if(parsed[POSITIONS[i]] == null || parsed[POSITIONS[i]].trim() == '') {
+					parsed[POSITIONS[i]] = '[missing]';
+				}
+				if(teacher[i] != null && teacher[i].trim() != '') {
 					found = true;
 				}
 			}
@@ -267,7 +270,9 @@
 
 			var values = [];
 			for(var i = 0; i < POSITIONS.length; i++) {
-				values[i] = teacher[POSITIONS[i]];
+				if(teacher[POSITIONS[i]] != '[missing]') {
+					values[i] = teacher[POSITIONS[i]];					
+				}
 			}
 
 			if(hasSheetsApi && spreadsheetId) {
@@ -437,12 +442,14 @@
 		var removeListener = null;
 		function copyTeacher(fromTeacher, toTeacher) {
 			for(var t in fromTeacher) {
-				toTeacher[t] = fromTeacher[t];
+				if(fromTeacher[t] != '[missing]') {
+					toTeacher[t] = fromTeacher[t];
+				}
 			}
 		}
 		function compareTeachers(t1, t2) {
 			for(var t in t1) {
-				if(t1[t] != t2[t]) {
+				if(t1[t] != t2[t] && t1[t] != '[missing]') {
 					return false;
 				}
 			}
@@ -562,7 +569,7 @@
 	.directive('googlelogin', function() {
 		return {
 			restrict: 'E',
-			template: '<button id="authorize" ng-click="login.handleAuthClick()" ng-show="sheets.showSelectButton()">Select Spreadsheet.</button>',
+			template: '<button id="authorize" ng-click="login.handleAuthClick()" ng-show="sheets.showSelectButton()" class="btn btn-success">Select Spreadsheet.</button>',
 			controller: function($scope, googleAuth) {
 				this.hasUser = false;
 				this.handleAuthClick = function() {

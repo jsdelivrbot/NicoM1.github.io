@@ -1,8 +1,8 @@
 <input type="text" ng-model="sheets.search" ng-if="sheets.teachers.length > 0"/>
 <div class='loading' ng-if="sheets.teachers.length == 0"></div>
 <googlelogin></googlelogin>
-<button ng-click="sheets.pickSheet()" ng-if="sheets.teachers.length > 0">Change Sheet.</button>
-<button ng-click="sheets.signOut()" ng-if="sheets.teachers.length > 0">Sign Out.</button>
+<button ng-click="sheets.pickSheet()" ng-if="sheets.teachers.length > 0" class="btn btn-success">Change Sheet.</button>
+<button ng-click="sheets.signOut()" ng-if="sheets.teachers.length > 0" class="btn btn-danger">Sign Out.</button>
 <table>
 	<tr ng-repeat="teacher in sheets.teachers | filter:sheets.search | orderBy:'firstName' track by $index" class="info">
 		<td ng-click="sheets.selectTeacher(teacher)">
