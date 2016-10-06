@@ -164,4 +164,7 @@ table {
 		float: none;
 		margin: 10px;
 	}
+	.return {
+		margin-bottom: 20px;
+	}
 }
