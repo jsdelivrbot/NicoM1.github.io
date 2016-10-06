@@ -1,18 +1,22 @@
-<input type="text" ng-model="sheets.search" ng-if="sheets.teachers.length > 0"/>
-<div class='loading' ng-if="sheets.teachers.length == 0"></div>
-<googlelogin></googlelogin>
-<button ng-click="sheets.pickSheet()" ng-if="sheets.teachers.length > 0" class="btn btn-success">Change Sheet.</button>
-<button ng-click="sheets.signOut()" ng-if="sheets.teachers.length > 0" class="btn btn-danger">Sign Out.</button>
-<table>
-	<tr ng-repeat="teacher in sheets.teachers | filter:sheets.search | orderBy:'firstName' track by $index" class="info">
-		<td ng-click="sheets.selectTeacher(teacher)">
-			{{teacher.firstName}}
-		</td>
-		<td ng-click="sheets.selectTeacher(teacher)">
-			{{teacher.lastName}}
-		</td>
-		<td>
-			<a href="mailto:{{teacher.email}}">{{teacher.email}}</a>
-		</td>
-	</tr>
-</table>
+<div class="mainlist">
+	<div class="topbarmain">
+		<div class='loading' ng-if="sheets.teachers.length == 0"></div>
+		<googlelogin></googlelogin>
+		<button ng-click="sheets.pickSheet()" ng-if="sheets.teachers.length > 0" class="btn btn-success">Change Sheet.</button>
+		<button ng-click="sheets.signOut()" ng-if="sheets.teachers.length > 0" class="btn btn-danger">Sign Out.</button>
+		<input type="text" ng-model="sheets.search" ng-if="sheets.teachers.length > 0" class="mainsearch"/>
+	</div>
+	<table>
+		<tr ng-repeat="teacher in sheets.teachers | filter:sheets.search | orderBy:'firstName' track by $index" class="info">
+			<td ng-click="sheets.selectTeacher(teacher)">
+				{{teacher.firstName}}
+			</td>
+			<td ng-click="sheets.selectTeacher(teacher)">
+				{{teacher.lastName}}
+			</td>
+			<td>
+				<a href="mailto:{{teacher.email}}">{{teacher.email}}</a>
+			</td>
+		</tr>
+	</table>
+</div>

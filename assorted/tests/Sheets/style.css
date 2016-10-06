@@ -103,6 +103,25 @@ td {
 	border: 1px solid #eeeeee;
 }
 
+input[type="text"].mainsearch {
+	float: none;
+}
+
+.mainlist {
+	text-align: center;
+	width: 100%;
+	margin: 10px;
+}
+
+.topbarmain {
+	margin: 10px;
+}
+
+table {
+	width: 500px;
+	margin: 0 auto;
+}
+
 @media (max-width: 700px) {
 	.maininfo {
 		width: 100%
@@ -139,5 +158,9 @@ td {
 	.details {
 		padding: 10px;
 		width: 100%;
+	}
+	input[type="text"].mainsearch {
+		float: none;
+		margin: 10px;
 	}
 }
