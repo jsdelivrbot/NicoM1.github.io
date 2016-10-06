@@ -20,6 +20,10 @@
 				templateUrl: 'details.html',
 				controller: 'details as details'
 			})
+			.when('/details/list/:listType/:teacherId', {
+				templateUrl: 'details.html',
+				controller: 'details as details'
+			})
 			.otherwise({
 				template: '404, page not found'
 			})
@@ -428,8 +432,14 @@
 			this.editingTeacher = {};
 			this.data = {};
 			this.data.searchCriteria = $routeParams.searchCriteria;
+			this.data.listType = $routeParams.listType;
 			if(!this.data.searchCriteria) {
 				this.currentTeacher = googleAuth.getTeacher(this.teacherId);
+			}
+			else if(this.data.listType) {
+				if(this.data.listType == 'facebook') {
+
+				}
 			}
 			else {
 				this.startCriteria = this.data.searchCriteria;
@@ -475,7 +485,11 @@
 			if(confirmed) {
 				googleAuth.removeTeacher(this.currentTeacher).then(function(d) {
 					alert('Member Removed');
-					if(!this.data.searchCriteria) {
+					if(this.data.listType != null) {
+						//TODO
+						$location.path('/details/list/'+this.data.listType+'/'+Number(this.teacherId-1)).replace();
+					}
+					else if(!this.data.searchCriteria) {
 						$location.path('/').replace();
 					}
 					else if(this.teachers.length == 0){
@@ -514,19 +528,25 @@
 		}
 
 		this.nextRecord = function() {
-			if(!this.data.searchCriteria) {
-				$location.path('/details/'+this.teachers[this.recordNumber+1].id);
+			if(this.data.searchCriteria) {
+				$location.path('/details/search/'+this.data.searchCriteria+'/'+Number(this.recordNumber+1));
+			}
+			else if(this.data.listType) {
+				$location.path('/details/list/'+this.data.listType+'/'+Number(this.recordNumber+1));
 			}
 			else {
-				$location.path('/details/search/'+this.data.searchCriteria+'/'+Number(this.recordNumber+1));
+				$location.path('/details/'+this.teachers[this.recordNumber+1].id);
 			}
 		}
 		this.previousRecord = function() {
-			if(!this.data.searchCriteria) {
-				$location.path('/details/'+this.teachers[this.recordNumber-1].id);
+			if(this.data.searchCriteria) {
+				$location.path('/details/search/'+this.data.searchCriteria+'/'+Number(this.recordNumber-1));
+			}
+			else if(this.data.listType) {
+				$location.path('/details/list/'+this.data.listType+'/'+Number(this.recordNumber-1));
 			}
 			else {
-				$location.path('/details/search/'+this.data.searchCriteria+'/'+Number(this.recordNumber-1));
+				$location.path('/details/'+this.teachers[this.recordNumber-1].id);
 			}
 		}
 
@@ -536,6 +556,20 @@
 			if(this.data.searchCriteria) {
 				this.teachers = $filter('filter')(this.teachers, this.data.searchCriteria);
 				this.currentTeacher = this.teachers[this.teacherId];
+			}
+			else if(this.data.listType) {
+				if(this.data.listType == 'facebook') {
+					this.teachers = googleAuth.getTeachers();
+					var final = [];
+					for(var i = 0; i < this.teachers.length; i++) {
+						var current = this.teachers[i];
+						if(current.facebook) {
+							final.push(current);
+						}
+					}
+					this.teachers = final;
+					this.currentTeacher = this.teachers[this.teacherId];
+				}
 			}
 			else {
 				this.currentTeacher = googleAuth.getTeacher(this.teacherId);

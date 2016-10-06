@@ -1,9 +1,13 @@
 <div class="details">
-	<button class="btn btn-secondary return" ng-click="details.returnToMain()">Return</button>
 	<div class="topbar">
 		<div class="info topbar">
 			<label class="topbar">Search Criteria <input type="text" class="topbar" ng-class="{invalid: details.teachers.length == 0}" ng-blur="details.updateSearchPath()" ng-model="details.data.searchCriteria"</label>
 		</div>
+	</div>
+	<div class="nav bottom">
+		<input type="button" value="Previous" class="btn" ng-click="details.previousRecord()" ng-show="details.recordNumber > 0"/>
+		<span>Record Number {{details.recordNumber+1}} of {{details.recordNumberTotal}}</span>
+		<input type="button" value="Next" class="btn" ng-click="details.nextRecord()" ng-show="details.recordNumber < details.recordNumberTotal - 1"/>
 	</div>
 	<div class="maininfo">
 		<div class="info primary">
@@ -68,9 +72,5 @@
 		<button ng-click="details.updateTeacher()" class="btn" ng-class="{'btn-success': details.changed()}">Update</button>
 		<button ng-click="details.promptRemoveTeacher()" class="btn btn-danger">Remove Member</button>
 	</div>
-	<div class="nav bottom">
-		<input type="button" value="Previous" class="btn" ng-click="details.previousRecord()" ng-show="details.recordNumber > 0"/>
-		<span>Record Number {{details.recordNumber+1}} of {{details.recordNumberTotal}}</span>
-		<input type="button" value="Next" class="btn" ng-click="details.nextRecord()" ng-show="details.recordNumber < details.recordNumberTotal - 1"/>
-	</div>
+	<button class="btn btn-secondary return" ng-click="details.returnToMain()">Return</button>
 </div>
