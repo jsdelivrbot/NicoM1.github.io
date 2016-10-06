@@ -474,6 +474,9 @@
 					else if(this.teachers.length == 0){
 						$location.path('/').replace();
 					}
+					else if(this.teacherId > this.teachers.length-1) {
+						$location.path('/details/search/'+this.data.searchCriteria+'/'+Number(this.teacherId-1)).replace();
+					}
 				}.bind(this),function(e) {
 					alert('ERROR: see console');
 					console.log(e);
