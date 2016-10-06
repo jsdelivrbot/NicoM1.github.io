@@ -2,6 +2,10 @@ html, body, ng-view {
 	width: 100%;
 }
 
+.logo {
+	position: absolute;
+}
+
 .loading {
 	width: 50px;
 	height: 10px;
@@ -165,5 +169,8 @@ table {
 	}
 	label {
 		margin-bottom: 5px;
+	}
+	.logo {
+		position: static;
 	}
 }
