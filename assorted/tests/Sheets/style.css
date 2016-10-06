@@ -112,9 +112,12 @@ textarea {
 
 .name {
 	text-align: center;
-	cursor: pointer;
 	font-size: bold;
+}
+
+.namelink {
 	text-decoration: underline;
+	cursor: pointer;
 }
 
 table {
