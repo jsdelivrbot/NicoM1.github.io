@@ -399,6 +399,22 @@
 			return true;
 		}
 
+        var listOrder = 'firstName';
+
+        function orderBy(order) {
+            listOrder = order;
+            console.log(listOrder);
+        }
+
+        function getOrdered(array) {
+            return $filter('orderBy')(array, listOrder);
+        }
+
+        function getOrder() {
+            console.log('got order ' + listOrder);
+            return listOrder;
+        }
+
 		return {
 			init: initApi,
 			handleAuthClick: handleAuthClick,
@@ -422,6 +438,9 @@
             copyTeacher: copyTeacher,
             compareTeachers: compareTeachers,
             addTeacher: addTeacher,
+            orderBy: orderBy,
+            getOrdered: getOrdered,
+            getOrder: getOrder,
             SHEET: SHEET
 		};
 	})

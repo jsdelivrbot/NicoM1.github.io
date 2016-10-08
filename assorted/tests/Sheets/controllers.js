@@ -17,6 +17,10 @@
             var teacher = googleAuth.addTeacher();
             this.selectTeacher(teacher);
         }
+
+        this.getOrder = googleAuth.getOrder;
+        this.orderBy = googleAuth.orderBy;
+
 		this.signOut = googleAuth.signOut;
 		this.pickSheet = googleAuth.pickSheet;
 	})
@@ -143,7 +147,7 @@
 			console.log('reset');
 			this.teachers = googleAuth.getTeachers();
 			if(this.data.searchCriteria) {
-				this.teachers = $filter('orderBy')($filter('filter')(this.teachers, this.data.searchCriteria), 'firstName');
+				this.teachers = googleAuth.getOrdered($filter('filter')(this.teachers, this.data.searchCriteria));
 				this.currentTeacher = this.teachers[this.teacherId];
 			}
 			else if(this.data.listType) {

@@ -6,10 +6,21 @@
 		<button ng-click="sheets.pickSheet()" ng-if="sheets.teachers.length > 0" class="btn btn-success mainbtn">Change Sheet.</button>
 		<button ng-click="sheets.signOut()" ng-if="sheets.teachers.length > 0" class="btn btn-danger mainbtn">Sign Out.</button>
 		<input type="text" ng-model="sheets.search" ng-if="sheets.teachers.length > 0" placeholder="search" class="mainsearch"/>
+		<select ng-model="sortBy" ng-change="sheets.orderBy(sortBy)">
+			<option value="firstName">
+				First Name
+			</option>
+			<option value="lastName">
+				Last Name
+			</option>
+			<option value="district">
+				District
+			</option>
+		</select>
 		<button ng-click="sheets.addTeacher()" class="btn btn-primary mainbtn">Add Member</button>
 	</div>
 	<table>
-		<tr ng-repeat="teacher in sheets.teachers | filter:sheets.search | orderBy:'firstName' track by $index" class="info">
+		<tr ng-repeat="teacher in sheets.teachers | filter:sheets.search | orderBy:sheets.getOrder() track by $index" class="info">
 			<td ng-click="sheets.selectTeacher(teacher, $index)">
 				{{teacher.firstName}}
 			</td>
