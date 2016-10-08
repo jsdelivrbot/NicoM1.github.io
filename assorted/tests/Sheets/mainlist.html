@@ -3,9 +3,10 @@
 	<div class="topbarmain">
 		<div class='loading' ng-if="sheets.teachers.length == 0"></div>
 		<googlelogin></googlelogin>
-		<button ng-click="sheets.pickSheet()" ng-if="sheets.teachers.length > 0" class="btn btn-success">Change Sheet.</button>
-		<button ng-click="sheets.signOut()" ng-if="sheets.teachers.length > 0" class="btn btn-danger">Sign Out.</button>
-		<input type="text" ng-model="sheets.search" ng-if="sheets.teachers.length > 0" class="mainsearch"/>
+		<button ng-click="sheets.pickSheet()" ng-if="sheets.teachers.length > 0" class="btn btn-success mainbtn">Change Sheet.</button>
+		<button ng-click="sheets.signOut()" ng-if="sheets.teachers.length > 0" class="btn btn-danger mainbtn">Sign Out.</button>
+		<input type="text" ng-model="sheets.search" ng-if="sheets.teachers.length > 0" placeholder="search" class="mainsearch"/>
+		<button ng-click="sheets.addTeacher()" class="btn btn-primary mainbtn">Add Member</button>
 	</div>
 	<table>
 		<tr ng-repeat="teacher in sheets.teachers | filter:sheets.search | orderBy:'firstName' track by $index" class="info">
@@ -15,7 +16,7 @@
 			<td ng-click="sheets.selectTeacher(teacher, $index)">
 				{{teacher.lastName}}
 			</td>
-			<td>
+			<td class="finalrow">
 				<a href="mailto:{{teacher.email}}">{{teacher.email}}</a>
 			</td>
 		</tr>

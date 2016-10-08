@@ -187,16 +187,16 @@
 			}
 		}
 
-		function parseTeacher(teacher, index) {
-            function generateID() {
-                var final = '';
-                var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
-                for(var i = 0; i < 8; i++) {
-                    final += characters.charAt(Math.floor(Math.random() * characters.length));
-                }
-                return final;
+        function generateID() {
+            var final = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
+            for(var i = 0; i < 8; i++) {
+                final += characters.charAt(Math.floor(Math.random() * characters.length));
             }
+            return final;
+        }
 
+		function parseTeacher(teacher, index) {
 			var parsed = {};
 
 			var found = false;
@@ -275,7 +275,7 @@
 			return index;
 		}
 
-		function updateTeacher(teacher, removed) {
+		function updateTeacher(teacher, sheet, append) {
 			var index = getTeacherIndex(teacher.id);
 			//index is 1-based here
 			index += OFFSET+1;
@@ -294,10 +294,10 @@
 
 			if(hasSheetsApi && spreadsheetId) {
 				var spreadsheets = gapi.client.sheets.spreadsheets;
-				if(!removed) {
+				if(!append) {
 					spreadsheets.values.update({
 						spreadsheetId: spreadsheetId,
-						range: SHEET + '!A'+index+':'+ALPHABET[POSITIONS.length-1]+index,
+						range: sheet + '!A'+index+':'+ALPHABET[POSITIONS.length-1]+index,
 						values: [values],
 						valueInputOption: 'RAW'
 					}).then(function(response) {
@@ -309,7 +309,7 @@
 				else {
 					spreadsheets.values.append({
 						spreadsheetId: spreadsheetId,
-						range: SHEET_REMOVED+'!A1',
+						range: sheet+'!A1',
 						values: [values],
 						valueInputOption: 'RAW',
 						insertDataOption: 'INSERT_ROWS'
@@ -327,12 +327,20 @@
 			return deffered.promise;
 		}
 
+        function addTeacher() {
+            var teacher = {};
+            teacher.id = generateID();
+            teachers.push(teacher);
+            updateTeacher(teacher, SHEET, true);
+            return teacher;
+        }
+
         function removeTeacher(teacher) {
             var index = teachers.indexOf(teacher);
             if(index != -1) {
                 teachers.splice(index, 1);
                 $rootScope.$broadcast('updated-teachers');
-                return updateTeacher(teacher, true).then(function(d) {
+                return updateTeacher(teacher, SHEET_REMOVED, true).then(function(d) {
                     removeTeacherFromSheet(teacher);
                 }, function(e) {
                     console.log(e);
@@ -412,7 +420,9 @@
 			removeTeacher: removeTeacher,
 			updateTeachers: updateTeachers,
             copyTeacher: copyTeacher,
-            compareTeachers: compareTeachers
+            compareTeachers: compareTeachers,
+            addTeacher: addTeacher,
+            SHEET: SHEET
 		};
 	})
 }(window));

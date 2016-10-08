@@ -13,6 +13,10 @@
 				$location.path('/details/'+teacher.id);
 			}
 		}
+        this.addTeacher = function() {
+            var teacher = googleAuth.addTeacher();
+            this.selectTeacher(teacher);
+        }
 		this.signOut = googleAuth.signOut;
 		this.pickSheet = googleAuth.pickSheet;
 	})
@@ -39,7 +43,7 @@
 		this.updateTeacher = function() {
 			if(!googleAuth.compareTeachers(this.editingTeacher, this.currentTeacher)) {
 				this.editingTeacher.lastUpdated = new Date();
-				googleAuth.updateTeacher(this.editingTeacher).then(function(d) {
+				googleAuth.updateTeacher(this.editingTeacher, googleAuth.SHEET).then(function(d) {
 					googleAuth.copyTeacher(this.editingTeacher, this.currentTeacher);
 					console.log(d);
 					alert('updated successfully');
@@ -88,7 +92,7 @@
 		}.bind(this));
 
 		this.changed = function() {
-			return !googleAuth.compareTeachers(this.currentTeacher, this.editingTeacher);
+			return !googleAuth.compareTeachers(this.editingTeacher, this.currentTeacher);
 		}
 
 		this.updateSearchPath = function() {
@@ -166,7 +170,7 @@
 			if(this.currentTeacher) {
 				this.recordNumber = this.teachers.indexOf(this.currentTeacher);
 				if(this.currentTeacher.newID) {
-					googleAuth.updateTeacher(this.currentTeacher).then(function(d) {
+					googleAuth.updateTeacher(this.currentTeacher, googleAuth.SHEET).then(function(d) {
 						console.log('saved teacher id to database');
 						this.currentTeacher.newID = false;
 						this.editingTeacher.newID = false;
