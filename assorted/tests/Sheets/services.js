@@ -175,6 +175,7 @@
 						for(var t = 0; t < response.result.values.length; t++) {
 							var teacher = response.result.values[t];
 							var parsed = parseTeacher(teacher, t);
+                            //have to leave empty
 							if(parsed) {
 								teachers.push(parsed);
 							}
@@ -211,7 +212,8 @@
 				}
 			}
 			if(!found) {
-				return null;
+                //Need to ignore this to ensure indexes stay the same
+				//return null;
 			}
 
             function parseDate(date) {
