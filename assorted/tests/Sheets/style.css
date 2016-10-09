@@ -2,10 +2,6 @@ html, body, ng-view {
 	width: 100%;
 }
 
-.idlist {
-	white-space: pre-line;
-}
-
 .loading {
 	width: 50px;
 	height: 10px;
@@ -198,4 +194,12 @@ td {
 	.return {
 		margin-bottom: 10px;
 	}
+}
+
+.idlist {
+	float: none;
+	margin: 0 auto;
+	display: block;
+	border: 0;
+	text-align: center;
 }

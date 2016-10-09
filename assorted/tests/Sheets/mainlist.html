@@ -20,7 +20,7 @@
 		<button ng-click="sheets.addTeacher()" class="btn btn-primary mainbtn">Add Member</button>
 		<button ng-show="ids == null" ng-click="ids = sheets.generateIds()" class="btn btn-primary mainbtn">Generate IDs</button>
 		<button ng-show="ids != null" ng-click="ids = null" class="btn btn-primary mainbtn">Hide IDs</button>
-		<div class="idlist">{{ids}}</div>
+		<textarea class="idlist" ng-show="ids != null">{{ids}}</textarea>
 	</div>
 	<table>
 		<tr ng-repeat="teacher in sheets.teachers | filter:sheets.search | orderBy:sheets.getOrder() track by $index" class="info">
