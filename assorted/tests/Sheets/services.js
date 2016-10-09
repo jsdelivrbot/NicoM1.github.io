@@ -237,7 +237,7 @@
                 }
             }
 
-			var checkboxes = ['facebook', 'retired', 'leave', 'psa', 'representative', 'executive'];
+			var checkboxes = ['aceIt', 'facebook', 'retired', 'leave', 'psa', 'representative', 'executive'];
 
             parseCheckboxes(checkboxes, parsed);
 
@@ -484,5 +484,31 @@
             generateID: generateID,
             SHEET: SHEET
 		};
+	})
+	.filter('teachersearch', function() {
+		return function(teachers, search) {var out = [];
+			if(search == null || search.trim().length == 0) {
+				return teachers;
+			}
+			for(var t = 0; t < teachers.length; t++) {
+				var teacher = teachers[t];
+				for(var key in teacher) {
+					if(key.toLowerCase().includes(search) && key.trim().length == search.trim().length) {
+						if(teacher[key]) {
+							console.log(key);
+							out.push(teacher);
+							console.log(teacher);
+							console.log(teacher[key]);
+							break;
+						}
+					}
+					else if(key != 'id' && teacher[key] != null && typeof teacher[key] == 'string' && teacher[key].toLowerCase().includes(search)) {
+						out.push(teacher);
+						break;
+					}
+				}
+			}
+			return out;
+		}
 	})
 }(window));

@@ -70,6 +70,7 @@
 			if(confirmed) {
 				googleAuth.removeTeacher(this.currentTeacher).then(function(d) {
 					alert('Member Removed');
+					this.returnToMain();
 				}.bind(this),function(e) {
 					alert('ERROR: see console');
 					console.log(e);
@@ -138,52 +139,54 @@
 		function reset() {
 			console.log('reset');
 			this.teachers = googleAuth.getTeachers();
-			if(this.data.searchCriteria) {
-				this.teachers = googleAuth.getOrdered($filter('filter')(this.teachers, this.data.searchCriteria));
-                if(this.teachers.length == 0) {
-                    this.returnToMain();
-                    return;
-                }
-                if(this.teacherId >= this.teachers.length) {
-                    this.teacherId = this.teachers.length - 1;
-                }
-				this.currentTeacher = this.teachers[this.teacherId];
-			}
-			else if(this.data.listType) {
-				if(this.data.listType == 'facebook') {
-					this.teachers = googleAuth.getTeachers();
-					var final = [];
-					for(var i = 0; i < this.teachers.length; i++) {
-						var current = this.teachers[i];
-						if(current.facebook) {
-							final.push(current);
-						}
-					}
-					this.teachers = final;
+			if(this.teachers.length > 0) {
+				if(this.data.searchCriteria) {
+					this.teachers = googleAuth.getOrdered($filter('teachersearch')(this.teachers, this.data.searchCriteria));
+	                if(this.teachers.length == 0) {
+	                    this.returnToMain();
+	                    return;
+	                }
+	                if(this.teacherId >= this.teachers.length) {
+	                    this.teacherId = this.teachers.length - 1;
+	                }
 					this.currentTeacher = this.teachers[this.teacherId];
 				}
-			}
-			else {
-				this.currentTeacher = googleAuth.getTeacher(this.teacherId);
-                if(this.currentTeacher == null) {
-                    this.returnToMain();
-                    return;
-                }
-			}
+				else if(this.data.listType) {
+					if(this.data.listType == 'facebook') {
+						this.teachers = googleAuth.getTeachers();
+						var final = [];
+						for(var i = 0; i < this.teachers.length; i++) {
+							var current = this.teachers[i];
+							if(current.facebook) {
+								final.push(current);
+							}
+						}
+						this.teachers = final;
+						this.currentTeacher = this.teachers[this.teacherId];
+					}
+				}
+				else {
+					this.currentTeacher = googleAuth.getTeacher(this.teacherId);
+	                if(this.currentTeacher == null) {
+	                    this.returnToMain();
+	                    return;
+	                }
+				}
 
-			googleAuth.copyTeacher(this.currentTeacher, this.editingTeacher);
+				googleAuth.copyTeacher(this.currentTeacher, this.editingTeacher);
 
-			this.recordNumberTotal = this.teachers.length;
-			if(this.currentTeacher) {
-				this.recordNumber = this.teachers.indexOf(this.currentTeacher);
-				if(this.currentTeacher.newID) {
-					googleAuth.updateTeacher(this.currentTeacher, googleAuth.SHEET).then(function(d) {
-						console.log('saved teacher id to database');
-						this.currentTeacher.newID = false;
-						this.editingTeacher.newID = false;
-					}.bind(this), function(e) {
-						console.log(e);
-					});
+				this.recordNumberTotal = this.teachers.length;
+				if(this.currentTeacher) {
+					this.recordNumber = this.teachers.indexOf(this.currentTeacher);
+					if(this.currentTeacher.newID) {
+						googleAuth.updateTeacher(this.currentTeacher, googleAuth.SHEET).then(function(d) {
+							console.log('saved teacher id to database');
+							this.currentTeacher.newID = false;
+							this.editingTeacher.newID = false;
+						}.bind(this), function(e) {
+							console.log(e);
+						});
+					}
 				}
 			}
 		}
