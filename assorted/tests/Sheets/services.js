@@ -174,7 +174,7 @@
 					$rootScope.$applyAsync(function() {
 						for(var t = 0; t < response.result.values.length; t++) {
 							var teacher = response.result.values[t];
-							var parsed = parseTeacher(teacher, t);
+							var parsed = parseTeacher(teacher);
                             //have to leave empty
 							if(parsed) {
 								teachers.push(parsed);
@@ -197,7 +197,7 @@
             return final;
         }
 
-		function parseTeacher(teacher, index) {
+		function parseTeacher(teacher) {
 			var parsed = {};
 
 			var found = false;
@@ -220,7 +220,6 @@
                 return new Date(Date.parse(date));
             }
 
-			parsed.index = index;
 			if(parsed.lastUpdated) {
 				parsed.lastUpdated = parseDate(parsed.lastUpdated);
 			}
@@ -243,8 +242,9 @@
             parseCheckboxes(checkboxes, parsed);
 
 			if(parsed.id == '' || parsed.id == null || parsed.id.length != 8) {
-				parsed.id = generateID();
-				parsed.newID = true;
+                return null;
+				//parsed.id = generateID();
+				//parsed.newID = true;
 			}
 
 			parsed.fullName = parsed.firstName + ' ' + parsed.lastName;
@@ -277,24 +277,54 @@
 			return index;
 		}
 
+        function getRealIndex(id) {
+            var deffered = $q.defer();
+            if(hasSheetsApi && spreadsheetId) {
+				var spreadsheets = gapi.client.sheets.spreadsheets;
+				spreadsheets.values.get({
+					spreadsheetId: spreadsheetId,
+					range: SHEET + '!'+ALPHABET[POSITIONS.indexOf('id')]+(OFFSET+1)+':'+ALPHABET[POSITIONS.indexOf('id')],
+                    majorDimension: 'COLUMNS'
+				}).then(function(response) {
+                    console.log(response);
+				    var ids = response.result.values[0];
+                    for(var i = 0; i < ids.length; i++) {
+                        if(ids[i].trim() == id.trim()) {
+                            return deffered.resolve(i);
+                        }
+                    }
+                    return deffered.resolve(-1);
+				}, function(error) {
+					console.log(error);
+                    return deffered.reject(error);
+				});
+			}
+            else {
+                deffered.reject('missing api or sheetid');
+            }
+            return deffered.promise;
+        }
+
 		function updateTeacher(teacher, sheet, append) {
-			var index = getTeacherIndex(teacher.id);
-			//index is 1-based here
-			index += OFFSET+1;
-			var deffered = $q.defer();
-			if(!teacher) {
-				deffered.reject('missing teacher argument');
-				return;
-			}
+            var deffered = $q.defer();
+            getRealIndex(teacher.id).then(function(index) {
+                if(index == -1) {
+                    return deffered.reject('could not find index');
+                }
+                //index is 1-based here
+    			index += OFFSET+1;
+    			if(!teacher) {
+    				return deffered.reject('missing teacher argument');
+    				return;
+    			}
 
-			var values = [];
-			for(var i = 0; i < POSITIONS.length; i++) {
-				if(teacher[POSITIONS[i]] != MISSING) {
-					values[i] = teacher[POSITIONS[i]];
-				}
-			}
+    			var values = [];
+    			for(var i = 0; i < POSITIONS.length; i++) {
+    				if(teacher[POSITIONS[i]] != MISSING) {
+    					values[i] = teacher[POSITIONS[i]];
+    				}
+    			}
 
-			if(hasSheetsApi && spreadsheetId) {
 				var spreadsheets = gapi.client.sheets.spreadsheets;
 				if(!append) {
 					spreadsheets.values.update({
@@ -317,17 +347,14 @@
 						insertDataOption: 'INSERT_ROWS'
 					}).then(function(response) {
 						console.log(response);
-                        updateTeachers();
 						deffered.resolve(response);
 					}, function(error) {
-                        updateTeachers();
 						deffered.reject(error);
 					});
-				}
-			}
-			else {
-				deffered.reject('could not save teacher, missing sheets api and or sheet id');
-			}
+    			}
+            }, function(e) {
+                deffered.reject(e);
+            })
 			return deffered.promise;
 		}
 
@@ -344,6 +371,7 @@
             if(index != -1) {
                 return updateTeacher(teacher, SHEET_REMOVED, true).then(function(d) {
                     removeTeacherFromSheet(teacher);
+                    teachers.splice(index, 1);
                 }, function(e) {
                     console.log(e);
                 });
@@ -351,8 +379,9 @@
         }
 
 		function removeTeacherFromSheet(teacher) {
-			if(hasSheetsApi) {
-				var spreadsheets = gapi.client.sheets.spreadsheets;
+			getRealIndex(teacher.id).then(function(index) {
+                if(index == -1) return;
+                var spreadsheets = gapi.client.sheets.spreadsheets;
 				spreadsheets.batchUpdate({
 					spreadsheetId: spreadsheetId,
 					requests: [{
@@ -360,19 +389,17 @@
 							range: {
 								sheetId: sheetId,
 								dimension: 'ROWS',
-								startIndex: teacher.index + OFFSET,
-								endIndex: teacher.index + OFFSET + 1
+								startIndex: index + OFFSET,
+								endIndex: index + OFFSET + 1
 							}
 						}
 					}]
 				}).then(function(d) {
 					console.log(d);
-                    updateTeachers();
 				}, function(e) {
-                    updateTeachers();
 					console.log(e);
 				});
-			}
+            })
 		}
 
 		function signOut() {
@@ -445,6 +472,7 @@
             orderBy: orderBy,
             getOrdered: getOrdered,
             getOrder: getOrder,
+            getRealIndex: getRealIndex,
             SHEET: SHEET
 		};
 	})

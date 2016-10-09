@@ -158,6 +158,9 @@
 			}
 			else {
 				this.currentTeacher = googleAuth.getTeacher(this.teacherId);
+                googleAuth.getRealIndex(this.teacherId).then(function(index) {
+                    console.log(index);
+                });
                 if(this.currentTeacher == null) {
                     this.returnToMain();
                     return;
