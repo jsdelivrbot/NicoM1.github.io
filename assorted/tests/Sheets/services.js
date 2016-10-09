@@ -317,6 +317,7 @@
 						insertDataOption: 'INSERT_ROWS'
 					}).then(function(response) {
 						console.log(response);
+                        updateTeachers();
 						deffered.resolve(response);
 					}, function(error) {
 						deffered.reject(error);
