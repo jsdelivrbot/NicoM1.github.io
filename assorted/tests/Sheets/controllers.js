@@ -78,52 +78,70 @@
 
 		$scope.$watch(function() {return this.data.searchCriteria}.bind(this), function() {
 			if(this.data.searchCriteria != this.startCriteria) {
-				this.teacherId = 0;
-				this.startCriteria = this.data.searchCriteria;
-				reset.call(this);
+				var confirmed = !this.changed() || confirm('LEAVE WITHOUT UPDATING?');
+				if(confirmed) {
+					this.teacherId = 0;
+					this.startCriteria = this.data.searchCriteria;
+					reset.call(this);
+				}
 			}
 		}.bind(this));
 
 		this.changed = function() {
-			return !googleAuth.compareTeachers(this.editingTeacher, this.currentTeacher);
+			return this.currentTeacher != null && !googleAuth.compareTeachers(this.editingTeacher, this.currentTeacher);
 		}
 
 		this.updateSearchPath = function() {
-			if(this.data.searchCriteria) {
-				this.teacherId = 0;
-				$location.path('/details/search/'+this.data.searchCriteria+'/0');
-				reset.call(this);
+			var confirmed = !this.changed() || confirm('LEAVE WITHOUT UPDATING?');
+			if(confirmed) {
+				if(this.data.searchCriteria) {
+					this.teacherId = 0;
+					$location.path('/details/search/'+this.data.searchCriteria+'/0');
+					reset.call(this);
+				}
 			}
 		}
 		this.returnToMain = function(replace) {
-			var path = $location.path('/');
-            if(replace) {
-                path.replace();
-            }
+			var confirmed = !this.changed() || confirm('RETURN WITHOUT UPDATING?');
+			if(confirmed) {
+				var path = $location.path('/');
+	            if(replace) {
+	                path.replace();
+	            }
+			}
 		}
 		this.nextRecord = function() {
-			if(this.data.searchCriteria) {
-				$location.path('/details/search/'+this.data.searchCriteria+'/'+Number(this.recordNumber+1));
-			}
-			else {
-				$location.path('/details/'+this.teachers[this.recordNumber+1].id);
+			var confirmed = !this.changed() || confirm('LEAVE WITHOUT UPDATING?');
+			if(confirmed) {
+				if(this.data.searchCriteria) {
+					$location.path('/details/search/'+this.data.searchCriteria+'/'+Number(this.recordNumber+1));
+				}
+				else {
+					$location.path('/details/'+this.teachers[this.recordNumber+1].id);
+				}
 			}
 		}
 		this.previousRecord = function(replace) {
-            var path = null;
-			if(this.data.searchCriteria) {
-				path = $location.path('/details/search/'+this.data.searchCriteria+'/'+Number(this.recordNumber-1));
+			var confirmed = !this.changed() || confirm('LEAVE WITHOUT UPDATING?');
+			if(confirmed) {
+	            var path = null;
+				if(this.data.searchCriteria) {
+					path = $location.path('/details/search/'+this.data.searchCriteria+'/'+Number(this.recordNumber-1));
+				}
+				else {
+					path = $location.path('/details/'+this.teachers[this.recordNumber-1].id);
+				}
+	            if(replace && path) {
+	                path.replace();
+	            }
 			}
-			else {
-				path = $location.path('/details/'+this.teachers[this.recordNumber-1].id);
-			}
-            if(replace && path) {
-                path.replace();
-            }
 		}
 
 		this.switchTo = function() {
-			$location.path('/details/'+this.currentTeacher.id);
+			var confirmed = !this.changed() || confirm('LEAVE WITHOUT UPDATING?');
+			if(confirmed) {
+				$location.path('/details/'+this.currentTeacher.id);
+			}
 		}
 
 		function reset() {
