@@ -1,4 +1,4 @@
-<img src="logo.jpg" width="100px" class="logo"/>
+<img src="logo.jpg" width="100px" class="logo" ng-click="details.returnToMain()"/>
 <div class="details">
 	<div class="topbar">
 		<div class="info topbar">
@@ -10,10 +10,11 @@
 	</div>
 	<div class="nav bottom">
 		<input type="button" value="Previous" class="btn" ng-click="details.previousRecord()" ng-show="details.recordNumber > 0"/>
-		<span>Record Number {{details.recordNumber+1}} of {{details.recordNumberTotal}}</span>
+		<span ng-if="details.recordNumberTotal > 0">Record Number {{details.recordNumber+1}} of {{details.recordNumberTotal}}</span>
+		<span ng-if="!details.foundSearch">No Matching Records</span>
 		<input type="button" value="Next" class="btn" ng-click="details.nextRecord()" ng-show="details.recordNumber < details.recordNumberTotal - 1"/>
 	</div>
-	<div class="maininfo">
+	<div class="maininfo" ng-if="details.recordNumberTotal > 0">
 		<div class="info primary">
 			<label>First Name <input type="text" ng-model="details.editingTeacher.firstName" /></label>
 		</div>
@@ -36,7 +37,7 @@
 			<label>Comments <textarea ng-model="details.editingTeacher.comments"></textarea></label>
 		</div>
 	</div>
-	<div class="secondaryinfo">
+	<div class="secondaryinfo" ng-if="details.recordNumberTotal > 0">
 		<div class="info secondary">
 			<label>Facebook  <input type="checkbox" ng-model="details.editingTeacher.facebook" /></label>
 		</div>
@@ -56,7 +57,7 @@
 			<label>Personal Email  <input type="email" ng-model="details.editingTeacher.emailSecondary" /></label>
 		</div>
 	</div>
-	<div class="tertiaryinfo">
+	<div class="tertiaryinfo" ng-if="details.recordNumberTotal > 0">
 		<div class="info tertiary">
 			<label>Distric Contact/Rep/LSA President  <input type="checkbox" ng-model="details.editingTeacher.representative" /></label>
 		</div>
@@ -78,7 +79,7 @@
 			<label>Last Updated <input type="date" disabled="true" ng-model="details.editingTeacher.lastUpdated" /></label>
 		</div>
 	</div>
-	<div class="maintinence">
+	<div class="maintinence" ng-if="details.recordNumberTotal > 0">
 		<button ng-click="details.updateTeacher()" class="btn" ng-class="{'btn-success': details.changed()}">Update</button>
 		<button ng-click="details.promptRemoveTeacher()" class="btn btn-danger">Remove Member</button>
 	</div>

@@ -134,10 +134,9 @@
 				if(this.data.searchCriteria) {
 					this.teachers = googleAuth.getOrdered($filter('teachersearch')(this.teachers, this.data.searchCriteria));
 	                if(this.teachers.length == 0) {
-	                    this.teachers = googleAuth.getTeachers();
-						this.teacherId = this.teachers[0].id;
-						this.currentTeacher = this.teachers[this.teacherId];
+						this.currentTeacher = null;
 						this.foundSearch = false;
+						this.recordNumberTotal = this.teachers.length;
 	                    return;
 	                }
 	                if(this.teacherId >= this.teachers.length) {
