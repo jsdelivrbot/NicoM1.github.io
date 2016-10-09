@@ -17,6 +17,13 @@
             var teacher = googleAuth.addTeacher();
             this.selectTeacher(teacher);
         }
+        this.generateIds = function() {
+            var ids = ''
+            for(var i = 0; i < 50; i++) {
+                ids += (googleAuth.generateID()) + '\n';
+            }
+            return ids;
+        }
 
         this.getOrder = googleAuth.getOrder;
         this.orderBy = googleAuth.orderBy;
@@ -158,9 +165,6 @@
 			}
 			else {
 				this.currentTeacher = googleAuth.getTeacher(this.teacherId);
-                googleAuth.getRealIndex(this.teacherId).then(function(index) {
-                    console.log(index);
-                });
                 if(this.currentTeacher == null) {
                     this.returnToMain();
                     return;

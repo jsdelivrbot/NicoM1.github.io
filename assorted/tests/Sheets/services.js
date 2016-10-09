@@ -307,54 +307,62 @@
 
 		function updateTeacher(teacher, sheet, append) {
             var deffered = $q.defer();
-            getRealIndex(teacher.id).then(function(index) {
-                if(index == -1) {
-                    return deffered.reject('could not find index');
+            if(hasSheetsApi && spreadsheetId) {
+                var spreadsheets = gapi.client.sheets.spreadsheets;
+                if(!teacher) {
+                    return deffered.reject('missing teacher argument');
+                    return;
                 }
-                //index is 1-based here
-    			index += OFFSET+1;
-    			if(!teacher) {
-    				return deffered.reject('missing teacher argument');
-    				return;
-    			}
 
-    			var values = [];
-    			for(var i = 0; i < POSITIONS.length; i++) {
-    				if(teacher[POSITIONS[i]] != MISSING) {
-    					values[i] = teacher[POSITIONS[i]];
-    				}
-    			}
+                var values = [];
+                for(var i = 0; i < POSITIONS.length; i++) {
+                    if(teacher[POSITIONS[i]] != MISSING) {
+                        values[i] = teacher[POSITIONS[i]];
+                    }
+                }
+                if(!append) {
+                    getRealIndex(teacher.id).then(function(index) {
+                        if(index == -1) {
+                            return deffered.reject('could not find index');
+                        }
+                        //index is 1-based here
+            			index += OFFSET+1;
 
-				var spreadsheets = gapi.client.sheets.spreadsheets;
-				if(!append) {
-					spreadsheets.values.update({
-						spreadsheetId: spreadsheetId,
-						range: sheet + '!A'+index+':'+ALPHABET[POSITIONS.length-1]+index,
-						values: [values],
-						valueInputOption: 'RAW'
-					}).then(function(response) {
-						deffered.resolve(response);
-					}, function(error) {
-						deffered.reject(error);
-					});
-				}
-				else {
-					spreadsheets.values.append({
-						spreadsheetId: spreadsheetId,
-						range: sheet+'!A1',
-						values: [values],
-						valueInputOption: 'RAW',
-						insertDataOption: 'INSERT_ROWS'
-					}).then(function(response) {
-						console.log(response);
-						deffered.resolve(response);
-					}, function(error) {
-						deffered.reject(error);
-					});
-    			}
-            }, function(e) {
-                deffered.reject(e);
-            })
+        				if(!append) {
+        					spreadsheets.values.update({
+        						spreadsheetId: spreadsheetId,
+        						range: sheet + '!A'+index+':'+ALPHABET[POSITIONS.length-1]+index,
+        						values: [values],
+        						valueInputOption: 'RAW'
+        					}).then(function(response) {
+        						deffered.resolve(response);
+        					}, function(error) {
+        						deffered.reject(error);
+        					});
+        				}
+                    }, function(e) {
+                        deffered.reject(e);
+                    });
+                }
+                else {
+                    spreadsheets.values.append({
+                        spreadsheetId: spreadsheetId,
+                        range: sheet+'!A1',
+                        values: [values],
+                        valueInputOption: 'RAW',
+                        insertDataOption: 'INSERT_ROWS'
+                    }).then(function(response) {
+                        console.log(response);
+                        deffered.resolve(response);
+                    }, function(error) {
+                        deffered.reject(error);
+                    });
+                }
+            }
+            else {
+                deffered.reject('missing sheets api or spreadsheetid');
+            }
+
 			return deffered.promise;
 		}
 
@@ -473,6 +481,7 @@
             getOrdered: getOrdered,
             getOrder: getOrder,
             getRealIndex: getRealIndex,
+            generateID: generateID,
             SHEET: SHEET
 		};
 	})
