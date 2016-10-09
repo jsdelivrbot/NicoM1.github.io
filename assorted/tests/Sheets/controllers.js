@@ -31,20 +31,15 @@
 		this.signOut = googleAuth.signOut;
 		this.pickSheet = googleAuth.pickSheet;
 	})
-	.controller('details', function($scope, $filter, $routeParams, $location, googleAuth) {
+	.controller('details', function($scope, $filter, $routeParams, $route, $location, googleAuth) {
 		(function createScope() {
+			console.log('refresh');
 			this.teacherId = $routeParams.teacherId;
 			this.editingTeacher = {};
 			this.data = {};
 			this.data.searchCriteria = $routeParams.searchCriteria;
-			this.data.listType = $routeParams.listType;
 			if(!this.data.searchCriteria) {
 				this.currentTeacher = googleAuth.getTeacher(this.teacherId);
-			}
-			else if(this.data.listType) {
-				if(this.data.listType == 'facebook') {
-
-				}
 			}
 			else {
 				this.startCriteria = this.data.searchCriteria;
@@ -84,6 +79,7 @@
 		$scope.$watch(function() {return this.data.searchCriteria}.bind(this), function() {
 			if(this.data.searchCriteria != this.startCriteria) {
 				this.teacherId = 0;
+				this.startCriteria = this.data.searchCriteria;
 				reset.call(this);
 			}
 		}.bind(this));
@@ -109,9 +105,6 @@
 			if(this.data.searchCriteria) {
 				$location.path('/details/search/'+this.data.searchCriteria+'/'+Number(this.recordNumber+1));
 			}
-			else if(this.data.listType) {
-				$location.path('/details/list/'+this.data.listType+'/'+Number(this.recordNumber+1));
-			}
 			else {
 				$location.path('/details/'+this.teachers[this.recordNumber+1].id);
 			}
@@ -120,9 +113,6 @@
             var path = null;
 			if(this.data.searchCriteria) {
 				path = $location.path('/details/search/'+this.data.searchCriteria+'/'+Number(this.recordNumber-1));
-			}
-			else if(this.data.listType) {
-				path = $location.path('/details/list/'+this.data.listType+'/'+Number(this.recordNumber-1));
 			}
 			else {
 				path = $location.path('/details/'+this.teachers[this.recordNumber-1].id);
@@ -139,11 +129,15 @@
 		function reset() {
 			console.log('reset');
 			this.teachers = googleAuth.getTeachers();
+			this.foundSearch = true;
 			if(this.teachers.length > 0) {
 				if(this.data.searchCriteria) {
 					this.teachers = googleAuth.getOrdered($filter('teachersearch')(this.teachers, this.data.searchCriteria));
 	                if(this.teachers.length == 0) {
-	                    this.returnToMain();
+	                    this.teachers = googleAuth.getTeachers();
+						this.teacherId = this.teachers[0].id;
+						this.currentTeacher = this.teachers[this.teacherId];
+						this.foundSearch = false;
 	                    return;
 	                }
 	                if(this.teacherId >= this.teachers.length) {
@@ -151,24 +145,18 @@
 	                }
 					this.currentTeacher = this.teachers[this.teacherId];
 				}
-				else if(this.data.listType) {
-					if(this.data.listType == 'facebook') {
-						this.teachers = googleAuth.getTeachers();
-						var final = [];
-						for(var i = 0; i < this.teachers.length; i++) {
-							var current = this.teachers[i];
-							if(current.facebook) {
-								final.push(current);
-							}
-						}
-						this.teachers = final;
-						this.currentTeacher = this.teachers[this.teacherId];
-					}
-				}
 				else {
 					this.currentTeacher = googleAuth.getTeacher(this.teacherId);
 	                if(this.currentTeacher == null) {
-	                    this.returnToMain();
+						console.log('null');
+						if(googleAuth.getTeachers().length > 0) {
+							console.log(googleAuth.getTeachers()[0].id);
+							$location.path('/details/'+googleAuth.getTeachers()[0].id);
+							$route.reload();
+						}
+						else {
+							this.returnToMain();
+						}
 	                    return;
 	                }
 				}

@@ -496,10 +496,7 @@
 				for(var key in teacher) {
 					if(key.toLowerCase().includes(search) && key.trim().length == search.trim().length) {
 						if(teacher[key]) {
-							console.log(key);
 							out.push(teacher);
-							console.log(teacher);
-							console.log(teacher[key]);
 							break;
 						}
 					}

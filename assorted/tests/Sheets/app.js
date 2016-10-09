@@ -20,10 +20,6 @@
 				templateUrl: 'details.html',
 				controller: 'details as details'
 			})
-			.when('/details/list/:listType/:teacherId', {
-				templateUrl: 'details.html',
-				controller: 'details as details'
-			})
 			.otherwise({
 				template: '404, page not found'
 			})
