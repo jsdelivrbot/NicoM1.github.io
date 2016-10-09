@@ -50,6 +50,7 @@
 			if(!googleAuth.compareTeachers(this.editingTeacher, this.currentTeacher)) {
 				this.editingTeacher.lastUpdated = new Date();
 				googleAuth.updateTeacher(this.editingTeacher, googleAuth.SHEET).then(function(d) {
+					this.editingTeacher = {};
 					googleAuth.copyTeacher(this.editingTeacher, this.currentTeacher);
 					console.log(d);
 					alert('updated successfully');
@@ -88,6 +89,7 @@
 		}.bind(this));
 
 		this.changed = function() {
+			console.log(this.currentTeacher, this.editingTeacher, !googleAuth.compareTeachers(this.editingTeacher, this.currentTeacher))
 			return this.currentTeacher != null && !googleAuth.compareTeachers(this.editingTeacher, this.currentTeacher);
 		}
 
@@ -152,15 +154,13 @@
 				if(this.data.searchCriteria) {
 					this.teachers = googleAuth.getOrdered($filter('teachersearch')(this.teachers, this.data.searchCriteria));
 	                if(this.teachers.length == 0) {
-						this.currentTeacher = null;
+						this.teacherId = -1;
 						this.foundSearch = false;
-						this.recordNumberTotal = this.teachers.length;
-	                    return;
 	                }
-	                if(this.teacherId >= this.teachers.length) {
+	                else if(this.teacherId >= this.teachers.length) {
 	                    this.teacherId = this.teachers.length - 1;
 	                }
-					this.currentTeacher = this.teachers[this.teacherId];
+					this.currentTeacher = this.teacherId != -1 ? this.teachers[this.teacherId] : null;
 				}
 				else {
 					this.currentTeacher = googleAuth.getTeacher(this.teacherId);
@@ -178,20 +178,12 @@
 	                }
 				}
 
+				this.editingTeacher = {};
 				googleAuth.copyTeacher(this.currentTeacher, this.editingTeacher);
 
 				this.recordNumberTotal = this.teachers.length;
 				if(this.currentTeacher) {
 					this.recordNumber = this.teachers.indexOf(this.currentTeacher);
-					if(this.currentTeacher.newID) {
-						googleAuth.updateTeacher(this.currentTeacher, googleAuth.SHEET).then(function(d) {
-							console.log('saved teacher id to database');
-							this.currentTeacher.newID = false;
-							this.editingTeacher.newID = false;
-						}.bind(this), function(e) {
-							console.log(e);
-						});
-					}
 				}
 			}
 		}

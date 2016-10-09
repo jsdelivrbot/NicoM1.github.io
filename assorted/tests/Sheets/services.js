@@ -36,7 +36,7 @@
 			'academics'
 		];
 
-		var checkboxes = ['academics', 'aceIt', 'facebook', 'retired', 'leave', 'psa', 'representative', 'executive'];
+		var checkboxes = ['academics', 'aceIt', 'facebook', 'retired', 'leave', 'psa', 'representative', 'executive', 'conference2015', 'conference2016'];
 
 		var hasSheetsApi = false;
 		var hasPickerApi = false;
@@ -223,13 +223,13 @@
                 return new Date(Date.parse(date));
             }
 
-			if(parsed.lastUpdated) {
+			if(parsed.lastUpdated != MISSING) {
 				parsed.lastUpdated = parseDate(parsed.lastUpdated);
 			}
-			if(parsed.retiredYear) {
+			if(parsed.retiredYear != MISSING) {
 				parsed.retiredYear = parseDate(parsed.retiredYear);
 			}
-			if(parsed.leaveYear) {
+			if(parsed.leaveYear != MISSING) {
 				parsed.leaveYear = parseDate(parsed.leaveYear);
 			}
 
@@ -250,10 +250,10 @@
 
 			parsed.fullName = parsed.firstName + ' ' + parsed.lastName;
 
-			if(parsed.conference2016) {
+			if(parsed.conference2016 != MISSING) {
 				parsed.lastConference = new Date(2016, 0, 1);
 			}
-			else if(parsed.conference2015) {
+			else if(parsed.conference2015 != MISSING) {
 				parsed.lastConference = new Date(2015, 0, 1);
 			}
 
