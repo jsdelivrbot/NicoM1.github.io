@@ -250,10 +250,10 @@
 
 			parsed.fullName = parsed.firstName + ' ' + parsed.lastName;
 
-			if(parsed.conference2016 != MISSING) {
+			if(parsed.conference2016 != false) {
 				parsed.lastConference = new Date(2016, 0, 1);
 			}
-			else if(parsed.conference2015 != MISSING) {
+			else if(parsed.conference2015 != false) {
 				parsed.lastConference = new Date(2015, 0, 1);
 			}
 
