@@ -32,8 +32,11 @@
 			'retiredYear',
 			'leave',
 			'leaveYear',
-			'lastUpdated'
+			'lastUpdated',
+			'academics'
 		];
+
+		var checkboxes = ['academics', 'aceIt', 'facebook', 'retired', 'leave', 'psa', 'representative', 'executive'];
 
 		var hasSheetsApi = false;
 		var hasPickerApi = false;
@@ -236,8 +239,6 @@
                     teacher[checkboxes[c]] = current != 'FALSE' && current != '' && current != null && current != MISSING;
                 }
             }
-
-			var checkboxes = ['aceIt', 'facebook', 'retired', 'leave', 'psa', 'representative', 'executive'];
 
             parseCheckboxes(checkboxes, parsed);
 
