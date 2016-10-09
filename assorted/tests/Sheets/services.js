@@ -1,6 +1,6 @@
 ;(function(window) {
     angular.module('sheets')
-    .factory('googleAuth', function($q, $rootScope) {
+    .factory('googleAuth', function($q, $rootScope, $filter) {
 		var CLIENT_ID = '977588012097-tp6j1qv1ipm7s9c0582dprb157lp13p0.apps.googleusercontent.com';
 		var API_KEY = 'AIzaSyCdKBQGd4QfCTFFqQ1Lh9FNDwO0mT1QY1c';
 		var SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.readonly'].join(' ');
@@ -320,6 +320,7 @@
                         updateTeachers();
 						deffered.resolve(response);
 					}, function(error) {
+                        updateTeachers();
 						deffered.reject(error);
 					});
 				}
@@ -341,8 +342,6 @@
         function removeTeacher(teacher) {
             var index = teachers.indexOf(teacher);
             if(index != -1) {
-                teachers.splice(index, 1);
-                $rootScope.$broadcast('updated-teachers');
                 return updateTeacher(teacher, SHEET_REMOVED, true).then(function(d) {
                     removeTeacherFromSheet(teacher);
                 }, function(e) {
@@ -368,7 +367,9 @@
 					}]
 				}).then(function(d) {
 					console.log(d);
+                    updateTeachers();
 				}, function(e) {
+                    updateTeachers();
 					console.log(e);
 				});
 			}

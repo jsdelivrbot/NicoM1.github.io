@@ -63,21 +63,6 @@
 			if(confirmed) {
 				googleAuth.removeTeacher(this.currentTeacher).then(function(d) {
 					alert('Member Removed');
-					if(this.data.listType != null) {
-						//TODO
-						$location.path('/details/list/'+this.data.listType+'/'+Number(this.teacherId-1)).replace();
-					}
-					else if(this.data.searchCriteria) {
-                        if(this.teachers.length == 0){
-    						this.returnToMain();
-    					}
-    					else if(this.teacherId > this.teachers.length-1) {
-    						previousRecord(true);
-    					}
-					}
-                    else {
-                        this.returnToMain();
-                    }
 				}.bind(this),function(e) {
 					alert('ERROR: see console');
 					console.log(e);
@@ -148,6 +133,13 @@
 			this.teachers = googleAuth.getTeachers();
 			if(this.data.searchCriteria) {
 				this.teachers = googleAuth.getOrdered($filter('filter')(this.teachers, this.data.searchCriteria));
+                if(this.teachers.length == 0) {
+                    this.returnToMain();
+                    return;
+                }
+                if(this.teacherId >= this.teachers.length) {
+                    this.teacherId = this.teachers.length - 1;
+                }
 				this.currentTeacher = this.teachers[this.teacherId];
 			}
 			else if(this.data.listType) {
