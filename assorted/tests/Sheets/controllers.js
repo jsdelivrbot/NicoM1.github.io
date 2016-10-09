@@ -158,6 +158,10 @@
 			}
 			else {
 				this.currentTeacher = googleAuth.getTeacher(this.teacherId);
+                if(this.currentTeacher == null) {
+                    this.returnToMain();
+                    return;
+                }
 			}
 
 			googleAuth.copyTeacher(this.currentTeacher, this.editingTeacher);

@@ -268,7 +268,7 @@
 		}
 
 		function getTeacherIndex(id) {
-			var index = 0;
+			var index = -1;
 			for(var i = 0; i < teachers.length; i++) {
 				if(teachers[i].id == id) {
 					index = i;
