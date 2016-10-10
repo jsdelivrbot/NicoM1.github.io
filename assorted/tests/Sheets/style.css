@@ -122,6 +122,7 @@ textarea {
 .name {
 	text-align: center;
 	font-weight: bold;
+	font-size: 125%;
 }
 
 .namelink {

@@ -8,11 +8,14 @@
 	<div ng-click="details.switchTo()" class="name" ng-class="{namelink: details.data.searchCriteria}">
 		{{details.currentTeacher.firstName}} {{details.currentTeacher.lastName}}
 	</div>
+	<div style="text-align: center">
+		<a href="mailto:{{details.currentTeacher.email}}">{{details.currentTeacher.email}}</a>
+	</div>
 	<div class="nav bottom">
-		<input type="button" value="Previous" class="btn" ng-click="details.previousRecord()" ng-show="details.recordNumber > 0 && details.recordNumberTotal > 0"/>
+		<input type="button" value="Previous" class="btn btn-info" ng-click="details.previousRecord()" ng-show="details.recordNumber > 0 && details.recordNumberTotal > 0"/>
 		<span ng-if="details.recordNumberTotal > 0">Record Number {{details.recordNumber+1}} of {{details.recordNumberTotal}}</span>
 		<span ng-if="!details.foundSearch">No Matching Records</span>
-		<input type="button" value="Next" class="btn" ng-click="details.nextRecord()" ng-show="details.recordNumber < details.recordNumberTotal - 1 && details.recordNumberTotal > 0"/>
+		<input type="button" value="Next" class="btn btn-info" ng-click="details.nextRecord()" ng-show="details.recordNumber < details.recordNumberTotal - 1 && details.recordNumberTotal > 0"/>
 	</div>
 	<div class="maininfo" ng-if="details.recordNumberTotal > 0">
 		<div class="info primary">
@@ -34,42 +37,45 @@
 			<label>Courses Taught <textarea ng-model="details.editingTeacher.courses"></textarea></label>
 		</div>
 		<div class="info primary">
-			<label>ACE-It  <input type="checkbox" ng-model="details.editingTeacher.aceIt" /></label>
+			<label>ACE-It <input type="checkbox" ng-model="details.editingTeacher.aceIt" /></label>
 		</div>
 		<div class="info primary">
-			<label>Teaching Academics  <input type="checkbox" ng-model="details.editingTeacher.academics" /></label>
+			<label>Teaching Academics <input type="checkbox" ng-model="details.editingTeacher.academics" /></label>
+		</div>
+		<div class="info primary">
+			<label>Makerspace <input type="checkbox" ng-model="details.editingTeacher.maker" /></label>
 		</div>
 	</div>
 	<div class="secondaryinfo" ng-if="details.recordNumberTotal > 0">
 		<div class="info secondary">
-			<label>Facebook  <input type="checkbox" ng-model="details.editingTeacher.facebook" /></label>
+			<label>Facebook <input type="checkbox" ng-model="details.editingTeacher.facebook" /></label>
 		</div>
 		<div class="info secondary">
-			<label>Facebook Alias  <input type="text" ng-model="details.editingTeacher.facebookAlias" /></label>
+			<label>Facebook Alias <input type="text" ng-model="details.editingTeacher.facebookAlias" /></label>
 		</div>
 		<div class="info secondary">
-			<label>PSA Member  <input type="checkbox" ng-model="details.editingTeacher.psa" /></label>
+			<label>PSA Member <input type="checkbox" ng-model="details.editingTeacher.psa" /></label>
 		</div>
 		<div class="info secondary">
-			<label>Personal Email  <input type="email" ng-model="details.editingTeacher.emailSecondary" /></label>
+			<label>Personal Email <input type="email" ng-model="details.editingTeacher.emailSecondary" /></label>
 		</div>
 	</div>
 	<div class="tertiaryinfo" ng-if="details.recordNumberTotal > 0">
 		<div class="info tertiary">
-			<label>District Contact/Rep/LSA President  <input type="checkbox" ng-model="details.editingTeacher.representative" /></label>
+			<label>LSA/Dist Rep/Pres <input type="checkbox" ng-model="details.editingTeacher.representative" /></label>
 		</div>
 		<div class="info tertiary">
-			<label>BCTEA Exec  <input type="checkbox" ng-model="details.editingTeacher.executive" /></label>
+			<label>BCTEA Exec <input type="checkbox" ng-model="details.editingTeacher.executive" /></label>
 		</div>
 		<div class="info tertiary">
-			<label>Last Conference Attended  <input type="date" ng-model="details.editingTeacher.lastConference" /></label>
+			<label>Last Conference Attended <input type="date" ng-model="details.editingTeacher.lastConference" /></label>
 		</div>
 		<div class="info tertiary inline">
-			<label class="datebox">Retired  <input type="checkbox" ng-model="details.editingTeacher.retired" /></label>
+			<label class="datebox">Retired <input type="checkbox" ng-model="details.editingTeacher.retired" /></label>
 			<input class="datebox" type="date" ng-model="details.editingTeacher.retiredYear" />
 		</div>
-		<div class="info tertiary inline">
-			<label class="datebox">On Leave  <input type="checkbox" ng-model="details.editingTeacher.leave" /></label>
+		<div class="info tertiary inline" ng-if="details.showOnLeave">
+			<label class="datebox">On Leave <input type="checkbox" ng-model="details.editingTeacher.leave" /></label>
 			<input class="datebox" type="date" ng-model="details.editingTeacher.leaveYear" />
 		</div>
 		<div class="info tertiary">
@@ -80,11 +86,11 @@
 		</div>
 	</div>
 	<div class="maintinence" ng-if="details.recordNumberTotal > 0">
-		<button ng-click="details.updateTeacher()" class="btn" ng-class="{'btn-success': details.changed()}">Update</button>
+		<button ng-click="details.updateTeacher()" class="btn btn-success" ng-disabled="!details.changed()">Update</button>
 		<button ng-click="details.promptRemoveTeacher()" class="btn btn-danger">Remove Member</button>
 		<button ng-click="details.addTeacher()" class="btn btn-primary">Add Member</button>
 	</div>
-	<div class = "returndiv">
-		<button class="btn btn-secondary return" ng-click="details.returnToMain()">Return</button>
+	<div class="returndiv">
+		<button class="btn btn-info return" ng-click="details.returnToMain()">Return</button>
 	</div>
 </div>

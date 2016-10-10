@@ -51,6 +51,7 @@
 		this.pickSheet = googleAuth.pickSheet;
 	})
 	.controller('details', function($scope, $filter, $routeParams, $route, $location, googleAuth) {
+		this.showOnLeave = false;
 		(function createScope() {
 			this.teacherId = $routeParams.teacherId;
 			this.editingTeacher = {};

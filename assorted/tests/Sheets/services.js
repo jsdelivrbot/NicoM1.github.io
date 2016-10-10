@@ -34,7 +34,8 @@
 			'leave',
 			'leaveYear',
 			'lastUpdated',
-			'academics'
+			'academics',
+			'maker'
 		];
 
 		var checkboxes = ['academics', 'aceIt', 'facebook', 'retired', 'leave', 'psa', 'representative', 'executive', 'conference2015', 'conference2016'];
@@ -521,15 +522,47 @@
 			for(var t = 0; t < teachers.length; t++) {
 				var teacher = teachers[t];
 				for(var key in teacher) {
-					if(key.toLowerCase().includes(search.toLowerCase()) && key.trim().length == search.trim().length) {
-						if(teacher[key]) {
-							out.push(teacher);
-							break;
+					if(search.indexOf(':') != -1) {
+						var parts = search.split(':');
+						var value = teacher[parts[0].trim()];
+						var searchPiece = parts[1].trim().toLowerCase();
+						if(value != null && searchPiece.length > 0) {
+							if(typeof value == 'string' && value.includes(searchPiece)) {
+								out.push(teacher);
+								break;
+							}
+							else if(typeof value == 'boolean' && value==(searchPiece==='true')) {
+								out.push(teacher);
+								break;
+							}
+							else if (Object.prototype.toString.call(value) === '[object Date]') {
+								if(value.toString().toLowerCase().includes(searchPiece)) {
+									out.push(teacher);
+									break;
+								}
+							}
 						}
 					}
-					else if(key != 'id' && teacher[key] != null && typeof teacher[key] == 'string' && teacher[key].toLowerCase().includes(search.toLowerCase())) {
-						out.push(teacher);
-						break;
+					else {
+						if(key.toLowerCase().includes(search.toLowerCase()) && key.trim().length == search.trim().length) {
+							if(teacher[key]) {
+								out.push(teacher);
+								break;
+							}
+						}
+						else if(key != 'id' && teacher[key] != null) {
+							var value = teacher[key];
+							if(typeof value == 'string' && value.toLowerCase().includes(search.toLowerCase())) {
+								out.push(teacher);
+								break;
+							}
+							else if (Object.prototype.toString.call(value) === '[object Date]') {
+								if(value.toString().toLowerCase().includes(search.toLowerCase())) {
+									out.push(teacher);
+									break;
+								}
+							}
+						}
 					}
 				}
 			}
