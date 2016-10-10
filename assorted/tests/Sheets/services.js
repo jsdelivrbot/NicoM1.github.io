@@ -239,6 +239,7 @@
 			}
 			if(parsed.psaExpires != MISSING) {
 				parsed.psaExpires = parseDate(parsed.psaExpires);
+				parsed.expired = parsed.psaExpires < new Date();
 			}
 
             function parseCheckboxes(checkboxes, teacher) {
