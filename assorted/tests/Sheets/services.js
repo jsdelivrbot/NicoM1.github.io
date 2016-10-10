@@ -494,13 +494,13 @@
 			for(var t = 0; t < teachers.length; t++) {
 				var teacher = teachers[t];
 				for(var key in teacher) {
-					if(key.toLowerCase().includes(search) && key.trim().length == search.trim().length) {
+					if(key.toLowerCase().includes(search.toLowerCase()) && key.trim().length == search.trim().length) {
 						if(teacher[key]) {
 							out.push(teacher);
 							break;
 						}
 					}
-					else if(key != 'id' && teacher[key] != null && typeof teacher[key] == 'string' && teacher[key].toLowerCase().includes(search)) {
+					else if(key != 'id' && teacher[key] != null && typeof teacher[key] == 'string' && teacher[key].toLowerCase().includes(search.toLowerCase())) {
 						out.push(teacher);
 						break;
 					}
