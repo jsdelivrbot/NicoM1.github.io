@@ -478,7 +478,7 @@
 				for(var ii = 0; ii < POSITIONS.length; ii++) {
 					var value = teacher[POSITIONS[ii]];
 					if(value != MISSING && value != null) {
-						csv += '"' + String(value) + '"';
+						csv += '"' + String(value).replace('"', '"""') + '"';
 					}
 					if(ii < POSITIONS.length - 1) {
 						csv += ',';

@@ -32,7 +32,17 @@
 		this.makeCSV = function() {
 			var orderedTeachers = googleAuth.getOrdered($filter('teachersearch')(this.teachers, this.search));
 			this.csv = googleAuth.makeCSV(orderedTeachers);
-			console.log(this.csv);
+			var data = new Blob([this.csv], {type: 'text/plain'});
+
+			// If we are replacing a previously generated file we need to
+			// manually revoke the object URL to avoid memory leaks.
+			if (this.csvObject !== null) {
+				window.URL.revokeObjectURL(this.csvObject);
+			}
+
+			this.csvObject = window.URL.createObjectURL(data);
+			console.log(this.csvObject);
+			console.log(data);
 		}
 
 		this.updateSearchPath = function() {

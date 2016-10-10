@@ -10,8 +10,8 @@
 		<button ng-click="sheets.signOut()" ng-if="sheets.teachers.length > 0" class="btn btn-danger mainbtn">Sign Out.</button>
 		<button ng-click="sheets.addTeacher()" class="btn btn-primary mainbtn">Add Member</button>
 		<button ng-click="sheets.makeCSV()" class="btn btn-info" ng-show="sheets.csv == null">Make CSV From Search</button>
+		<a download="csvexport.csv" href="{{sheets.csvObject}}" class="btn btn-info" ng-show="sheets.csv != null">Download CSV</a>
 		<button ng-click="sheets.csv = null" class="btn btn-info" ng-show="sheets.csv != null">Hide CSV</button>
-		<textarea class="idlist" ng-show="sheets.csv != null">{{sheets.csv}}</textarea>
 		<div style="margin-top: 10px">
 			<input type="text" ng-model="sheets.search" ng-if="sheets.teachers.length > 0" ng-blur="sheets.updateSearchPath()" placeholder="search" class="mainsearch"/>
 			<select ng-model="sortBy" ng-change="sheets.orderBy(sortBy)">
