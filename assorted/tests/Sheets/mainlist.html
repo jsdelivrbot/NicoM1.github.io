@@ -21,6 +21,9 @@
 				<option value="lastName">
 					Last Name
 				</option>
+				<option value="school">
+					school
+				</option>
 				<option value="district">
 					District
 				</option>
@@ -35,11 +38,11 @@
 			<td ng-click="sheets.selectTeacher(teacher, $index)">
 				{{teacher.lastName}}
 			</td>
-			<td ng-click="sheets.selectTeacher(teacher, $index)">
-				{{teacher.district}}
+			<td class="finalrow" ng-click="sheets.selectTeacher(teacher, $index)">
+				{{teacher.school}}
 			</td>
-			<td class="finalrow">
-				<a href="mailto:{{teacher.email}}">{{teacher.email}}</a>
+			<td class="finalrow" ng-click="sheets.selectTeacher(teacher, $index)">
+				{{teacher.district}}
 			</td>
 		</tr>
 	</table>

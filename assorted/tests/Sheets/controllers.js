@@ -19,7 +19,7 @@
 		}
         this.addTeacher = function() {
             var teacher = googleAuth.addTeacher();
-            this.selectTeacher(teacher);
+			$location.path('/details/'+teacher.id);
         }
         this.generateIds = function() {
             var ids = ''

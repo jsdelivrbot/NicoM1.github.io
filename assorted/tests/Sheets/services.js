@@ -25,6 +25,7 @@
 			'conferences',
 			'comments',
 			'psa',
+			'psaExpires',
 			'representative',
 			'exectutive',
 			'retired',
@@ -235,6 +236,9 @@
 			}
 			if(parsed.startedTeaching != MISSING) {
 				parsed.startedTeaching = parseDate(parsed.startedTeaching);
+			}
+			if(parsed.psaExpires != MISSING) {
+				parsed.psaExpires = parseDate(parsed.psaExpires);
 			}
 
             function parseCheckboxes(checkboxes, teacher) {
@@ -531,7 +535,8 @@
 			left: 'leave',
 			firstname: 'firstName',
 			lastname: 'lastName',
-			emailsecondary: 'emailSecondary'
+			emailsecondary: 'emailSecondary',
+			psaexpires: 'psaExpires'
 		};
 		return function(teachers, search) {var out = [];
 			if(search == null || search.trim().length == 0) {
