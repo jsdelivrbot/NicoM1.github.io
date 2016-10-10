@@ -31,7 +31,8 @@
 
 		this.makeCSV = function() {
 			var orderedTeachers = googleAuth.getOrdered($filter('teachersearch')(this.teachers, this.search));
-			googleAuth.makeCSV(orderedTeachers);
+			this.csv = googleAuth.makeCSV(orderedTeachers);
+			console.log(this.csv);
 		}
 
 		this.updateSearchPath = function() {

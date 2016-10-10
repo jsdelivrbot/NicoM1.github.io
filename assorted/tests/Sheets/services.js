@@ -478,6 +478,7 @@
 				csv += '\n';
 			}
 			console.log(csv);
+			return csv;
 		}
 
 		return {
