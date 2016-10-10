@@ -47,11 +47,11 @@
 	<div class="secondaryinfo" ng-if="details.recordNumberTotal > 0">
 		<div class="info secondary">
 			<label style="display: inline">Facebook <input type="checkbox" ng-model="details.editingTeacher.facebook" /></label>
-			<label style="display: inline; float:right; width: auto">Alias <input style="display: inline-block; float:none" type="text" ng-model="details.editingTeacher.facebookAlias"/></label>
+			<label class="splitline">Alias <input style="display: inline-block; float:none" type="text" ng-model="details.editingTeacher.facebookAlias"/></label>
 		</div>
 		<div class="info secondary">
 			<label style="display: inline">PSA Member <input type="checkbox" ng-model="details.editingTeacher.psa" /></label>
-			<label style="display: inline-block; float: right; width: auto">Membership Expires <input style="display: inline-block; float: none" type="date" ng-model="details.editingTeacher.psaExpires" ng-class="{invalid: details.editingTeacher.expired}"/></label>
+			<label class="splitline">Membership Expires <input style="display: inline-block; float: none" type="date" ng-model="details.editingTeacher.psaExpires" ng-class="{invalid: details.editingTeacher.expired}"/></label>
 		</div>
 		<div class="info secondary">
 			<label>Personal Email <input type="email" ng-model="details.editingTeacher.emailSecondary" /></label>
