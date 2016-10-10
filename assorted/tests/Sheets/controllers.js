@@ -33,7 +33,6 @@
 	})
 	.controller('details', function($scope, $filter, $routeParams, $route, $location, googleAuth) {
 		(function createScope() {
-			console.log('refresh');
 			this.teacherId = $routeParams.teacherId;
 			this.editingTeacher = {};
 			this.data = {};
@@ -91,7 +90,6 @@
 		}.bind(this));
 
 		this.changed = function() {
-			console.log(this.currentTeacher, this.editingTeacher, !googleAuth.compareTeachers(this.editingTeacher, this.currentTeacher))
 			return this.currentTeacher != null && !googleAuth.compareTeachers(this.editingTeacher, this.currentTeacher);
 		}
 
@@ -149,7 +147,6 @@
 		}
 
 		function reset() {
-			console.log('reset');
 			this.teachers = googleAuth.getTeachers();
 			this.foundSearch = true;
 			if(this.teachers.length > 0) {
