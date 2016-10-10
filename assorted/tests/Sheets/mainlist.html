@@ -9,7 +9,7 @@
 		<button ng-click="sheets.pickSheet()" ng-if="true" class="btn btn-success mainbtn">Change Sheet.</button>
 		<button ng-click="sheets.signOut()" ng-if="sheets.teachers.length > 0" class="btn btn-danger mainbtn">Sign Out.</button>
 		<button ng-click="sheets.addTeacher()" class="btn btn-primary mainbtn">Add Member</button>
-		<button ng-click="sheets.makeCSV()" class="btn btn-info" ng-show="sheets.csv == null">Make CSV From Search</button>
+		<button ng-click="sheets.makeCSV()" class="btn btn-info" ng-show="sheets.csv == null">Export Search as CSV</button>
 		<a download="csvexport.csv" href="{{sheets.csvObject}}" class="btn btn-info" ng-show="sheets.csv != null">Download CSV</a>
 		<button ng-click="sheets.csv = null" class="btn btn-info" ng-show="sheets.csv != null">Hide CSV</button>
 		<a href='./#/help' class="btn btn-info">Search Help</a>
@@ -23,7 +23,7 @@
 					Last Name
 				</option>
 				<option value="school">
-					school
+					School
 				</option>
 				<option value="district">
 					District

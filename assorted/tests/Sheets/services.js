@@ -5,8 +5,8 @@
 		var CLIENT_ID = '977588012097-tp6j1qv1ipm7s9c0582dprb157lp13p0.apps.googleusercontent.com';
 		var API_KEY = 'AIzaSyCdKBQGd4QfCTFFqQ1Lh9FNDwO0mT1QY1c';
 		var SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.readonly'].join(' ');
-		var SHEET = 'Main database';
-		var SHEET_REMOVED = 'Removed Teachers';
+		var SHEET = '[MAIN]';
+		var SHEET_REMOVED = '[REMOVED]';
 		var OFFSET = 1;
 		var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         var MISSING = '[missing]';
