@@ -107,7 +107,7 @@ textarea {
 	border-color: #FF0000 !important;
 }
 
-.info {
+.infomain {
 	cursor: pointer;
 }
 
@@ -148,6 +148,7 @@ td {
 
 .info {
 	margin: 5px 0px;
+	padding: 5px;
 }
 
 .datebox {

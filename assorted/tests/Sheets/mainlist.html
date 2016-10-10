@@ -31,7 +31,7 @@
 		</div>
 	</div>
 	<table>
-		<tr ng-repeat="teacher in sheets.teachers | teachersearch:sheets.search | orderBy:sheets.getOrder() track by $index" class="info">
+		<tr ng-repeat="teacher in sheets.teachers | teachersearch:sheets.search | orderBy:sheets.getOrder() track by $index" class="infomain">
 			<td ng-click="sheets.selectTeacher(teacher, $index)">
 				{{teacher.firstName}}
 			</td>
