@@ -82,6 +82,7 @@
 	<div class="maintinence" ng-if="details.recordNumberTotal > 0">
 		<button ng-click="details.updateTeacher()" class="btn" ng-class="{'btn-success': details.changed()}">Update</button>
 		<button ng-click="details.promptRemoveTeacher()" class="btn btn-danger">Remove Member</button>
+		<button ng-click="details.makeCSV()" class="btn">Make CSV From Search</button>
 	</div>
 	<button class="btn btn-secondary return" ng-click="details.returnToMain()">Return</button>
 </div>

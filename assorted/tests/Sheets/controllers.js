@@ -88,6 +88,10 @@
 			}
 		}.bind(this));
 
+		this.makeCSV = function() {
+			googleAuth.makeCSV(this.teachers);
+		}
+
 		this.changed = function() {
 			return this.currentTeacher != null && !googleAuth.compareTeachers(this.editingTeacher, this.currentTeacher);
 		}

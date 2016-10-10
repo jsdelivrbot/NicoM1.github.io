@@ -458,6 +458,24 @@
             return listOrder;
         }
 
+		function makeCSV(teachers) {
+			var csv = '';
+			for(var i = 0; i < teachers.length; i++) {
+				var teacher = teachers[i];
+				for(var ii = 0; ii < POSITIONS.length; ii++) {
+					var value = teacher[POSITIONS[ii]];
+					if(value != MISSING && value != null) {
+						csv += String(value);
+					}
+					if(ii < POSITIONS.length - 1) {
+						csv += ',';
+					}
+				}
+				csv += '\n';
+			}
+			console.log(csv);
+		}
+
 		return {
 			init: initApi,
 			handleAuthClick: handleAuthClick,
@@ -486,6 +504,7 @@
             getOrder: getOrder,
             getRealIndex: getRealIndex,
             generateID: generateID,
+			makeCSV: makeCSV,
             SHEET: SHEET
 		};
 	})
