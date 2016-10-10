@@ -50,13 +50,15 @@
 			if(!googleAuth.compareTeachers(this.editingTeacher, this.currentTeacher)) {
 				this.editingTeacher.lastUpdated = new Date();
 				googleAuth.updateTeacher(this.editingTeacher, googleAuth.SHEET).then(function(d) {
-					this.editingTeacher = {};
+					for(var key in this.currentTeacher) {
+						this.currentTeacher[key] = null;
+					}
 					googleAuth.copyTeacher(this.editingTeacher, this.currentTeacher);
 					console.log(d);
 					alert('updated successfully');
 				}.bind(this), function(e) {
 					console.log(e);
-					alert('failed update: ' + e.body);
+					alert('failed update: ' + e);
 				});
 			}
 		}
