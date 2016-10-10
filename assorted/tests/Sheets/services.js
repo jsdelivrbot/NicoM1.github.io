@@ -389,7 +389,10 @@
                 console.log(e);
 				return $q.reject(e);
             }).then(function(d) {
-				teachers.splice(index, 1);
+				var index = teachers.indexOf(teacher);
+				if(index != -1) {
+					teachers.splice(index, 1);
+				}
 			});
         }
 

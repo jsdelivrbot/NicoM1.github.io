@@ -168,9 +168,7 @@
 				else {
 					this.currentTeacher = googleAuth.getTeacher(this.teacherId);
 	                if(this.currentTeacher == null) {
-						console.log('null');
 						if(googleAuth.getTeachers().length > 0) {
-							console.log(googleAuth.getTeachers()[0].id);
 							$location.path('/details/'+googleAuth.getTeachers()[0].id);
 							$route.reload();
 						}
