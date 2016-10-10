@@ -24,6 +24,9 @@ if (!String.prototype.includes) {
 				templateUrl: 'mainlist.html',
 				controller: 'sheets as sheets'
 			})
+			.when('/help', {
+				templateUrl: 'help.html'
+			})
 			.when('/search/:search', {
 				templateUrl: 'mainlist.html',
 				controller: 'sheets as sheets'
