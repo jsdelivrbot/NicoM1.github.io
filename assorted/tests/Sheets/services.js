@@ -551,10 +551,10 @@
 						if(keywords[parts[0]]) {
 							parts[0] = keywords[parts[0]];
 						}
-						var value = teacher[parts[0].trim()].toLowerCase();
+						var value = teacher[parts[0].trim()];
 						var searchPiece = parts[1].trim().toLowerCase();
 						if(value != null && searchPiece.length > 0) {
-							if(typeof value == 'string' && value.includes(searchPiece)) {
+							if(typeof value == 'string' && value.toLowerCase().includes(searchPiece)) {
 								out.push(teacher);
 								break;
 							}
