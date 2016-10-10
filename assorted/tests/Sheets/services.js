@@ -13,19 +13,17 @@
 
 		var POSITIONS = [
 			'district',
-			'aceIt',
-			'facebook',
-			'conferences',
-			'conference2016',
 			'firstName',
 			'lastName',
 			'school',
 			'email',
 			'courses',
 			'emailSecondary',
-			'id',
-			'comments',
+			'aceIt',
+			'facebook',
 			'facebookAlias',
+			'conferences',
+			'comments',
 			'psa',
 			'representative',
 			'exectutive',
@@ -33,10 +31,11 @@
 			'retiredYear',
 			'leave',
 			'leaveYear',
-			'lastUpdated',
 			'academics',
 			'maker',
-			'startedTeaching'
+			'startedTeaching',
+			'lastUpdated',
+			'id'
 		];
 
 		var checkboxes = ['academics', 'aceIt', 'facebook', 'retired', 'leave', 'psa', 'representative', 'executive', 'maker'];
@@ -519,6 +518,21 @@
 		};
 	})
 	.filter('teachersearch', function() {
+		var keywords = {
+			bctea: 'exectutive',
+			lsa: 'representative',
+			aceit: 'aceIt',
+			facebookalias: 'facebookAlias',
+			retiredyear: 'retiredYear',
+			leaveyear: 'leaveYear',
+			makerspace: 'maker',
+			startedteaching: 'startedTeaching',
+			lastupdated: 'lastUpdated',
+			left: 'leave',
+			firstname: 'firstName',
+			lastname: 'lastName',
+			emailsecondary: 'emailSecondary'
+		};
 		return function(teachers, search) {var out = [];
 			if(search == null || search.trim().length == 0) {
 				return teachers;
@@ -528,7 +542,10 @@
 				for(var key in teacher) {
 					if(search.indexOf(':') != -1) {
 						var parts = search.split(':');
-						var value = teacher[parts[0].trim()];
+						if(keywords[parts[0]]) {
+							parts[0] = keywords[parts[0]];
+						}
+						var value = teacher[parts[0].trim()].toLowerCase();
 						var searchPiece = parts[1].trim().toLowerCase();
 						if(value != null && searchPiece.length > 0) {
 							if(typeof value == 'string' && value.includes(searchPiece)) {
@@ -548,6 +565,9 @@
 						}
 					}
 					else {
+						if(keywords[search]) {
+							search = keywords[search];
+						}
 						if(key.toLowerCase().includes(search.toLowerCase()) && key.trim().length == search.trim().length) {
 							if(teacher[key]) {
 								out.push(teacher);

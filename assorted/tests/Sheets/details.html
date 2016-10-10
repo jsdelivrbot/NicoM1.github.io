@@ -1,5 +1,7 @@
-<img src="logo.jpg" width="100px" class="logo" ng-click="details.returnToMain()"/>
 <div class="details">
+	<div style="text-align: center">
+		<img src="logo.jpg" width="100px" class="logo" ng-click="details.returnToMain()"/>
+	</div>
 	<div class="topbar">
 		<div class="info topbar">
 			<label class="topbar">Search Criteria <input type="text" class="topbar" ng-class="{invalid: !details.foundSearch}" ng-blur="details.updateSearchPath()" ng-model="details.data.searchCriteria"</label>
