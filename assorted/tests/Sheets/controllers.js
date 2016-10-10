@@ -1,4 +1,5 @@
 ;(function(window) {
+	'use strict';
     angular.module('sheets')
     .controller('sheets', function($scope, $location, googleAuth) {
 		this.teachers = googleAuth.getTeachers();

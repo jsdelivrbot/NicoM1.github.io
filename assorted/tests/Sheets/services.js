@@ -1,4 +1,5 @@
 ;(function(window) {
+	'use strict';
     angular.module('sheets')
     .factory('googleAuth', function($q, $rootScope, $filter) {
 		var CLIENT_ID = '977588012097-tp6j1qv1ipm7s9c0582dprb157lp13p0.apps.googleusercontent.com';

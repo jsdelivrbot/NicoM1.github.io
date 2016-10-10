@@ -13,7 +13,7 @@ if (!String.prototype.includes) {
   };
 }
 ;(function(window) {
-	"use strict"
+	'use strict'
 	angular.module('sheets', ['ngRoute'])
 	.config(function($compileProvider, $routeProvider) {
 		$compileProvider.debugInfoEnabled = false;
