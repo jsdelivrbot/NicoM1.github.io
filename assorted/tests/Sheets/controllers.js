@@ -176,8 +176,11 @@
 		}
 
 		this.addTeacher = function() {
-            var teacher = googleAuth.addTeacher();
-            $location.path('/details/'+teacher.id);
+			var confirmed = !this.changed() || confirm('LEAVE WITHOUT UPDATING?');
+			if(confirmed) {
+            	var teacher = googleAuth.addTeacher();
+            	$location.path('/details/'+teacher.id);
+			}
         }
 
 		function reset() {

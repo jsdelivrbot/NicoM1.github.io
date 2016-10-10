@@ -15,7 +15,7 @@
 			'district',
 			'aceIt',
 			'facebook',
-			'conference2015',
+			'conferences',
 			'conference2016',
 			'firstName',
 			'lastName',
@@ -35,10 +35,11 @@
 			'leaveYear',
 			'lastUpdated',
 			'academics',
-			'maker'
+			'maker',
+			'startedTeaching'
 		];
 
-		var checkboxes = ['academics', 'aceIt', 'facebook', 'retired', 'leave', 'psa', 'representative', 'executive', 'conference2015', 'conference2016'];
+		var checkboxes = ['academics', 'aceIt', 'facebook', 'retired', 'leave', 'psa', 'representative', 'executive', 'maker'];
 
 		var hasSheetsApi = false;
 		var hasPickerApi = false;
@@ -233,6 +234,9 @@
 			if(parsed.leaveYear != MISSING) {
 				parsed.leaveYear = parseDate(parsed.leaveYear);
 			}
+			if(parsed.startedTeaching != MISSING) {
+				parsed.startedTeaching = parseDate(parsed.startedTeaching);
+			}
 
             function parseCheckboxes(checkboxes, teacher) {
                 for(var c = 0; c < checkboxes.length; c++) {
@@ -248,13 +252,6 @@
 			}
 
 			parsed.fullName = parsed.firstName + ' ' + parsed.lastName;
-
-			if(parsed.conference2016 != false) {
-				parsed.lastConference = new Date(2016, 0, 1);
-			}
-			else if(parsed.conference2015 != false) {
-				parsed.lastConference = new Date(2015, 0, 1);
-			}
 
 			return parsed;
 		}
@@ -465,12 +462,19 @@
 
 		function makeCSV(teachers) {
 			var csv = '';
+			for(var x = 0; x < POSITIONS.length; x++) {
+				csv += POSITIONS[x];
+				if(x < POSITIONS.length - 1) {
+					csv += ',';
+				}
+			}
+			csv += '\n';
 			for(var i = 0; i < teachers.length; i++) {
 				var teacher = teachers[i];
 				for(var ii = 0; ii < POSITIONS.length; ii++) {
 					var value = teacher[POSITIONS[ii]];
 					if(value != MISSING && value != null) {
-						csv += String(value);
+						csv += '"' + String(value) + '"';
 					}
 					if(ii < POSITIONS.length - 1) {
 						csv += ',';

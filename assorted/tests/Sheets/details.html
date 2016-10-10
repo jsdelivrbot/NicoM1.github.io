@@ -59,6 +59,9 @@
 		<div class="info secondary">
 			<label>Personal Email <input type="email" ng-model="details.editingTeacher.emailSecondary" /></label>
 		</div>
+		<div class="info secondary">
+			<label>Started Teaching <input type="date" ng-model="details.editingTeacher.startedTeaching" /></label>
+		</div>
 	</div>
 	<div class="tertiaryinfo" ng-if="details.recordNumberTotal > 0">
 		<div class="info tertiary">
@@ -68,7 +71,7 @@
 			<label>BCTEA Exec <input type="checkbox" ng-model="details.editingTeacher.executive" /></label>
 		</div>
 		<div class="info tertiary">
-			<label>Last Conference Attended <input type="date" ng-model="details.editingTeacher.lastConference" /></label>
+			<label>Conferences Attended <textarea ng-model="details.editingTeacher.conferences"></textarea></label>
 		</div>
 		<div class="info tertiary inline">
 			<label class="datebox">Retired <input type="checkbox" ng-model="details.editingTeacher.retired" /></label>
@@ -87,8 +90,8 @@
 	</div>
 	<div class="maintinence" ng-if="details.recordNumberTotal > 0">
 		<button ng-click="details.updateTeacher()" class="btn btn-success" ng-disabled="!details.changed()">Update</button>
-		<button ng-click="details.promptRemoveTeacher()" class="btn btn-danger">Remove Member</button>
 		<button ng-click="details.addTeacher()" class="btn btn-primary">Add Member</button>
+		<button ng-click="details.promptRemoveTeacher()" class="btn btn-danger">Remove Member</button>
 	</div>
 	<div class="returndiv">
 		<button class="btn btn-info return" ng-click="details.returnToMain()">Return</button>
