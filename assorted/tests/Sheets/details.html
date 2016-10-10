@@ -69,12 +69,12 @@
 			<label>Conferences Attended <textarea ng-model="details.editingTeacher.conferences"></textarea></label>
 		</div>
 		<div class="info tertiary inline">
-			<label class="datebox">Retired <input type="checkbox" ng-model="details.editingTeacher.retired" /></label>
-			<input class="datebox" type="date" ng-model="details.editingTeacher.retiredYear" />
+			<label style="display: inline">Retired <input type="checkbox" ng-model="details.editingTeacher.retired" /></label>
+			<input class="splitline" type="date" ng-model="details.editingTeacher.retiredYear" />
 		</div>
 		<div class="info tertiary inline" ng-if="details.showOnLeave">
-			<label class="datebox">On Leave <input type="checkbox" ng-model="details.editingTeacher.leave" /></label>
-			<input class="datebox" type="date" ng-model="details.editingTeacher.leaveYear" />
+			<label style="display: inline">On Leave <input type="checkbox" ng-model="details.editingTeacher.leave" /></label>
+			<input class="splitline" type="date" ng-model="details.editingTeacher.leaveYear" />
 		</div>
 		<div class="info tertiary">
 			<label>Comments <textarea ng-model="details.editingTeacher.comments"></textarea></label>
