@@ -43,6 +43,15 @@ html, body, ng-view {
 	width: 500px
 }
 
+.return {
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+.returndiv {
+	text-align: center;
+}
+
 .maininfo {
     width: 500px;
     border: 1px solid #eeeeee;
@@ -136,6 +145,16 @@ td {
 	border: 1px solid #eeeeee;
 }
 
+.info {
+	margin: 5px 0px;
+}
+
+.datebox {
+	width: auto;
+	display: inline-block;
+	clear: both;
+}
+
 @media (max-width: 700px) {
 	.logo {
 		position: static;
@@ -192,9 +211,6 @@ td {
 		float: none;
 		margin: 0;
 		margin-top: 10px;
-	}
-	.return {
-		margin-bottom: 10px;
 	}
 }
 

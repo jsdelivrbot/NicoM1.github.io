@@ -150,6 +150,11 @@
 			}
 		}
 
+		this.addTeacher = function() {
+            var teacher = googleAuth.addTeacher();
+            $location.path('/details/'+teacher.id);
+        }
+
 		function reset() {
 			this.teachers = googleAuth.getTeachers();
 			this.foundSearch = true;
