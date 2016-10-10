@@ -9,8 +9,9 @@
 		<button ng-click="sheets.pickSheet()" ng-if="true" class="btn btn-success mainbtn">Change Sheet.</button>
 		<button ng-click="sheets.signOut()" ng-if="sheets.teachers.length > 0" class="btn btn-danger mainbtn">Sign Out.</button>
 		<button ng-click="sheets.addTeacher()" class="btn btn-primary mainbtn">Add Member</button>
+		<button ng-click="sheets.makeCSV()" class="btn">Make CSV From Search</button>
 		<div style="margin-top: 10px">
-			<input type="text" ng-model="sheets.search" ng-if="sheets.teachers.length > 0" placeholder="search" class="mainsearch"/>
+			<input type="text" ng-model="sheets.search" ng-if="sheets.teachers.length > 0" ng-blur="sheets.updateSearchPath()" placeholder="search" class="mainsearch"/>
 			<select ng-model="sortBy" ng-change="sheets.orderBy(sortBy)">
 				<option value="firstName">
 					First Name

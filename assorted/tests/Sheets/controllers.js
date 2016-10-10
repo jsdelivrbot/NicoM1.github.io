@@ -1,7 +1,10 @@
 ;(function(window) {
 	'use strict';
     angular.module('sheets')
-    .controller('sheets', function($scope, $location, googleAuth) {
+    .controller('sheets', function($scope, $filter, $location, $routeParams, googleAuth) {
+		if($routeParams.search != null) {
+			this.search = $routeParams.search;
+		}
 		this.teachers = googleAuth.getTeachers();
 		this.showSelectButton = function() {
 			return !googleAuth.hasSheetId() || !googleAuth.authorized();
@@ -25,6 +28,20 @@
             }
             return ids;
         }
+
+		this.makeCSV = function() {
+			var orderedTeachers = googleAuth.getOrdered($filter('teachersearch')(this.teachers, this.search));
+			googleAuth.makeCSV(orderedTeachers);
+		}
+
+		this.updateSearchPath = function() {
+			if(this.search) {
+				$location.path('/search/'+this.search);
+			}
+			else {
+				$location.path('/');
+			}
+		}
 
         this.getOrder = googleAuth.getOrder;
         this.orderBy = googleAuth.orderBy;
@@ -110,7 +127,13 @@
 		this.returnToMain = function(replace) {
 			var confirmed = !this.changed() || confirm('RETURN WITHOUT UPDATING?');
 			if(confirmed) {
-				var path = $location.path('/');
+				var path = null;
+				if(this.data.searchCriteria) {
+					path = $location.path('/search/'+this.data.searchCriteria);
+				}
+				else {
+					path = $location.path('/');
+				}
 	            if(replace) {
 	                path.replace();
 	            }

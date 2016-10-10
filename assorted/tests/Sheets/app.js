@@ -23,6 +23,10 @@ if (!String.prototype.includes) {
 				templateUrl: 'mainlist.html',
 				controller: 'sheets as sheets'
 			})
+			.when('/search/:search', {
+				templateUrl: 'mainlist.html',
+				controller: 'sheets as sheets'
+			})
 			.when('/details', {
 				redirectTo: '/'
 			})
