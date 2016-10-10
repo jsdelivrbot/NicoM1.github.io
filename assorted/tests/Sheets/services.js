@@ -285,7 +285,6 @@
                     majorDimension: 'COLUMNS'
 				}).then(function(response) {
 					$rootScope.$apply(function() {
-						console.log(response);
 						if(response.result.values) {
 							var ids = response.result.values[0];
 							for(var i = 0; i < ids.length; i++) {
@@ -358,7 +357,6 @@
                         insertDataOption: 'INSERT_ROWS'
                     }).then(function(response) {
 						$rootScope.$apply(function() {
-							console.log(response);
 							deffered.resolve(response);
 						});
                     }, function(error) {

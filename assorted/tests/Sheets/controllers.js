@@ -53,7 +53,6 @@
 						this.currentTeacher[key] = null;
 					}
 					googleAuth.copyTeacher(this.editingTeacher, this.currentTeacher);
-					console.log(d);
 					alert('updated successfully');
 				}.bind(this), function(e) {
 					console.log(e);
