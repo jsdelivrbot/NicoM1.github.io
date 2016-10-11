@@ -8,7 +8,7 @@
 		var SHEET = '[MAIN]';
 		var SHEET_REMOVED = '[REMOVED]';
 		var OFFSET = 1;
-		var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		var ALPHABET = 'A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,AA'.split(',');
         var MISSING = '[missing]';
 
 		var POSITIONS = [
@@ -36,10 +36,12 @@
 			'maker',
 			'startedTeaching',
 			'lastUpdated',
-			'id'
+			'id',
+			'emailed',
+			'responded'
 		];
 
-		var checkboxes = ['academics', 'aceIt', 'facebook', 'retired', 'leave', 'psa', 'representative', 'executive', 'maker'];
+		var checkboxes = ['academics', 'aceIt', 'facebook', 'retired', 'leave', 'psa', 'representative', 'executive', 'maker', 'responded'];
 
 		var hasSheetsApi = false;
 		var hasPickerApi = false;
@@ -240,6 +242,9 @@
 			if(parsed.psaExpires != MISSING) {
 				parsed.psaExpires = parseDate(parsed.psaExpires);
 				parsed.expired = parsed.psaExpires < new Date();
+			}
+			if(parsed.emailed != MISSING) {
+				parsed.emailed = parseDate(parsed.emailed);
 			}
 
             function parseCheckboxes(checkboxes, teacher) {
