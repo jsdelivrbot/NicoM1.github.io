@@ -23,7 +23,7 @@
         }
         this.generateIds = function() {
             var ids = ''
-            for(var i = 0; i < 50; i++) {
+            for(var i = 0; i < 200; i++) {
                 ids += (googleAuth.generateID()) + '\n';
             }
             return ids;
