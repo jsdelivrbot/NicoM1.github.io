@@ -326,9 +326,13 @@
 
                 var values = [];
                 for(var i = 0; i < POSITIONS.length; i++) {
-                    if(teacher[POSITIONS[i]] != MISSING) {
+                    if(teacher[POSITIONS[i]] != MISSING && teacher[POSITIONS[i]] != null) {
                         values[i] = teacher[POSITIONS[i]];
                     }
+					else {
+						console.log('empty');
+						values[i] = '';
+					}
                 }
                 if(!append) {
                     getRealIndex(teacher.id).then(function(index) {
