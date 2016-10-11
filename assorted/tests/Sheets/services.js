@@ -27,7 +27,7 @@
 			'psa',
 			'psaExpires',
 			'representative',
-			'exectutive',
+			'executive',
 			'retired',
 			'retiredYear',
 			'leave',
@@ -539,7 +539,9 @@
 			emailsecondary: 'emailSecondary',
 			psaexpires: 'psaExpires'
 		};
-		return function(teachers, search) {var out = [];
+		var out = [];
+		return function(teachers, search) {
+			out.length = 0;
 			if(search == null || search.trim().length == 0) {
 				return teachers;
 			}
