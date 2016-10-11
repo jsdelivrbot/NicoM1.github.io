@@ -550,10 +550,10 @@
 				for(var key in teacher) {
 					if(search.indexOf(':') != -1) {
 						var parts = search.split(':');
-						if(keywords[parts[0]]) {
+						if(keywords[parts[0].toLowerCase()]) {
 							parts[0] = keywords[parts[0].toLowerCase()];
 						}
-						var value = teacher[parts[0].trim()];
+						var value = teacher[parts[0].trim().toLowerCase()];
 						var searchPiece = parts[1].trim().toLowerCase();
 						if(value != null && searchPiece.length > 0) {
 							if(typeof value == 'string' && value.toLowerCase().includes(searchPiece)) {
