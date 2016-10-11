@@ -551,7 +551,7 @@
 					if(search.indexOf(':') != -1) {
 						var parts = search.split(':');
 						if(keywords[parts[0]]) {
-							parts[0] = keywords[parts[0]];
+							parts[0] = keywords[parts[0].toLowerCase()];
 						}
 						var value = teacher[parts[0].trim()];
 						var searchPiece = parts[1].trim().toLowerCase();
@@ -574,7 +574,7 @@
 					}
 					else {
 						if(keywords[search]) {
-							search = keywords[search];
+							search = keywords[search.toLowerCase()];
 						}
 						if(key.toLowerCase().includes(search.toLowerCase()) && key.trim().length == search.trim().length) {
 							if(teacher[key]) {
