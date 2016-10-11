@@ -18,6 +18,7 @@ if (!String.prototype.includes) {
 	.config(function($compileProvider, $routeProvider) {
 		$compileProvider.debugInfoEnabled = false;
 		$compileProvider.aHrefSanitizationWhitelist(/^\s*(|blob|):/);
+		$compileProvider.aHrefSanitizationWhitelist(/^\s*(|mailto|):/);
 
 		$routeProvider
 			.when('/', {
