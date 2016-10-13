@@ -78,11 +78,15 @@
 		this.updateTeacher = function() {
 			if(!googleAuth.compareTeachers(this.editingTeacher, this.currentTeacher)) {
 				this.editingTeacher.lastUpdated = new Date();
+				if(this.editingTeacher.district) {
+					this.editingTeacher.districtId = parseInt(this.editingTeacher.district);
+				}
 				googleAuth.updateTeacher(this.editingTeacher, googleAuth.SHEET).then(function(d) {
 					for(var key in this.currentTeacher) {
 						this.currentTeacher[key] = null;
 					}
 					googleAuth.copyTeacher(this.editingTeacher, this.currentTeacher);
+					this.currentTeacher.updated = true;
 					alert('updated successfully');
 				}.bind(this), function(e) {
 					console.log(e);

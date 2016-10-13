@@ -247,6 +247,10 @@
 				parsed.emailed = parseDate(parsed.emailed);
 			}
 
+			if(parsed.district != MISSING) {
+				parsed.districtId = parseInt(parsed.district);
+			}
+
             function parseCheckboxes(checkboxes, teacher) {
                 for(var c = 0; c < checkboxes.length; c++) {
                     var current = teacher[checkboxes[c]];
