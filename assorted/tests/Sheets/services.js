@@ -248,7 +248,7 @@
 			}
 
 			if(parsed.district != MISSING) {
-				if(parsed.district.district.indexOf('#') != -1) {
+				if(parsed.district.indexOf('#') != -1) {
 					parsed.districtId = parseInt(parsed.district.substr(parsed.district.indexOf('#')+1));
 				}
 				else {
