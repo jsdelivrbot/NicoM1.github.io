@@ -252,7 +252,7 @@
 					parsed.districtId = parseInt(parsed.district.substr(parsed.district.indexOf('#')+1));
 				}
 				else {
-					parsed.districtId = 0;
+					parsed.districtId = 10000000;
 				}
 			}
 
@@ -461,7 +461,7 @@
                 return false;
             }
 			for(var t in t1) {
-				if(t1[t] != t2[t] && t1[t] != MISSING) {
+				if(t1[t] != t2[t] && t1[t] != MISSING && t != 'districtId') {
 					return false;
 				}
 			}
