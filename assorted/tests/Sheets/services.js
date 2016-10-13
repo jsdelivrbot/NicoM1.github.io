@@ -248,7 +248,12 @@
 			}
 
 			if(parsed.district != MISSING) {
-				parsed.districtId = parseInt(parsed.district);
+				if(parsed.district.district.indexOf('#') != -1) {
+					parsed.districtId = parseInt(parsed.district.substr(parsed.district.indexOf('#')+1));
+				}
+				else {
+					parsed.districtId = 0;
+				}
 			}
 
             function parseCheckboxes(checkboxes, teacher) {

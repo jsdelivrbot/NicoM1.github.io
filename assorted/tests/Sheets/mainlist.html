@@ -32,6 +32,20 @@
 		</div>
 	</div>
 	<table>
+		<tr>
+			<td>
+				<b>First Name</b>
+			</td>
+			<td>
+				<b>Last Name</b>
+			</td>
+			<td class="finalrow">
+				<b>School</b>
+			</td>
+			<td class="finalrow">
+				<b>District</b>
+			</td>
+		</tr>
 		<tr ng-repeat="teacher in sheets.teachers | teachersearch:sheets.search | orderBy:sheets.getOrder() track by $index" class="infomain">
 			<td ng-click="sheets.selectTeacher(teacher, $index)">
 				{{teacher.firstName}}
