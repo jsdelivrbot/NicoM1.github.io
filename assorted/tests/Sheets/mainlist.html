@@ -12,7 +12,7 @@
 		<button ng-click="sheets.makeCSV()" class="btn btn-info" ng-show="sheets.csv == null">Export Search as CSV</button>
 		<a download="csvexport.csv" href="{{sheets.csvObject}}" class="btn btn-info" ng-show="sheets.csv != null">Download CSV</a>
 		<button ng-click="sheets.csv = null" class="btn btn-info" ng-show="sheets.csv != null">Hide CSV</button>
-		<a href='./#/help' class="btn btn-info">Search Help</a>
+		<a href='./index.html#/help/' class="btn btn-info">Help</a>
 		<div style="margin-top: 10px">
 			<input type="text" ng-model="sheets.search" ng-if="sheets.teachers.length > 0" ng-blur="sheets.updateSearchPath()" placeholder="search" class="mainsearch"/>
 			<select ng-model="sortBy" ng-change="sheets.orderBy(sortBy)">
@@ -25,13 +25,27 @@
 				<option value="school">
 					School
 				</option>
-				<option value="district">
+				<option value="districtId">
 					District
 				</option>
 			</select>
 		</div>
 	</div>
 	<table>
+		<tr>
+			<td>
+				<b>First Name</b>
+			</td>
+			<td>
+				<b>Last Name</b>
+			</td>
+			<td class="finalrow">
+				<b>School</b>
+			</td>
+			<td class="finalrow">
+				<b>District</b>
+			</td>
+		</tr>
 		<tr ng-repeat="teacher in sheets.teachers | teachersearch:sheets.search | orderBy:sheets.getOrder() track by $index" class="infomain">
 			<td ng-click="sheets.selectTeacher(teacher, $index)">
 				{{teacher.firstName}}

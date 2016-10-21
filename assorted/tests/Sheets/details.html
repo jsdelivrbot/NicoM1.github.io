@@ -53,6 +53,10 @@
 			<label>Personal Email <input type="email" ng-model="details.editingTeacher.emailSecondary" /></label>
 		</div>
 		<div class="info secondary">
+			<label style="display: inline">Emailed <input class="datebox" style="display: inline-block; float: none" type="date" ng-model="details.editingTeacher.emailed" /></label>
+			<label class="splitline">Responded <input type="checkbox" ng-model="details.editingTeacher.responded" /></label>
+		</div>
+		<div class="info secondary">
 			<label style="display: inline">PSA Member <input type="checkbox" ng-model="details.editingTeacher.psa" /></label>
 			<label class="splitline">Membership Expires <input style="display: inline-block; float: none" type="date" ng-model="details.editingTeacher.psaExpires" ng-class="{invalid: details.editingTeacher.expired}"/></label>
 		</div>

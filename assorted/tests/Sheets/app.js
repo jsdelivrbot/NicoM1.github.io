@@ -17,8 +17,7 @@ if (!String.prototype.includes) {
 	angular.module('sheets', ['ngRoute'])
 	.config(function($compileProvider, $routeProvider) {
 		$compileProvider.debugInfoEnabled = false;
-		$compileProvider.aHrefSanitizationWhitelist(/^\s*(|blob|):/);
-		$compileProvider.aHrefSanitizationWhitelist(/^\s*(|mailto|):/);
+		$compileProvider.aHrefSanitizationWhitelist(/^\s*(|blob|mailto):/);
 
 		$routeProvider
 			.when('/', {

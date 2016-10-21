@@ -8,7 +8,7 @@
 		var SHEET = '[MAIN]';
 		var SHEET_REMOVED = '[REMOVED]';
 		var OFFSET = 1;
-		var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		var ALPHABET = 'A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,AA'.split(',');
         var MISSING = '[missing]';
 
 		var POSITIONS = [
@@ -36,10 +36,12 @@
 			'maker',
 			'startedTeaching',
 			'lastUpdated',
-			'id'
+			'id',
+			'emailed',
+			'responded'
 		];
 
-		var checkboxes = ['academics', 'aceIt', 'facebook', 'retired', 'leave', 'psa', 'representative', 'executive', 'maker'];
+		var checkboxes = ['academics', 'aceIt', 'facebook', 'retired', 'leave', 'psa', 'representative', 'executive', 'maker', 'responded'];
 
 		var hasSheetsApi = false;
 		var hasPickerApi = false;
@@ -241,6 +243,18 @@
 				parsed.psaExpires = parseDate(parsed.psaExpires);
 				parsed.expired = parsed.psaExpires < new Date();
 			}
+			if(parsed.emailed != MISSING) {
+				parsed.emailed = parseDate(parsed.emailed);
+			}
+
+			if(parsed.district != MISSING) {
+				if(parsed.district.indexOf('#') != -1) {
+					parsed.districtId = parseInt(parsed.district.substr(parsed.district.indexOf('#')+1));
+				}
+				else {
+					parsed.districtId = 10000000;
+				}
+			}
 
             function parseCheckboxes(checkboxes, teacher) {
                 for(var c = 0; c < checkboxes.length; c++) {
@@ -321,9 +335,13 @@
 
                 var values = [];
                 for(var i = 0; i < POSITIONS.length; i++) {
-                    if(teacher[POSITIONS[i]] != MISSING) {
+                    if(teacher[POSITIONS[i]] != MISSING && teacher[POSITIONS[i]] != null) {
                         values[i] = teacher[POSITIONS[i]];
                     }
+					else {
+						console.log('empty');
+						values[i] = '';
+					}
                 }
                 if(!append) {
                     getRealIndex(teacher.id).then(function(index) {
@@ -443,7 +461,7 @@
                 return false;
             }
 			for(var t in t1) {
-				if(t1[t] != t2[t] && t1[t] != MISSING) {
+				if(t1[t] != t2[t] && t1[t] != MISSING && t != 'districtId') {
 					return false;
 				}
 			}
@@ -550,8 +568,11 @@
 				for(var key in teacher) {
 					if(search.indexOf(':') != -1) {
 						var parts = search.split(':');
-						if(keywords[parts[0].toLowerCase()]) {
+						if(keywords[parts[0].toLowerCase().trim()]) {
 							parts[0] = keywords[parts[0].toLowerCase().trim()];
+						}
+						else {
+							parts[0] = parts[0].toLowerCase().trim();
 						}
 						var value = teacher[parts[0]];
 						var searchPiece = parts[1].trim().toLowerCase();
