@@ -4,12 +4,13 @@
 
 .zoomoverlay {
 	display: none;
+	cursor: none;
+	pointer-events: none;
 	position: absolute;
 	border-radius: 10%;
 	border-top-left-radius: 0%;
 	border: 4px #eeeeee solid;
 	box-shadow: 2px 2px 5px #555555;
-	pointer-events: none;
 	margin: none;
 	padding: none;
 	background-color: #ffffff;

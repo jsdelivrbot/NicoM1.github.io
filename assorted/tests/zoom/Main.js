@@ -21,20 +21,28 @@ var ImgZoom = function(id) {
 	this.overlayElement = this.containerElement.querySelector(".zoomoverlay");
 	this.imgElement = this.containerElement.querySelector("img");
 	this.zoomfactor = this.imgElement.naturalWidth / this.imgElement.clientWidth;
-	this.imgElement.onmouseleave = $bind(this,this.hideOverlay);
+	this.imgElement.onmouseenter = $bind(this,this.showOverlay);
+	this.imgElement.onmouseleave = $bind(this,this.mouseLeave);
 	this.imgElement.onmousemove = $bind(this,this.handleMove);
+	this.overlayElement.onmousemove = $bind(this,this.handleMove);
 	this.overlayElement.style.backgroundImage = "url(" + this.imgElement.src + ")";
 	this.overlayElement.style.width = "" + this.overlayWidth + "px";
 	this.overlayElement.style.height = "" + this.overlayWidth + "px";
 };
 ImgZoom.prototype = {
-	handleMove: function(event) {
-		this.overlayElement.style.display = "inline-block";
+	mouseLeave: function(event) {
+		if(event.relatedTarget == this.overlayElement) return;
+		this.hideOverlay();
+	}
+	,handleMove: function(event) {
 		var posX = event.pageX - this.imgElement.offsetLeft;
 		var posY = event.pageY - this.imgElement.offsetTop;
 		this.overlayElement.style.backgroundPosition = "" + (-posX * this.zoomfactor + this.overlayWidth / 2) + "px " + (-posY * this.zoomfactor + this.overlayWidth / 2) + "px";
 		this.overlayElement.style.left = "" + event.pageX + "px";
 		this.overlayElement.style.top = "" + event.pageY + "px";
+	}
+	,showOverlay: function() {
+		this.overlayElement.style.display = "inline-block";
 	}
 	,hideOverlay: function() {
 		this.overlayElement.style.display = "none";
