@@ -13,6 +13,7 @@ Main.main = function() {
 };
 var DemoApp = function() {
 	new ImgZoom("imgzoom1");
+	new ImgZoomFull("imgzoom2");
 };
 var ImgZoom = function(id) {
 	this.overlayWidth = 200;
@@ -46,6 +47,54 @@ ImgZoom.prototype = {
 	}
 	,hideOverlay: function() {
 		this.overlayElement.style.display = "none";
+	}
+};
+var ImgZoomFull = function(id) {
+	this.containerElement = window.document.getElementById(id);
+	if(this.containerElement == null) throw new js__$Boot_HaxeError("could not find imgzoom with ID: " + id);
+	this.imagePath = this.containerElement.getAttribute("data-image");
+	this.getImageSize();
+};
+ImgZoomFull.prototype = {
+	getImageSize: function() {
+		var _g = this;
+		var img;
+		var _this = window.document;
+		img = _this.createElement("img");
+		img.onload = function() {
+			_g.imageWidth = img.width;
+			_g.imageHeight = img.height;
+			_g.createListeners();
+		};
+		img.src = this.imagePath;
+	}
+	,createListeners: function() {
+		this.zoomfactor = this.imageWidth / this.containerElement.clientWidth;
+		this.containerElement.onmouseenter = $bind(this,this.showOverlay);
+		this.containerElement.onmouseleave = $bind(this,this.hideOverlay);
+		this.containerElement.onmousemove = $bind(this,this.handleMove);
+		this.containerElement.style.backgroundImage = "url(" + this.imagePath + ")";
+		this.containerElement.style.height = "" + this.imageHeight / this.zoomfactor + "px";
+	}
+	,handleMove: function(event) {
+		var posX = event.pageX - this.containerElement.offsetLeft;
+		var posY = event.pageY - this.containerElement.offsetTop;
+		var halfWidth = this.containerElement.clientWidth / 2;
+		var halfHeight = this.containerElement.clientHeight / 2;
+		var distFromCenterX = (posX - halfWidth) / halfWidth + 1;
+		var distFromCenterY = (posY - halfHeight) / halfHeight + 1;
+		var offsetX = -posX * this.zoomfactor + distFromCenterX * halfWidth;
+		var offsetY = -posY * this.zoomfactor + distFromCenterY * halfHeight;
+		this.containerElement.style.backgroundPosition = "" + offsetX + "px " + offsetY + "px";
+		this.containerElement.style.left = "" + event.pageX + "px";
+		this.containerElement.style.top = "" + event.pageY + "px";
+	}
+	,showOverlay: function() {
+		this.containerElement.classList.add("imgzoomfullin");
+	}
+	,hideOverlay: function() {
+		this.containerElement.classList.remove("imgzoomfullin");
+		this.containerElement.style.backgroundPosition = "0px 0px";
 	}
 };
 var Slider = function(id,vertical) {

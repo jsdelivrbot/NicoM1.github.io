@@ -2,6 +2,16 @@
 	cursor: none;
 }
 
+.imgzoomfull {
+	background-repeat: no-repeat;
+	background-color: transparent;
+	background-size: contain;
+}
+
+.imgzoomfullin {
+	background-size: auto;
+}
+
 .zoomoverlay {
 	display: none;
 	cursor: none;
