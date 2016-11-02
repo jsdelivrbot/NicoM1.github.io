@@ -1,0 +1,244 @@
+html, body, ng-view {
+	width: 100%;
+}
+
+header {
+	font-size: 150%;
+	font-weight: bold;
+}
+
+.loading {
+	width: 50px;
+	height: 10px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -25px;
+	border-radius: 20%;
+	background-color: #eeeeee;
+	animation: spin 4s linear infinite;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg) scale(1);
+	}
+	50% {
+		transform: rotate(180deg) scale(2);
+	}
+	100% {
+		transform: rotate(360deg) scale(1);
+	}
+}
+
+.splitline {
+	display: inline-block;
+	float: right;
+	width: auto;
+}
+
+.mainlist {
+	text-align: center;
+	width: 100%;
+	margin: 10px 0px;
+}
+
+.logo {
+	margin: 0 auto;
+}
+
+.details {
+	margin: 10px auto;
+	margin-left: auto;
+	margin-right: auto;
+	width: 500px
+}
+
+.return {
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+.returndiv {
+	text-align: center;
+}
+
+.maininfo {
+    width: 500px;
+    border: 1px solid #eeeeee;
+    margin: 15px 0px;
+}
+
+.secondaryinfo {
+	width: 500px;
+	border: 1px solid #eeeeee;
+}
+
+.tertiaryinfo {
+	margin: 15px 0px;
+	width: 500px;
+	border: 1px solid #eeeeee;
+}
+
+.maintinence {
+	text-align: center;
+}
+
+.nav.bottom {
+    margin-top: 20px;
+	text-align: center;
+}
+
+label {
+	width: 100%;
+	margin-bottom: 3px;
+}
+
+input[type="text"], input[type="email"], input[type="date"], textarea {
+	float: right;
+	font-weight: normal;
+}
+
+input[type="text"].topbar {
+	width: 300px;
+	float: none;
+	overflow: hidden;
+}
+
+input[type="text"].mainsearch {
+	float: none;
+}
+
+textarea {
+	width: 300px;
+	height: 60px;
+}
+
+.ng-invalid, .invalid {
+	border-color: #FF0000 !important;
+}
+
+.greenline {
+	background-color: #00FF00 !important;
+}
+
+.infomain {
+	cursor: pointer;
+}
+
+.topbar {
+    width: 500px;
+}
+
+.topbarmain {
+	margin: 10px;
+}
+
+.name {
+	text-align: center;
+	font-weight: bold;
+	font-size: 125%;
+}
+
+.namelink {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+table {
+	width: 500px;
+	margin: 0 auto;
+}
+
+tr {
+	margin: 100px 0px;
+}
+
+td {
+	padding: 10px;
+	padding-left: 0px;
+	padding-right: 0px;
+	border: 1px solid #eeeeee;
+}
+
+.info {
+	margin: 5px 0px;
+	padding: 5px;
+}
+
+.datebox {
+	width: auto;
+	display: inline-block;
+	clear: both;
+}
+
+@media (max-width: 700px) {
+	.logo {
+		position: static;
+	}
+	.mainlist {
+		margin: 0;
+	}
+	.details {
+		padding: 10px;
+		width: 100%;
+	}
+	.maininfo {
+		width: 100%;
+	}
+	.topbar {
+		width: 100%;
+	}
+	.secondaryinfo {
+		width: 100%;
+	}
+	.tertiaryinfo {
+		width: 100%;
+	}
+	.mainbtn {
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+	.finalrow {
+		display: none;
+	}
+	label {
+		margin-bottom: 5px;
+	}
+	label.topbar {
+		float: none;
+	}
+	input[type=text], input[type=url], input[type=email], input[type=password], input[type=tel], textarea {
+	  -webkit-appearance: none; -moz-appearance: none;
+	  display: block;
+	  margin: 0;
+	  width: 100%; height: 40px;
+	  line-height: 40px; font-size: 17px;
+	  border: 1px solid #bbb;
+	  padding: 5px;
+	}
+	textarea {
+		height: 120px;
+	}
+	input[type="text"].topbar {
+		width: 100%;
+		float: right;
+	}
+	input[type="text"].mainsearch {
+		float: none;
+		margin: 0;
+		margin-top: 10px;
+	}
+	.splitline {
+		display: block;
+		width: 100%;
+	}
+}
+
+.idlist {
+	float: none;
+	margin: 0 auto;
+	display: block;
+	border: 0;
+	text-align: center;
+}

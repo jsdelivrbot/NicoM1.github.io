@@ -118,11 +118,6 @@
 					this.teacherId = 0;
 					this.startCriteria = this.data.searchCriteria;
 					reset.call(this);
-					this.dontChange = false;
-				}
-				else {
-					this.dontChange = true;
-					this.data.searchCriteria = this.startCriteria;
 				}
 			}
 		}.bind(this));
@@ -136,12 +131,14 @@
 		}
 
 		this.updateSearchPath = function() {
-			if(this.dontChange) {
-				return;
+			var confirmed = !this.changed() || confirm('LEAVE WITHOUT UPDATING?');
+			if(confirmed) {
+				if(this.data.searchCriteria) {
+					this.teacherId = 0;
+					$location.path('/details/search/'+this.data.searchCriteria+'/0');
+					reset.call(this);
+				}
 			}
-			this.teacherId = 0;
-			$location.path('/details/search/'+this.data.searchCriteria+'/0');
-			reset.call(this);
 		}
 		this.returnToMain = function(replace) {
 			var confirmed = !this.changed() || confirm('RETURN WITHOUT UPDATING?');

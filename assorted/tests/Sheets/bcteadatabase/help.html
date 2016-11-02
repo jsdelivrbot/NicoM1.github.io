@@ -1,0 +1,64 @@
+<div style="width: 50%; margin: 0 auto">
+	<h1>
+		Help
+	</h1>
+	<h2>Misc.</h2>
+	<div>
+		<p>
+			In order to use this tool, you must be logged into a google account with access to a spreadsheet with columns A-AA, and two sheets named: "[MAIN]" and "[REMOVED]", quotes are not included, names must be exactly as written.
+		</p>
+		<p>
+			The tool will fill out rows in the [MAIN] spreadsheet following the pattern:
+			<b>district	firstName	lastName	school	email	courses	emailSecondary	aceIt	facebook	facebookAlias	conferences	comments	psa	psaExpires	representative	exectutive	retired	retiredYear	leave	leaveYear	academics	maker	startedTeaching	lastUpdated	id	emailed	responded</b>
+		</p>
+		<p>
+			Should you need to manually add teachers to the spreadsheet, they will need an 8-character unique ID, a column of these can be generated with "Generate IDs" at the bottom of the main page, which can then be pasted into your spreadsheet, members without an ID will not be shown in the app.
+		</p>
+	</div>
+	<h2>Search</h2>
+	<div>
+		<p>
+			Typing raw text into the search box will search all properties of every member for matching text.
+			For instance, typing: <b>"woodwork"</b> will show all members whose course list includes the text "woodwork", however it will also include anyone who has the text "woodwork" in any other property, such as their comments.
+		</p>
+		<p>
+			Searching for a true or false keyword can be done by simply entering the full text of that keyword, any members who have a true value for that keyword (or matching text in another propery) will be shown.
+			Possible keywords are as follows:
+			<i>
+				<div style="white-space: pre; background-color: #eeeeee">
+					'district'
+					'firstName'
+					'lastName'
+					'school'
+					'email'
+					'courses'
+					'emailSecondary'
+					'aceIt'
+					'facebook'
+					'facebookAlias'
+					'conferences'
+					'comments'
+					'psa'
+					'psaExpires'
+					'LSA' <b>(LSA/Dist Rep/Pres)</b>
+					'BCTEA' <b>(exectutive)</b>
+					'retired'
+					'retiredYear'
+					'leave'
+					'leaveYear'
+					'academics'
+					'maker'
+					'startedTeaching'
+					'lastUpdated'
+				</div>
+			</i>
+		</p>
+		<p>
+			Should you wish to perform a search of a specific property, you may use the syntax: <i>property</i>:<b>searchterm</b>.
+			For instance: <b>"facebook:false"</b>, or <b>"psaExpires:2016"</b> (dates are treated as text, where a date looks like <i>Mon Sep 28 1998 14:36:22 GMT-0700 (PDT)</i>, so you can search for dates by specifying matching text)
+		</p>
+		<p>
+			Searches can be ordered by first name, last name, school, or district by using the dropdown menu beside the search box. This order will be respected in CSV export.
+		</p>
+	</div>
+</div>
