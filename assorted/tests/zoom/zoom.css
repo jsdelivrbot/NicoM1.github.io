@@ -3,9 +3,8 @@
 }
 
 .zoomoverlay {
+	display: none;
 	position: absolute;
-	width: 200px;
-	height: 200px;
 	border-radius: 10%;
 	border-top-left-radius: 0%;
 	border: 4px #eeeeee solid;
@@ -13,4 +12,6 @@
 	pointer-events: none;
 	margin: none;
 	padding: none;
+	background-color: #ffffff;
+	background-repeat: no-repeat;
 }

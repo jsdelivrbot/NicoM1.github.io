@@ -15,21 +15,24 @@ var DemoApp = function() {
 	new ImgZoom("imgzoom1");
 };
 var ImgZoom = function(id) {
+	this.overlayWidth = 200;
 	this.containerElement = window.document.getElementById(id);
 	if(this.containerElement == null) throw new js__$Boot_HaxeError("could not find slider with ID: " + id);
-	this.zoomfactor = Std.parseFloat(this.containerElement.getAttribute("data-zoomfactor"));
 	this.overlayElement = this.containerElement.querySelector(".zoomoverlay");
 	this.imgElement = this.containerElement.querySelector("img");
+	this.zoomfactor = this.imgElement.naturalWidth / this.imgElement.clientWidth;
 	this.imgElement.onmouseleave = $bind(this,this.hideOverlay);
 	this.imgElement.onmousemove = $bind(this,this.handleMove);
 	this.overlayElement.style.backgroundImage = "url(" + this.imgElement.src + ")";
+	this.overlayElement.style.width = "" + this.overlayWidth + "px";
+	this.overlayElement.style.height = "" + this.overlayWidth + "px";
 };
 ImgZoom.prototype = {
 	handleMove: function(event) {
 		this.overlayElement.style.display = "inline-block";
 		var posX = event.pageX - this.imgElement.offsetLeft;
 		var posY = event.pageY - this.imgElement.offsetTop;
-		this.overlayElement.style.backgroundPosition = "" + -posX * this.zoomfactor + "px " + -posY * this.zoomfactor + "px";
+		this.overlayElement.style.backgroundPosition = "" + (-posX * this.zoomfactor + this.overlayWidth / 2) + "px " + (-posY * this.zoomfactor + this.overlayWidth / 2) + "px";
 		this.overlayElement.style.left = "" + event.pageX + "px";
 		this.overlayElement.style.top = "" + event.pageY + "px";
 	}
@@ -204,10 +207,6 @@ Spinner.prototype = {
 		var radians = (degrees - 90) * Math.PI / 180.0;
 		return { x : centerX + radius * Math.cos(radians), y : centerY + radius * Math.sin(radians)};
 	}
-};
-var Std = function() { };
-Std.parseFloat = function(x) {
-	return parseFloat(x);
 };
 var haxe_Timer = function(time_ms) {
 	var me = this;
