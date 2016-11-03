@@ -49,6 +49,7 @@ zoomeffects_ImgZoomFull.prototype = {
 		this.containerElement.onmouseenter = $bind(this,this.showOverlay);
 		this.containerElement.onmouseleave = $bind(this,this.hideOverlay);
 		this.containerElement.onmousemove = $bind(this,this.handleMove);
+		this.containerElement.ontouchmove = $bind(this,this.handleTouchMove);
 		this.containerElement.style.backgroundImage = "url(" + this.imagePath + ")";
 		this.containerElement.style.height = "" + this.imageHeight / this.zoomfactor + "px";
 	}
