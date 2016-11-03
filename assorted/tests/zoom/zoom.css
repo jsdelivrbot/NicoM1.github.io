@@ -1,18 +1,44 @@
-.mainview {
+.mainviewglass {
 	cursor: none;
 }
 
-.zoomoverlay {
+.imgzoomfull {
+	background-repeat: no-repeat;
+	background-color: transparent;
+	background-size: contain;
+}
+
+.imgzoomfullin {
+	background-size: auto;
+}
+
+.zoomoverlayglass {
 	display: none;
 	cursor: none;
 	pointer-events: none;
 	position: absolute;
-	border-radius: 10%;
-	border-top-left-radius: 0%;
+	border-radius: 100%;
 	border: 4px #eeeeee solid;
 	box-shadow: 2px 2px 5px #555555;
 	margin: none;
 	padding: none;
 	background-color: #ffffff;
 	background-repeat: no-repeat;
+}
+
+.zoomoverlaypane {
+	display: none;
+	border: 4px #eeeeee solid;
+	box-shadow: 2px 2px 5px #555555;
+	margin: none;
+	padding: none;
+	background-color: #ffffff;
+	background-repeat: no-repeat;
+}
+
+.zoomoverlaywindow {
+	position: absolute;
+	border: 1px #eeeeee solid;
+	box-shadow: 2px 2px 5px #555555;
+	pointer-events: none;
 }
