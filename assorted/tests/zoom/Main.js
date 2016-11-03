@@ -45,11 +45,18 @@ zoomeffects_ImgZoomFull.prototype = {
 		img.src = this.imagePath;
 	}
 	,createListeners: function() {
+		var _g = this;
 		this.zoomfactor = this.imageWidth / this.containerElement.clientWidth;
 		this.containerElement.onmouseenter = $bind(this,this.showOverlay);
 		this.containerElement.onmouseleave = $bind(this,this.hideOverlay);
 		this.containerElement.onmousemove = $bind(this,this.handleMove);
 		this.containerElement.ontouchmove = $bind(this,this.handleTouchMove);
+		this.containerElement.ontouchstart = function(touch) {
+			if(_g.touchID == null) _g.touchID = touch.identifier;
+		};
+		this.containerElement.ontouchend = function(touch1) {
+			if(_g.touchID == touch1.identifier) _g.touchID = null;
+		};
 		this.containerElement.style.backgroundImage = "url(" + this.imagePath + ")";
 		this.containerElement.style.height = "" + this.imageHeight / this.zoomfactor + "px";
 	}
@@ -133,6 +140,7 @@ zoomeffects_ImgZoomGlass.prototype = {
 };
 var zoomeffects_ImgZoomPane = function(id) {
 	this.overlayWidth = 400;
+	var _g = this;
 	this.containerElement = window.document.getElementById(id);
 	if(this.containerElement == null) throw new js__$Boot_HaxeError("could not find slider with ID: " + id);
 	this.overlayElement = this.containerElement.querySelector(".zoomoverlaypane");
@@ -144,6 +152,12 @@ var zoomeffects_ImgZoomPane = function(id) {
 	this.imgElement.ontouchmove = $bind(this,this.handleTouchMove);
 	this.imgElement.onmouseleave = $bind(this,this.mouseLeave);
 	this.windowElement.onmousemove = $bind(this,this.handleMove);
+	this.imgElement.ontouchstart = function(touch) {
+		if(_g.touchID == null) _g.touchID = touch.identifier;
+	};
+	this.imgElement.ontouchend = function(touch1) {
+		if(_g.touchID == touch1.identifier) _g.touchID = null;
+	};
 	this.overlayElement.style.backgroundImage = "url(" + this.imgElement.src + ")";
 	this.overlayElement.style.width = "" + this.overlayWidth + "px";
 	this.overlayElement.style.height = "" + this.overlayWidth + "px";
