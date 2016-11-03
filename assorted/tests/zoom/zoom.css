@@ -24,6 +24,7 @@
 	padding: none;
 	background-color: #ffffff;
 	background-repeat: no-repeat;
+	-webkit-transform: translate3d(0,0,0);
 }
 
 .zoomoverlaypane {
@@ -34,9 +35,11 @@
 	padding: none;
 	background-color: #ffffff;
 	background-repeat: no-repeat;
+	-webkit-transform: translate3d(0,0,0);
 }
 
 .zoomoverlaywindow {
+	display: none;
 	position: absolute;
 	border: 1px #eeeeee solid;
 	box-shadow: 2px 2px 5px #555555;

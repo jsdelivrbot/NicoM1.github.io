@@ -52,9 +52,16 @@ zoomeffects_ImgZoomFull.prototype = {
 		this.containerElement.style.backgroundImage = "url(" + this.imagePath + ")";
 		this.containerElement.style.height = "" + this.imageHeight / this.zoomfactor + "px";
 	}
+	,handleTouchMove: function(event) {
+		this.doMove(event.changedTouches.item(this.touchID).pageX,event.changedTouches.item(this.touchID).pageY);
+		event.preventDefault();
+	}
 	,handleMove: function(event) {
-		var posX = event.pageX - this.containerElement.offsetLeft;
-		var posY = event.pageY - this.containerElement.offsetTop;
+		this.doMove(event.pageX,event.pageY);
+	}
+	,doMove: function(pageX,pageY) {
+		var posX = pageX - this.containerElement.offsetLeft;
+		var posY = pageY - this.containerElement.offsetTop;
 		var halfWidth = this.containerElement.clientWidth / 2;
 		var halfHeight = this.containerElement.clientHeight / 2;
 		var distFromCenterX = (posX - halfWidth) / halfWidth + 1;
@@ -62,8 +69,8 @@ zoomeffects_ImgZoomFull.prototype = {
 		var offsetX = -posX * this.zoomfactor + distFromCenterX * halfWidth;
 		var offsetY = -posY * this.zoomfactor + distFromCenterY * halfHeight;
 		this.containerElement.style.backgroundPosition = "" + offsetX + "px " + offsetY + "px";
-		this.containerElement.style.left = "" + event.pageX + "px";
-		this.containerElement.style.top = "" + event.pageY + "px";
+		this.containerElement.style.left = "" + pageX + "px";
+		this.containerElement.style.top = "" + pageY + "px";
 	}
 	,showOverlay: function() {
 		this.containerElement.classList.add("imgzoomfullin");
@@ -75,15 +82,23 @@ zoomeffects_ImgZoomFull.prototype = {
 };
 var zoomeffects_ImgZoomGlass = function(id) {
 	this.overlayWidth = 200;
+	var _g = this;
 	this.containerElement = window.document.getElementById(id);
 	if(this.containerElement == null) throw new js__$Boot_HaxeError("could not find slider with ID: " + id);
 	this.overlayElement = this.containerElement.querySelector(".zoomoverlayglass");
 	this.imgElement = this.containerElement.querySelector("img");
 	this.zoomfactor = this.imgElement.naturalWidth / this.imgElement.clientWidth;
 	this.imgElement.onmouseenter = $bind(this,this.showOverlay);
-	this.imgElement.onmouseleave = $bind(this,this.mouseLeave);
 	this.imgElement.onmousemove = $bind(this,this.handleMove);
+	this.imgElement.ontouchmove = $bind(this,this.handleTouchMove);
+	this.imgElement.onmouseleave = $bind(this,this.mouseLeave);
 	this.overlayElement.onmousemove = $bind(this,this.handleMove);
+	this.imgElement.ontouchstart = function(touch) {
+		if(_g.touchID == null) _g.touchID = touch.identifier;
+	};
+	this.imgElement.ontouchend = function(touch1) {
+		if(_g.touchID == touch1.identifier) _g.touchID = null;
+	};
 	this.overlayElement.style.backgroundImage = "url(" + this.imgElement.src + ")";
 	this.overlayElement.style.width = "" + this.overlayWidth + "px";
 	this.overlayElement.style.height = "" + this.overlayWidth + "px";
@@ -94,11 +109,19 @@ zoomeffects_ImgZoomGlass.prototype = {
 		this.hideOverlay();
 	}
 	,handleMove: function(event) {
-		var posX = event.pageX - this.imgElement.offsetLeft;
-		var posY = event.pageY - this.imgElement.offsetTop;
+		this.doMove(event.pageX,event.pageY);
+	}
+	,handleTouchMove: function(event) {
+		this.doMove(event.changedTouches.item(this.touchID).pageX,event.changedTouches.item(this.touchID).pageY);
+		event.preventDefault();
+	}
+	,doMove: function(pageX,pageY) {
+		var posX = pageX - this.imgElement.offsetLeft;
+		var posY = pageY - this.imgElement.offsetTop;
 		this.overlayElement.style.backgroundPosition = "" + (-posX * this.zoomfactor + this.overlayWidth / 2) + "px " + (-posY * this.zoomfactor + this.overlayWidth / 2) + "px";
-		this.overlayElement.style.left = "" + (event.pageX - this.overlayWidth / 2) + "px";
-		this.overlayElement.style.top = "" + (event.pageY - this.overlayWidth / 2) + "px";
+		this.overlayElement.style.left = "" + (pageX - this.overlayWidth / 2) + "px";
+		this.overlayElement.style.top = "" + (pageY - this.overlayWidth / 2) + "px";
+		if(posX < 0 || posX > this.imgElement.clientWidth || posY < 0 || posY > this.imgElement.clientHeight) this.hideOverlay();
 	}
 	,showOverlay: function() {
 		this.overlayElement.style.display = "inline-block";
@@ -116,9 +139,10 @@ var zoomeffects_ImgZoomPane = function(id) {
 	this.imgElement = this.containerElement.querySelector("img");
 	this.zoomfactor = this.imgElement.naturalWidth / this.imgElement.clientWidth;
 	this.imgElement.onmouseenter = $bind(this,this.showOverlay);
-	this.imgElement.onmouseleave = $bind(this,this.mouseLeave);
 	this.imgElement.onmousemove = $bind(this,this.handleMove);
-	this.windowElement.onmousedown = $bind(this,this.handleMove);
+	this.imgElement.ontouchmove = $bind(this,this.handleTouchMove);
+	this.imgElement.onmouseleave = $bind(this,this.mouseLeave);
+	this.windowElement.onmousemove = $bind(this,this.handleMove);
 	this.overlayElement.style.backgroundImage = "url(" + this.imgElement.src + ")";
 	this.overlayElement.style.width = "" + this.overlayWidth + "px";
 	this.overlayElement.style.height = "" + this.overlayWidth + "px";
@@ -130,12 +154,20 @@ zoomeffects_ImgZoomPane.prototype = {
 		if(event.relatedTarget == this.windowElement) return;
 		this.hideOverlay();
 	}
+	,handleTouchMove: function(event) {
+		this.doMove(event.changedTouches.item(this.touchID).pageX,event.changedTouches.item(this.touchID).pageY);
+		event.preventDefault();
+	}
 	,handleMove: function(event) {
-		var posX = event.pageX - this.imgElement.offsetLeft;
-		var posY = event.pageY - this.imgElement.offsetTop;
+		this.doMove(event.pageX,event.pageY);
+	}
+	,doMove: function(pageX,pageY) {
+		var posX = pageX - this.imgElement.offsetLeft;
+		var posY = pageY - this.imgElement.offsetTop;
 		this.overlayElement.style.backgroundPosition = "" + (-posX * this.zoomfactor + this.overlayWidth / 2) + "px " + (-posY * this.zoomfactor + this.overlayWidth / 2) + "px";
-		this.windowElement.style.left = "" + (event.pageX - this.windowElement.clientWidth / 2) + "px";
-		this.windowElement.style.top = "" + (event.pageY - this.windowElement.clientHeight / 2) + "px";
+		this.windowElement.style.left = "" + (pageX - this.windowElement.clientWidth / 2) + "px";
+		this.windowElement.style.top = "" + (pageY - this.windowElement.clientHeight / 2) + "px";
+		if(posX < 0 || posX > this.imgElement.clientWidth || posY < 0 || posY > this.imgElement.clientHeight) this.hideOverlay();
 	}
 	,showOverlay: function() {
 		this.overlayElement.style.display = "inline-block";
