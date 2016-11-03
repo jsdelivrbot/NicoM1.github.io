@@ -124,7 +124,7 @@ zoomeffects_ImgZoomGlass.prototype = {
 		this.doMove(event.pageX,event.pageY);
 	}
 	,handleTouchMove: function(event) {
-		this.doMove(event.changedTouches.item(this.touchID).pageX,event.changedTouches.item(this.touchID).pageY);
+		this.doMove(event.changedTouches.item(this.touchID).pageX - this.overlayWidth,event.changedTouches.item(this.touchID).pageY - this.overlayWidth);
 		event.preventDefault();
 	}
 	,doMove: function(pageX,pageY) {
