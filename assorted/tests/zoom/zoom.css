@@ -1,3 +1,7 @@
+.imgzoomcontainer {
+	position: relative;
+}
+
 .mainviewglass {
 	cursor: none;
 }
@@ -26,6 +30,7 @@
 	background-color: #ffffff;
 	background-repeat: no-repeat;
 	-webkit-transform: translate3d(0,0,0);
+	z-index: 100;
 }
 
 .zoomoverlaypane {
@@ -37,6 +42,7 @@
 	background-color: #ffffff;
 	background-repeat: no-repeat;
 	-webkit-transform: translate3d(0,0,0);
+	z-index: 100;
 }
 
 .zoomoverlaywindow {
@@ -45,4 +51,5 @@
 	border: 1px #eeeeee solid;
 	box-shadow: 2px 2px 5px #555555;
 	pointer-events: none;
+	z-index: 100;
 }

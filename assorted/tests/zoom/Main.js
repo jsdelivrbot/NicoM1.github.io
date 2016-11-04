@@ -25,13 +25,74 @@ var js__$Boot_HaxeError = function(val) {
 js__$Boot_HaxeError.__super__ = Error;
 js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
 });
+var zoomeffects_ImgZoomBase = function(element,zoom) {
+	var _g = this;
+	this.mainElement = element;
+	this.zoomFactor = zoom;
+	this.mainElement.onmouseleave = $bind(this,this.zoomOut);
+	this.mainElement.onmousemove = $bind(this,this.handleMove);
+	this.mainElement.ontouchmove = $bind(this,this.handleTouchMove);
+	window.document.addEventListener("touchstart",function(event) {
+		if(event.target != _g.mainElement) _g.zoomOut();
+	});
+	this.mainElement.ontouchstart = function(touch) {
+		if(_g.touchID == null) {
+			_g.touchID = touch.identifier;
+			_g.doMove(touch.pageX,touch.pageY);
+		}
+	};
+	this.mainElement.ontouchend = function(touch1) {
+		if(_g.touchID == touch1.identifier) _g.touchID = null;
+	};
+};
+zoomeffects_ImgZoomBase.prototype = {
+	mouseLeave: function(event) {
+	}
+	,handleMove: function(event) {
+		this.doMove(event.pageX,event.pageY);
+	}
+	,handleTouchMove: function(event) {
+		this.doMove(event.changedTouches.item(this.touchID).pageX,event.changedTouches.item(this.touchID).pageY);
+		event.preventDefault();
+	}
+	,doMove: function(pageX,pageY) {
+		if(pageX == null || pageY == null) return;
+		this.zoomIn();
+		var offsetX = this.getOffset(this.mainElement).x;
+		var offsetY = this.getOffset(this.mainElement).y;
+		var posX = pageX - offsetX;
+		var posY = pageY - offsetY;
+		this.renderZoom(-posX * this.zoomFactor,-posY * this.zoomFactor,posX,posY);
+		if(posX < 0 || posX > this.mainElement.clientWidth || posY < 0 || posY > this.mainElement.clientHeight) this.zoomOut();
+	}
+	,renderZoom: function(backgroundX,backgroundY,mouseX,mouseY) {
+	}
+	,getOffset: function(element) {
+		var x = 0;
+		var y = 0;
+		while(element != null && element.offsetLeft != null && element.offsetTop != null) {
+			x += element.offsetLeft;
+			y += element.offsetTop;
+			element = element.offsetParent;
+		}
+		return { x : x, y : y};
+	}
+	,zoomIn: function() {
+	}
+	,zoomOut: function() {
+		this.touchID = null;
+	}
+};
 var zoomeffects_ImgZoomFull = function(id) {
-	this.containerElement = window.document.getElementById(id);
-	if(this.containerElement == null) throw new js__$Boot_HaxeError("could not find imgzoom with ID: " + id);
-	this.imagePath = this.containerElement.getAttribute("data-image");
+	var containerElement = window.document.getElementById(id);
+	if(containerElement == null) throw new js__$Boot_HaxeError("could not find imgzoom with ID: " + id);
+	this.imgElement = containerElement.querySelector(".imgzoomfull");
+	zoomeffects_ImgZoomBase.call(this,this.imgElement,0);
+	this.imagePath = this.imgElement.getAttribute("data-image");
 	this.getImageSize();
 };
-zoomeffects_ImgZoomFull.prototype = {
+zoomeffects_ImgZoomFull.__super__ = zoomeffects_ImgZoomBase;
+zoomeffects_ImgZoomFull.prototype = $extend(zoomeffects_ImgZoomBase.prototype,{
 	getImageSize: function() {
 		var _g = this;
 		var img;
@@ -45,158 +106,101 @@ zoomeffects_ImgZoomFull.prototype = {
 		img.src = this.imagePath;
 	}
 	,createListeners: function() {
-		var _g = this;
-		this.zoomfactor = this.imageWidth / this.containerElement.clientWidth;
-		this.containerElement.onmouseenter = $bind(this,this.showOverlay);
-		this.containerElement.onmouseleave = $bind(this,this.hideOverlay);
-		this.containerElement.onmousemove = $bind(this,this.handleMove);
-		this.containerElement.ontouchmove = $bind(this,this.handleTouchMove);
-		this.containerElement.ontouchstart = function(touch) {
-			if(_g.touchID == null) _g.touchID = touch.identifier;
-		};
-		this.containerElement.ontouchend = function(touch1) {
-			if(_g.touchID == touch1.identifier) _g.touchID = null;
-		};
-		this.containerElement.style.backgroundImage = "url(" + this.imagePath + ")";
-		this.containerElement.style.height = "" + this.imageHeight / this.zoomfactor + "px";
+		this.zoomFactor = this.imageWidth / this.imgElement.clientWidth;
+		this.imgElement.style.backgroundImage = "url(" + this.imagePath + ")";
+		this.imgElement.style.height = "" + this.imageHeight / this.zoomFactor + "px";
 	}
-	,handleTouchMove: function(event) {
-		this.doMove(event.changedTouches.item(this.touchID).pageX,event.changedTouches.item(this.touchID).pageY);
-		event.preventDefault();
-	}
-	,handleMove: function(event) {
-		this.doMove(event.pageX,event.pageY);
-	}
-	,doMove: function(pageX,pageY) {
-		var posX = pageX - this.containerElement.offsetLeft;
-		var posY = pageY - this.containerElement.offsetTop;
-		var halfWidth = this.containerElement.clientWidth / 2;
-		var halfHeight = this.containerElement.clientHeight / 2;
-		var distFromCenterX = (posX - halfWidth) / halfWidth + 1;
-		var distFromCenterY = (posY - halfHeight) / halfHeight + 1;
+	,renderZoom: function(backgroundX,backgroundY,mouseX,mouseY) {
+		var halfWidth = this.imgElement.clientWidth / 2;
+		var halfHeight = this.imgElement.clientHeight / 2;
+		var distFromCenterX = (mouseX - halfWidth) / halfWidth + 1;
+		var distFromCenterY = (mouseY - halfHeight) / halfHeight + 1;
 		if(distFromCenterX < 0) distFromCenterX = 0;
 		if(distFromCenterX > 2) distFromCenterX = 2;
 		if(distFromCenterY < 0) distFromCenterY = 0;
 		if(distFromCenterY > 2) distFromCenterY = 2;
-		var offsetX = -posX * this.zoomfactor + distFromCenterX * halfWidth;
-		var offsetY = -posY * this.zoomfactor + distFromCenterY * halfHeight;
-		this.containerElement.style.backgroundPosition = "" + offsetX + "px " + offsetY + "px";
-		this.containerElement.style.left = "" + pageX + "px";
-		this.containerElement.style.top = "" + pageY + "px";
+		backgroundX += distFromCenterX * halfWidth;
+		backgroundY += distFromCenterY * halfHeight;
+		this.imgElement.style.backgroundPosition = "" + backgroundX + "px " + backgroundY + "px";
 	}
-	,showOverlay: function() {
-		this.containerElement.classList.add("imgzoomfullin");
+	,zoomIn: function() {
+		this.imgElement.classList.add("imgzoomfullin");
 	}
-	,hideOverlay: function() {
-		this.containerElement.classList.remove("imgzoomfullin");
-		this.containerElement.style.backgroundPosition = "0px 0px";
+	,zoomOut: function() {
+		this.imgElement.classList.remove("imgzoomfullin");
+		this.imgElement.style.backgroundPosition = "0px 0px";
+		zoomeffects_ImgZoomBase.prototype.zoomOut.call(this);
 	}
+});
+var zoomeffects_ImgZoomOverlay = function(mainElement,overlayElement,width) {
+	this.overlayElement = overlayElement;
+	this.overlayWidth = width;
+	zoomeffects_ImgZoomBase.call(this,mainElement,mainElement.naturalWidth / mainElement.clientWidth);
+	overlayElement.onmousemove = $bind(this,this.handleMove);
 };
-var zoomeffects_ImgZoomGlass = function(id) {
-	this.overlayWidth = 200;
-	var _g = this;
-	this.containerElement = window.document.getElementById(id);
-	if(this.containerElement == null) throw new js__$Boot_HaxeError("could not find slider with ID: " + id);
-	this.overlayElement = this.containerElement.querySelector(".zoomoverlayglass");
-	this.imgElement = this.containerElement.querySelector("img");
-	this.zoomfactor = this.imgElement.naturalWidth / this.imgElement.clientWidth;
-	this.imgElement.onmouseenter = $bind(this,this.showOverlay);
-	this.imgElement.onmousemove = $bind(this,this.handleMove);
-	this.imgElement.ontouchmove = $bind(this,this.handleTouchMove);
-	this.imgElement.onmouseleave = $bind(this,this.mouseLeave);
-	this.overlayElement.onmousemove = $bind(this,this.handleMove);
-	this.imgElement.ontouchstart = function(touch) {
-		if(_g.touchID == null) _g.touchID = touch.identifier;
-	};
-	this.imgElement.ontouchend = function(touch1) {
-		if(_g.touchID == touch1.identifier) _g.touchID = null;
-	};
-	this.overlayElement.style.backgroundImage = "url(" + this.imgElement.src + ")";
-	this.overlayElement.style.width = "" + this.overlayWidth + "px";
-	this.overlayElement.style.height = "" + this.overlayWidth + "px";
-};
-zoomeffects_ImgZoomGlass.prototype = {
+zoomeffects_ImgZoomOverlay.__super__ = zoomeffects_ImgZoomBase;
+zoomeffects_ImgZoomOverlay.prototype = $extend(zoomeffects_ImgZoomBase.prototype,{
 	mouseLeave: function(event) {
 		if(event.relatedTarget == this.overlayElement) return;
-		this.hideOverlay();
+		this.zoomOut();
 	}
-	,handleMove: function(event) {
-		this.doMove(event.pageX,event.pageY);
-	}
-	,handleTouchMove: function(event) {
-		this.doMove(event.changedTouches.item(this.touchID).pageX - this.overlayWidth,event.changedTouches.item(this.touchID).pageY - this.overlayWidth);
-		event.preventDefault();
-	}
-	,doMove: function(pageX,pageY) {
-		var posX = pageX - this.imgElement.offsetLeft;
-		var posY = pageY - this.imgElement.offsetTop;
-		this.overlayElement.style.backgroundPosition = "" + (-posX * this.zoomfactor + this.overlayWidth / 2) + "px " + (-posY * this.zoomfactor + this.overlayWidth / 2) + "px";
-		this.overlayElement.style.left = "" + (pageX - this.overlayWidth / 2) + "px";
-		this.overlayElement.style.top = "" + (pageY - this.overlayWidth / 2) + "px";
-		if(posX < 0 || posX > this.imgElement.clientWidth || posY < 0 || posY > this.imgElement.clientHeight) this.hideOverlay();
-	}
-	,showOverlay: function() {
+	,zoomIn: function() {
 		this.overlayElement.style.display = "inline-block";
 	}
-	,hideOverlay: function() {
+	,zoomOut: function() {
 		this.overlayElement.style.display = "none";
+		zoomeffects_ImgZoomBase.prototype.zoomOut.call(this);
 	}
+});
+var zoomeffects_ImgZoomGlass = function(id) {
+	var containerElement = window.document.getElementById(id);
+	if(containerElement == null) throw new js__$Boot_HaxeError("could not find slider with ID: " + id);
+	var overlayElement = containerElement.querySelector(".zoomoverlayglass");
+	var imgElement = containerElement.querySelector("img");
+	zoomeffects_ImgZoomOverlay.call(this,imgElement,overlayElement,200);
+	overlayElement.style.backgroundImage = "url(" + imgElement.src + ")";
+	overlayElement.style.width = "" + this.overlayWidth + "px";
+	overlayElement.style.height = "" + this.overlayWidth + "px";
 };
+zoomeffects_ImgZoomGlass.__super__ = zoomeffects_ImgZoomOverlay;
+zoomeffects_ImgZoomGlass.prototype = $extend(zoomeffects_ImgZoomOverlay.prototype,{
+	renderZoom: function(backgroundX,backgroundY,mouseX,mouseY) {
+		this.overlayElement.style.backgroundPosition = "" + (backgroundX + this.overlayWidth / 2) + "px " + (backgroundY + this.overlayWidth / 2) + "px";
+		var offset = this.getOffset(this.mainElement);
+		this.overlayElement.style.left = "" + (mouseX - this.overlayWidth / 2) + "px";
+		this.overlayElement.style.top = "" + (mouseY - this.overlayWidth / 2) + "px";
+	}
+});
 var zoomeffects_ImgZoomPane = function(id) {
-	this.overlayWidth = 400;
-	var _g = this;
-	this.containerElement = window.document.getElementById(id);
-	if(this.containerElement == null) throw new js__$Boot_HaxeError("could not find slider with ID: " + id);
-	this.overlayElement = this.containerElement.querySelector(".zoomoverlaypane");
-	this.windowElement = this.containerElement.querySelector(".zoomoverlaywindow");
-	this.imgElement = this.containerElement.querySelector("img");
-	this.zoomfactor = this.imgElement.naturalWidth / this.imgElement.clientWidth;
-	this.imgElement.onmouseenter = $bind(this,this.showOverlay);
-	this.imgElement.onmousemove = $bind(this,this.handleMove);
-	this.imgElement.ontouchmove = $bind(this,this.handleTouchMove);
-	this.imgElement.onmouseleave = $bind(this,this.mouseLeave);
+	var containerElement = window.document.getElementById(id);
+	if(containerElement == null) throw new js__$Boot_HaxeError("could not find slider with ID: " + id);
+	var overlayElement = containerElement.querySelector(".zoomoverlaypane");
+	this.windowElement = containerElement.querySelector(".zoomoverlaywindow");
+	var imgElement = containerElement.querySelector("img");
+	zoomeffects_ImgZoomOverlay.call(this,imgElement,overlayElement,400);
 	this.windowElement.onmousemove = $bind(this,this.handleMove);
-	this.imgElement.ontouchstart = function(touch) {
-		if(_g.touchID == null) _g.touchID = touch.identifier;
-	};
-	this.imgElement.ontouchend = function(touch1) {
-		if(_g.touchID == touch1.identifier) _g.touchID = null;
-	};
-	this.overlayElement.style.backgroundImage = "url(" + this.imgElement.src + ")";
-	this.overlayElement.style.width = "" + this.overlayWidth + "px";
-	this.overlayElement.style.height = "" + this.overlayWidth + "px";
-	this.windowElement.style.width = "" + this.overlayWidth / this.zoomfactor + "px";
-	this.windowElement.style.height = "" + this.overlayWidth / this.zoomfactor + "px";
+	overlayElement.style.backgroundImage = "url(" + imgElement.src + ")";
+	overlayElement.style.width = "" + this.overlayWidth + "px";
+	overlayElement.style.height = "" + this.overlayWidth + "px";
+	this.windowElement.style.width = "" + this.overlayWidth / this.zoomFactor + "px";
+	this.windowElement.style.height = "" + this.overlayWidth / this.zoomFactor + "px";
 };
-zoomeffects_ImgZoomPane.prototype = {
-	mouseLeave: function(event) {
-		if(event.relatedTarget == this.windowElement) return;
-		this.hideOverlay();
+zoomeffects_ImgZoomPane.__super__ = zoomeffects_ImgZoomOverlay;
+zoomeffects_ImgZoomPane.prototype = $extend(zoomeffects_ImgZoomOverlay.prototype,{
+	renderZoom: function(backgroundX,backgroundY,mouseX,mouseY) {
+		this.overlayElement.style.backgroundPosition = "" + (backgroundX + this.overlayWidth / 2) + "px " + (backgroundY + this.overlayWidth / 2) + "px";
+		this.windowElement.style.left = "" + (mouseX - this.windowElement.clientWidth / 2) + "px";
+		this.windowElement.style.top = "" + (mouseY - this.windowElement.clientHeight / 2) + "px";
 	}
-	,handleTouchMove: function(event) {
-		this.doMove(event.changedTouches.item(this.touchID).pageX,event.changedTouches.item(this.touchID).pageY);
-		event.preventDefault();
-	}
-	,handleMove: function(event) {
-		this.doMove(event.pageX,event.pageY);
-	}
-	,doMove: function(pageX,pageY) {
-		var posX = pageX - this.imgElement.offsetLeft;
-		var posY = pageY - this.imgElement.offsetTop;
-		this.overlayElement.style.backgroundPosition = "" + (-posX * this.zoomfactor + this.overlayWidth / 2) + "px " + (-posY * this.zoomfactor + this.overlayWidth / 2) + "px";
-		this.windowElement.style.left = "" + (pageX - this.windowElement.clientWidth / 2) + "px";
-		this.windowElement.style.top = "" + (pageY - this.windowElement.clientHeight / 2) + "px";
-		if(posX < 0 || posX > this.imgElement.clientWidth || posY < 0 || posY > this.imgElement.clientHeight) this.hideOverlay();
-	}
-	,showOverlay: function() {
-		this.overlayElement.style.display = "inline-block";
+	,zoomIn: function() {
 		this.windowElement.style.display = "inline-block";
+		zoomeffects_ImgZoomOverlay.prototype.zoomIn.call(this);
 	}
-	,hideOverlay: function() {
-		this.overlayElement.style.display = "none";
+	,zoomOut: function() {
 		this.windowElement.style.display = "none";
+		zoomeffects_ImgZoomOverlay.prototype.zoomOut.call(this);
 	}
-};
+});
 var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
 Main.main();
