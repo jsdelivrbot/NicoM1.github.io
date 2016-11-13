@@ -1,20 +1,25 @@
 .imgzoomcontainer {
 	position: relative;
+	overflow: hidden;
 }
 
 .mainviewglass {
 	cursor: none;
+	width: 100%;
+}
+
+.mainviewpane {
+	width: 100%;
 }
 
 .imgzoomfull {
-	background-repeat: no-repeat;
-	background-color: transparent;
-	background-size: contain;
+	position: absolute;
+	transform: translate3d(0,0,0);
 	-webkit-transform: translate3d(0,0,0);
 }
 
 .imgzoomfullin {
-	background-size: auto;
+	background-size: 20000px auto;
 }
 
 .zoomoverlayglass {
@@ -28,8 +33,7 @@
 	margin: none;
 	padding: none;
 	background-color: #ffffff;
-	background-repeat: no-repeat;
-	-webkit-transform: translate3d(0,0,0);
+	overflow: hidden;
 	z-index: 100;
 }
 
@@ -40,9 +44,9 @@
 	margin: none;
 	padding: none;
 	background-color: #ffffff;
-	background-repeat: no-repeat;
-	-webkit-transform: translate3d(0,0,0);
 	z-index: 100;
+	overflow: hidden;
+	position: relative;
 }
 
 .zoomoverlaywindow {

@@ -5,23 +5,23 @@
 		<link rel="stylesheet" href="zoom.css" />
 	</head>
 	<body>
-		<div class="imgzoomcontainer" style="position: relative; left: 500px;">
-			<div id="imgzoom1" class="imgzoomglass">
-				<img class="mainviewglass" src="headlight.jpg" width="936"/>
-				<div class="zoomoverlayglass"></div>
+		<div id="imgzoom1" class="imgzoomcontainer" style="left: 500px; width: 936px">
+			<img class="mainviewglass" src="headlight.jpg"/>
+			<div class="zoomoverlayglass">
+				<img class="imgzoomfull" src="headlight.jpg"/>
 			</div>
 		</div>
 
-		<div class="imgzoomcontainer" style="position: relative; left: 100px; top 100px;">
-			<div id="imgzoom3" class="imgzoompane imgzoomcontainer">
-				<img class="mainviewpane" src="headlight.jpg" width="936"/>
-				<div class="zoomoverlaypane"></div>
-				<div class="zoomoverlaywindow"></div>
+		<div id="imgzoom3" class="imgzoomcontainer" style="left: 500px; top 100px; width: 936px">
+			<img class="mainviewpane" src="headlight.jpg"/>
+			<div class="zoomoverlaypane">
+				<img class="imgzoomfull" src="headlight.jpg"/>
 			</div>
+			<div class="zoomoverlaywindow"></div>
 		</div>
 
-		<div id="imgzoom2" class="imgzoomcontainer">
-			<div class="imgzoomfull" data-image="headlight.jpg" style="width:936px"></div>
+		<div id="imgzoom2" class="imgzoomcontainer" style="width: 936px">
+			<img class="imgzoomfull" src="headlight.jpg"/>
 		</div>
 	</body>
 </html>
