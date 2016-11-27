@@ -2,6 +2,7 @@ html, body {
 	width: 100%;
 	margin: 0px;
 	padding: 0px;
+	overflow-x: hidden;
 }
 
 h1 {
@@ -35,6 +36,26 @@ h1 {
 .info {
 	font-family: serif;
 	font-size: 15px;
+}
+
+.down {
+	text-align: center;
+	width: 100%;
+	position: absolute;
+	bottom: 10px;
+	animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+	0% {
+		font-size: 20px;
+	}
+	30% {
+		font-size: 33px;
+	}
+	100% {
+		font-size: 20px;
+	}
 }
 
 @keyframes slide {
